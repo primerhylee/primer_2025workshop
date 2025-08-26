@@ -5,6 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>창업기업 지원 및 실적</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- 데이터 내보내기 라이브러리 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <!-- Google API -->
+    <script async defer src="https://apis.google.com/js/api.js"></script>
     <style>
         * {
             margin: 0;
@@ -33,6 +40,88 @@
             color: white;
             padding: 40px;
             text-align: center;
+            position: relative;
+        }
+
+        /* 진행률 표시기 */
+        .progress-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.2);
+            z-index: 1001;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #10b981, #059669);
+            width: 0%;
+            transition: width 0.3s ease;
+            box-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
+        }
+
+        .progress-text {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.95);
+            color: #1f2937;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+
+        /* 섹션 네비게이션 */
+        .section-nav {
+            position: fixed;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 15px 5px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+
+        .nav-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #d1d5db;
+            margin: 8px auto;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-dot.active {
+            background: #667eea;
+            transform: scale(1.3);
+        }
+
+        .nav-dot.completed {
+            background: #10b981;
+        }
+
+        .nav-dot:hover::after {
+            content: attr(data-title);
+            position: absolute;
+            left: 25px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #1f2937;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 0.8rem;
+            white-space: nowrap;
+            z-index: 1001;
         }
 
         .header h1 {
@@ -91,6 +180,31 @@
             color: white;
             transform: translateY(-2px);
             box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
+        }
+
+        .dashboard-link {
+            position: fixed;
+            top: 80px;
+            left: 20px;
+            background: white;
+            color: #667eea;
+            border: 2px solid #667eea;
+            padding: 10px 20px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .dashboard-link:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
         }
 
         .save-icon {
@@ -158,6 +272,64 @@
             background: #667eea;
             color: white;
             border-color: #667eea;
+        }
+
+        /* 툴팁 스타일 */
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 300px;
+            background-color: #1f2937;
+            color: #fff;
+            text-align: left;
+            border-radius: 8px;
+            padding: 12px;
+            position: absolute;
+            z-index: 1002;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -150px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.85rem;
+            line-height: 1.4;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .tooltip .tooltiptext::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: #1f2937 transparent transparent transparent;
+        }
+
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        /* 필드별 도움말 아이콘 */
+        .field-help {
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            background: #667eea;
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 18px;
+            font-size: 12px;
+            margin-left: 5px;
+            cursor: help;
+            font-weight: bold;
         }
 
         .guide-modal {
@@ -385,6 +557,52 @@
             box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
         }
 
+        /* 내보내기 버튼 스타일 */
+        .export-btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 25px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: white;
+            font-family: 'Noto Sans KR', sans-serif;
+        }
+
+        .excel-btn {
+            background: linear-gradient(135deg, #16a085, #1abc9c);
+        }
+
+        .excel-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(22, 160, 133, 0.4);
+        }
+
+        .pdf-btn {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+        }
+
+        .pdf-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(231, 76, 60, 0.4);
+        }
+
+        .google-btn {
+            background: linear-gradient(135deg, #4285f4, #1a73e8);
+        }
+
+        .google-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(66, 133, 244, 0.4);
+        }
+
+        .export-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
         .info-box {
             background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
             border-left: 4px solid #3b82f6;
@@ -495,10 +713,58 @@
                 right: 10px;
                 font-size: 0.9rem;
             }
+
+            .progress-text {
+                top: 60px;
+                right: 10px;
+                font-size: 0.8rem;
+                padding: 6px 12px;
+            }
+
+            .section-nav {
+                display: none;
+            }
+
+            .reset-button {
+                top: 10px;
+                left: 10px;
+                padding: 8px 16px;
+                font-size: 0.9rem;
+            }
+
+            .dashboard-link {
+                top: 60px;
+                left: 10px;
+                padding: 8px 16px;
+                font-size: 0.9rem;
+            }
+
+            .tooltip .tooltiptext {
+                width: 250px;
+                margin-left: -125px;
+                font-size: 0.8rem;
+            }
         }
     </style>
 </head>
 <body>
+    <!-- 진행률 표시기 -->
+    <div class="progress-container">
+        <div class="progress-bar" id="progressBar"></div>
+    </div>
+    
+    <!-- 진행률 텍스트 -->
+    <div class="progress-text" id="progressText">0% 완료</div>
+    
+    <!-- 섹션 네비게이션 -->
+    <div class="section-nav" id="sectionNav">
+        <div class="nav-dot" data-title="기본 정보" data-section="0"></div>
+        <div class="nav-dot" data-title="투자 정보" data-section="1"></div>
+        <div class="nav-dot" data-title="입주 정보" data-section="2"></div>
+        <div class="nav-dot" data-title="국내 성과" data-section="3"></div>
+        <div class="nav-dot" data-title="글로벌 실적" data-section="4"></div>
+    </div>
+
     <!-- 자동저장 인디케이터 -->
     <div class="auto-save-indicator" id="saveIndicator">
         <span class="save-icon" id="saveIcon">💾</span>
@@ -509,6 +775,11 @@
     <button class="reset-button" onclick="confirmReset()">
         <span>🔄</span> 정보 초기화
     </button>
+    
+    <!-- 대시보드 링크 -->
+    <a href="/dashboard.html" class="dashboard-link" target="_blank">
+        <span>📊</span> 대시보드 보기
+    </a>
 
     <div class="container">
         <div class="header">
@@ -519,8 +790,10 @@
         <div class="form-container">
             <form id="startupForm">
                 <!-- 기본 정보 섹션 -->
-                <div class="section">
-                    <h2 class="section-title">기본 정보</h2>
+                <div class="section" id="section-0">
+                    <h2 class="section-title">기본 정보
+                        <button class="help-button" onclick="openGuideModal('basic')">도움말</button>
+                    </h2>
                     
                     <div class="form-row">
                         <div class="form-group">
@@ -570,8 +843,10 @@
                 </div>
 
                 <!-- 투자 정보 섹션 -->
-                <div class="section">
-                    <h2 class="section-title">투자 정보</h2>
+                <div class="section" id="section-1">
+                    <h2 class="section-title">투자 정보
+                        <button class="help-button" onclick="openGuideModal('investment')">도움말</button>
+                    </h2>
                     
                     <div class="investment-box recommendation">
                         <h3>📌 팁스 추천시 투자 정보</h3>
@@ -626,8 +901,10 @@
                 </div>
 
                 <!-- 입주 정보 섹션 -->
-                <div class="section">
-                    <h2 class="section-title">입주 정보</h2>
+                <div class="section" id="section-2">
+                    <h2 class="section-title">입주 정보
+                        <button class="help-button" onclick="openGuideModal('residency')">도움말</button>
+                    </h2>
                     
                     <div class="form-group">
                         <label for="residencyType" class="required">입주유형</label>
@@ -687,8 +964,10 @@
                 </div>
 
                 <!-- 국내 사업화 성과 섹션 -->
-                <div class="section">
-                    <h2 class="section-title">국내 사업화 성과</h2>
+                <div class="section" id="section-3">
+                    <h2 class="section-title">국내 사업화 성과
+                        <button class="help-button" onclick="openGuideModal('domestic')">도움말</button>
+                    </h2>
                     
                     <div class="form-group">
                         <label for="domesticFollowInvest">후속투자</label>
@@ -728,8 +1007,10 @@
                 </div>
 
                 <!-- 글로벌 진출 실적 섹션 -->
-                <div class="section">
-                    <h2 class="section-title">글로벌 진출 실적</h2>
+                <div class="section" id="section-4">
+                    <h2 class="section-title">글로벌 진출 실적
+                        <button class="help-button" onclick="openGuideModal('global')">도움말</button>
+                    </h2>
                     
                     <div class="form-group">
                         <label for="globalInvestment">투자유치</label>
@@ -776,8 +1057,32 @@
                 <!-- 제출 버튼 -->
                 <div class="submit-section">
                     <button type="submit" class="submit-btn">정보 제출하기</button>
+                    
+                    <!-- 내보내기 버튼들 -->
+                    <div style="margin-top: 20px; display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
+                        <button type="button" class="export-btn excel-btn" onclick="exportToExcel()">
+                            📊 Excel로 내보내기
+                        </button>
+                        <button type="button" class="export-btn pdf-btn" onclick="exportToPDF()">
+                            📄 PDF로 내보내기
+                        </button>
+                        <button type="button" class="export-btn google-btn" onclick="exportToGoogleSheets()">
+                            📋 Google Sheets로 내보내기
+                        </button>
+                    </div>
                 </div>
             </form>
+        </div>
+    </div>
+
+    <!-- 도움말 모달 -->
+    <div class="guide-modal" id="guideModal">
+        <div class="guide-content">
+            <div class="guide-header">
+                <h3 class="guide-title" id="guideTitle">도움말</h3>
+                <button class="close-guide" onclick="closeGuideModal()">&times;</button>
+            </div>
+            <ul class="guide-list" id="guideList"></ul>
         </div>
     </div>
 
@@ -845,13 +1150,163 @@
         }
 
         // 페이지 로드시 저장된 데이터 불러오기
-        window.addEventListener('load', loadFromLocalStorage);
+        window.addEventListener('load', function() {
+            loadFromLocalStorage();
+            updateProgress();
+            initializeNavigation();
+            checkServerConnection();
+            addRealTimeValidation();
+        });
+
+        // 서버 연결 상태 확인
+        async function checkServerConnection() {
+            try {
+                const response = await fetch('/api/health');
+                const result = await response.json();
+                
+                if (result.success) {
+                    console.log('✅ 서버 연결 성공:', result.message);
+                    showConnectionStatus('connected', '서버 연결됨');
+                } else {
+                    throw new Error('서버 응답 오류');
+                }
+            } catch (error) {
+                console.log('❌ 서버 연결 실패:', error.message);
+                showConnectionStatus('disconnected', '서버 연결 안됨 (오프라인 모드)');
+            }
+        }
+
+        // 연결 상태 표시
+        function showConnectionStatus(status, message) {
+            const indicator = document.getElementById('saveIndicator');
+            const icon = document.getElementById('saveIcon');
+            const text = document.getElementById('saveText');
+            
+            if (status === 'connected') {
+                indicator.style.background = '#d1fae5';
+                indicator.style.borderColor = '#10b981';
+                icon.textContent = '🌐';
+                text.textContent = message;
+            } else {
+                indicator.style.background = '#fef3c7';
+                indicator.style.borderColor = '#f59e0b';
+                icon.textContent = '📱';
+                text.textContent = message;
+            }
+            
+            // 3초 후 원래 상태로 복원
+            setTimeout(() => {
+                indicator.style.background = '';
+                indicator.style.borderColor = '';
+                icon.textContent = '💾';
+                text.textContent = '자동저장 활성화';
+            }, 3000);
+        }
 
         // 입력시 자동저장 트리거
         document.getElementById('startupForm').addEventListener('input', function() {
             clearTimeout(autoSaveTimer);
             autoSaveTimer = setTimeout(saveToLocalStorage, AUTOSAVE_DELAY);
+            updateProgress();
         });
+
+        // 진행률 계산 함수
+        function updateProgress() {
+            const form = document.getElementById('startupForm');
+            const requiredFields = form.querySelectorAll('[required]');
+            const allFields = form.querySelectorAll('input, select, textarea');
+            
+            let filledRequired = 0;
+            let filledOptional = 0;
+            let totalOptional = 0;
+            
+            // 필수 필드 체크
+            requiredFields.forEach(field => {
+                if (field.value.trim() !== '') {
+                    filledRequired++;
+                }
+            });
+            
+            // 선택 필드 체크
+            allFields.forEach(field => {
+                if (!field.hasAttribute('required') && field.name) {
+                    totalOptional++;
+                    if (field.value.trim() !== '') {
+                        filledOptional++;
+                    }
+                }
+            });
+            
+            // 진행률 계산 (필수 필드 70%, 선택 필드 30%)
+            const requiredProgress = (filledRequired / requiredFields.length) * 70;
+            const optionalProgress = totalOptional > 0 ? (filledOptional / totalOptional) * 30 : 0;
+            const totalProgress = Math.round(requiredProgress + optionalProgress);
+            
+            // 진행률 바 업데이트
+            const progressBar = document.getElementById('progressBar');
+            const progressText = document.getElementById('progressText');
+            
+            progressBar.style.width = totalProgress + '%';
+            progressText.textContent = totalProgress + '% 완료';
+            
+            // 섹션별 완료 상태 업데이트
+            updateSectionStatus();
+        }
+
+        // 섹션별 완료 상태 업데이트
+        function updateSectionStatus() {
+            const sections = [
+                { id: 'section-0', fields: ['selectionYear', 'selectionMonth', 'companyName', 'establishDate'] },
+                { id: 'section-1', fields: ['investDate', 'investAmount', 'shareholders'] },
+                { id: 'section-2', fields: ['residencyType'] },
+                { id: 'section-3', fields: ['domesticFollowInvest', 'domesticEmployment', 'domesticRevenue'] },
+                { id: 'section-4', fields: ['globalInvestment', 'globalExport'] }
+            ];
+            
+            sections.forEach((section, index) => {
+                const navDot = document.querySelector(`[data-section="${index}"]`);
+                let filledFields = 0;
+                
+                section.fields.forEach(fieldName => {
+                    const field = document.getElementById(fieldName);
+                    if (field && field.value.trim() !== '') {
+                        filledFields++;
+                    }
+                });
+                
+                // 섹션 완료 상태 결정
+                const completionRate = filledFields / section.fields.length;
+                
+                if (completionRate === 1) {
+                    navDot.classList.add('completed');
+                    navDot.classList.remove('active');
+                } else if (completionRate > 0) {
+                    navDot.classList.add('active');
+                    navDot.classList.remove('completed');
+                } else {
+                    navDot.classList.remove('active', 'completed');
+                }
+            });
+        }
+
+        // 네비게이션 초기화
+        function initializeNavigation() {
+            const navDots = document.querySelectorAll('.nav-dot');
+            
+            navDots.forEach(dot => {
+                dot.addEventListener('click', function() {
+                    const sectionIndex = this.getAttribute('data-section');
+                    const targetSection = document.getElementById(`section-${sectionIndex}`);
+                    
+                    if (targetSection) {
+                        targetSection.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                });
+            });
+        }
 
         // 지분율 자동계산 함수
         function calculateShareholderSum(textareaId, spanId) {
@@ -1035,35 +1490,104 @@
         });
 
         // 폼 제출 처리
-        document.getElementById('startupForm').addEventListener('submit', function(e) {
+        document.getElementById('startupForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             
-            // 폼 데이터 수집
-            const formData = new FormData(this);
-            const data = {};
-            
-            for (let [key, value] of formData.entries()) {
-                data[key] = value;
+            // 입력 검증
+            const validationResult = validateForm();
+            if (!validationResult.isValid) {
+                alert('입력 오류:\n' + validationResult.errors.join('\n'));
+                return;
             }
             
-            // 여기에서 실제로는 서버로 데이터를 전송해야 합니다.
-            console.log('제출된 데이터:', data);
+            // 제출 버튼 비활성화
+            const submitBtn = document.querySelector('.submit-btn');
+            const originalText = submitBtn.textContent;
+            submitBtn.disabled = true;
+            submitBtn.textContent = '제출 중...';
             
-            // 로컬스토리지 클리어 (옵션)
-            localStorage.removeItem('startupFormData');
-            
-            // 성공 메시지 표시
-            document.getElementById('overlay').classList.add('show');
-            document.getElementById('successMessage').classList.add('show');
-            
-            // 3초 후 메시지 숨기기
-            setTimeout(() => {
-                document.getElementById('overlay').classList.remove('show');
-                document.getElementById('successMessage').classList.remove('show');
+            try {
+                // 폼 데이터 수집
+                const formData = new FormData(this);
+                const data = {};
                 
-                // 폼 초기화 (옵션)
-                // this.reset();
-            }, 3000);
+                for (let [key, value] of formData.entries()) {
+                    data[key] = value;
+                }
+                
+                // 추가 메타데이터
+                data.submittedAt = new Date().toISOString();
+                data.userAgent = navigator.userAgent;
+                
+                console.log('제출된 데이터:', data);
+                
+                // 서버로 데이터 전송
+                const response = await fetch('/api/submit-form', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    // 성공시 로컬스토리지 클리어
+                    localStorage.removeItem('startupFormData');
+                    
+                    // 성공 메시지 업데이트
+                    document.querySelector('#successMessage h2').textContent = '제출 완료!';
+                    document.querySelector('#successMessage p').innerHTML = 
+                        `입력하신 정보가 성공적으로 저장되었습니다.<br>제출 ID: <strong>${result.submissionId}</strong>`;
+                    
+                    // 성공 메시지 표시
+                    document.getElementById('overlay').classList.add('show');
+                    document.getElementById('successMessage').classList.add('show');
+                    
+                    // 5초 후 메시지 숨기기
+                    setTimeout(() => {
+                        document.getElementById('overlay').classList.remove('show');
+                        document.getElementById('successMessage').classList.remove('show');
+                        
+                        // 폼 초기화 여부 확인
+                        if (confirm('폼을 초기화하시겠습니까?')) {
+                            this.reset();
+                            updateProgress();
+                        }
+                    }, 5000);
+                    
+                } else {
+                    throw new Error(result.message || '제출 중 오류가 발생했습니다.');
+                }
+                
+            } catch (error) {
+                console.error('제출 오류:', error);
+                
+                // 오류 메시지 표시
+                document.querySelector('#successMessage h2').textContent = '제출 실패';
+                document.querySelector('#successMessage p').innerHTML = 
+                    `오류가 발생했습니다: ${error.message}<br>다시 시도해주세요.`;
+                document.querySelector('.success-icon').textContent = '⚠️';
+                document.querySelector('.success-icon').style.background = 'linear-gradient(135deg, #ef4444, #dc2626)';
+                
+                document.getElementById('overlay').classList.add('show');
+                document.getElementById('successMessage').classList.add('show');
+                
+                setTimeout(() => {
+                    document.getElementById('overlay').classList.remove('show');
+                    document.getElementById('successMessage').classList.remove('show');
+                    
+                    // 아이콘 원복
+                    document.querySelector('.success-icon').textContent = '✓';
+                    document.querySelector('.success-icon').style.background = 'linear-gradient(135deg, #10b981, #059669)';
+                }, 5000);
+                
+            } finally {
+                // 제출 버튼 활성화
+                submitBtn.disabled = false;
+                submitBtn.textContent = originalText;
+            }
         });
 
         // 정보 초기화 기능
@@ -1083,7 +1607,506 @@
                 document.getElementById('shareholders').style.color = '#9ca3af';
                 document.getElementById('shareholdersAfter').style.color = '#9ca3af';
                 
+                // 진행률 초기화
+                updateProgress();
+                
                 alert('모든 정보가 초기화되었습니다.');
+            }
+        }
+
+        // 도움말 모달 열기
+        function openGuideModal(section) {
+            const modal = document.getElementById('guideModal');
+            const title = document.getElementById('guideTitle');
+            const list = document.getElementById('guideList');
+            
+            const guides = {
+                basic: {
+                    title: '기본 정보 입력 가이드',
+                    items: [
+                        '선정년도: 팁스 프로그램에 선정된 년도를 선택해주세요',
+                        '선정월: 팁스 프로그램에 선정된 월을 선택해주세요',
+                        '창업기업명: 정확한 회사명을 입력해주세요 (법인등기부상 명칭)',
+                        '설립일: 사업자등록증 또는 법인등기부상의 설립일자를 입력해주세요'
+                    ]
+                },
+                investment: {
+                    title: '투자 정보 입력 가이드',
+                    items: [
+                        '투자일자: 실제 투자금이 입금된 날짜를 입력해주세요',
+                        '투자금액: 천원 단위로 입력해주세요 (예: 100,000천원 = 1억원)',
+                        '주주현황: 각 주주별로 지분율을 정확히 입력해주세요 (합계 100%)',
+                        '주식형태: 발행한 주식의 종류를 선택해주세요',
+                        '운영사 지분율: 팁스 운영사의 지분율을 소수점까지 정확히 입력해주세요'
+                    ]
+                },
+                residency: {
+                    title: '입주 정보 입력 가이드',
+                    items: [
+                        '입주유형: 현재 입주 상태에 맞는 유형을 선택해주세요',
+                        '입주예외: 특별한 사유로 입주하지 않는 경우 선택',
+                        'BI명: 입주한 인큐베이터의 정확한 명칭을 입력해주세요',
+                        'BI주소: 입주한 인큐베이터의 주소를 입력해주세요',
+                        '입주예정: 향후 입주 계획이 있는 경우 예정일을 입력해주세요'
+                    ]
+                },
+                domestic: {
+                    title: '국내 사업화 성과 입력 가이드',
+                    items: [
+                        '후속투자: 팁스 이후 받은 모든 투자를 시간순으로 기재해주세요',
+                        '고용: 연도별 신규 고용 인원과 현재 총 직원수를 기재해주세요',
+                        '매출: 연도별 매출액을 구체적인 숫자로 기재해주세요',
+                        '기타: 수상내역, 특허, 정부과제 등 주요 성과를 기재해주세요'
+                    ]
+                },
+                global: {
+                    title: '글로벌 진출 실적 입력 가이드',
+                    items: [
+                        '투자유치: 해외 투자사로부터 받은 투자를 기재해주세요',
+                        '수출: 해외 매출 실적을 연도별로 기재해주세요 (달러 또는 원화)',
+                        '현지법인: 해외에 설립한 법인, 지사, 영업소 등을 기재해주세요',
+                        '기타: 해외 진출 관련 모든 성과를 구체적으로 기재해주세요'
+                    ]
+                }
+            };
+            
+            if (guides[section]) {
+                title.textContent = guides[section].title;
+                list.innerHTML = '';
+                
+                guides[section].items.forEach(item => {
+                    const li = document.createElement('li');
+                    li.textContent = item;
+                    list.appendChild(li);
+                });
+                
+                modal.style.display = 'block';
+            }
+        }
+
+        // 도움말 모달 닫기
+        function closeGuideModal() {
+            document.getElementById('guideModal').style.display = 'none';
+        }
+
+        // 모달 외부 클릭시 닫기
+        window.onclick = function(event) {
+            const modal = document.getElementById('guideModal');
+            if (event.target === modal) {
+                closeGuideModal();
+            }
+        }
+
+        // Excel 내보내기 함수
+        function exportToExcel() {
+            const form = document.getElementById('startupForm');
+            const formData = new FormData(form);
+            const data = {};
+            
+            // 폼 데이터 수집
+            for (let [key, value] of formData.entries()) {
+                data[key] = value;
+            }
+            
+            // Excel 워크북 생성
+            const wb = XLSX.utils.book_new();
+            
+            // 기본 정보 시트
+            const basicData = [
+                ['항목', '값'],
+                ['선정년도', data.selectionYear || ''],
+                ['선정월', data.selectionMonth || ''],
+                ['창업기업명', data.companyName || ''],
+                ['설립일', data.establishDate || '']
+            ];
+            
+            // 투자 정보 시트
+            const investmentData = [
+                ['항목', '값'],
+                ['투자일자', data.investDate || ''],
+                ['투자금액', data.investAmount || ''],
+                ['주주현황 (팁스 추천시)', data.shareholders || ''],
+                ['총 투자금액 (현재)', data.totalInvestAfter || ''],
+                ['주주현황 (현재)', data.shareholdersAfter || ''],
+                ['주식형태', data.stockType || ''],
+                ['운영사 지분율', data.operatorShare || '']
+            ];
+            
+            // 입주 정보 시트
+            const residencyData = [
+                ['항목', '값'],
+                ['입주유형', data.residencyType || ''],
+                ['입주예외 사유', data.exceptionReasonType || ''],
+                ['기타 사유', data.exceptionReasonOther || ''],
+                ['BI명', data.biName || ''],
+                ['BI주소', data.biAddress || ''],
+                ['입주 예정 여부', data.futureResidency || ''],
+                ['입주 예정일', data.futureResidencyDate || '']
+            ];
+            
+            // 국내 성과 시트
+            const domesticData = [
+                ['항목', '내용'],
+                ['후속투자', data.domesticFollowInvest || ''],
+                ['고용', data.domesticEmployment || ''],
+                ['매출', data.domesticRevenue || ''],
+                ['기타', data.domesticOther || '']
+            ];
+            
+            // 글로벌 실적 시트
+            const globalData = [
+                ['항목', '내용'],
+                ['투자유치', data.globalInvestment || ''],
+                ['수출', data.globalExport || ''],
+                ['현지법인 설립', data.globalBranch || ''],
+                ['기타', data.globalOther || '']
+            ];
+            
+            // 시트 추가
+            const ws1 = XLSX.utils.aoa_to_sheet(basicData);
+            const ws2 = XLSX.utils.aoa_to_sheet(investmentData);
+            const ws3 = XLSX.utils.aoa_to_sheet(residencyData);
+            const ws4 = XLSX.utils.aoa_to_sheet(domesticData);
+            const ws5 = XLSX.utils.aoa_to_sheet(globalData);
+            
+            XLSX.utils.book_append_sheet(wb, ws1, '기본정보');
+            XLSX.utils.book_append_sheet(wb, ws2, '투자정보');
+            XLSX.utils.book_append_sheet(wb, ws3, '입주정보');
+            XLSX.utils.book_append_sheet(wb, ws4, '국내성과');
+            XLSX.utils.book_append_sheet(wb, ws5, '글로벌실적');
+            
+            // 파일명 생성
+            const companyName = data.companyName || '창업기업';
+            const today = new Date().toISOString().split('T')[0];
+            const fileName = `${companyName}_창업지원실적_${today}.xlsx`;
+            
+            // 파일 다운로드
+            XLSX.writeFile(wb, fileName);
+            
+            // 성공 메시지
+            showExportMessage('Excel', fileName);
+        }
+
+        // PDF 내보내기 함수
+        async function exportToPDF() {
+            const { jsPDF } = window.jspdf;
+            const pdf = new jsPDF('p', 'mm', 'a4');
+            
+            try {
+                // 버튼 비활성화
+                const pdfBtn = document.querySelector('.pdf-btn');
+                pdfBtn.disabled = true;
+                pdfBtn.textContent = '📄 PDF 생성 중...';
+                
+                // 폼 데이터 수집
+                const form = document.getElementById('startupForm');
+                const formData = new FormData(form);
+                const data = {};
+                
+                for (let [key, value] of formData.entries()) {
+                    data[key] = value;
+                }
+                
+                // PDF 한글 폰트 설정 (기본 폰트 사용)
+                pdf.setFont('helvetica');
+                
+                // 제목
+                pdf.setFontSize(20);
+                pdf.text('창업기업 지원 및 실적', 105, 20, { align: 'center' });
+                
+                // 현재 날짜
+                const today = new Date().toLocaleDateString('ko-KR');
+                pdf.setFontSize(10);
+                pdf.text(`생성일: ${today}`, 20, 30);
+                
+                let yPosition = 50;
+                const lineHeight = 7;
+                const pageHeight = 280;
+                
+                // 기본 정보
+                pdf.setFontSize(14);
+                pdf.text('1. 기본 정보', 20, yPosition);
+                yPosition += 10;
+                
+                pdf.setFontSize(10);
+                const basicInfo = [
+                    `선정년도: ${data.selectionYear || '미입력'}`,
+                    `선정월: ${data.selectionMonth || '미입력'}`,
+                    `창업기업명: ${data.companyName || '미입력'}`,
+                    `설립일: ${data.establishDate || '미입력'}`
+                ];
+                
+                basicInfo.forEach(info => {
+                    if (yPosition > pageHeight) {
+                        pdf.addPage();
+                        yPosition = 20;
+                    }
+                    pdf.text(info, 25, yPosition);
+                    yPosition += lineHeight;
+                });
+                
+                yPosition += 10;
+                
+                // 투자 정보
+                if (yPosition > pageHeight - 50) {
+                    pdf.addPage();
+                    yPosition = 20;
+                }
+                
+                pdf.setFontSize(14);
+                pdf.text('2. 투자 정보', 20, yPosition);
+                yPosition += 10;
+                
+                pdf.setFontSize(10);
+                const investmentInfo = [
+                    `투자일자: ${data.investDate || '미입력'}`,
+                    `투자금액: ${data.investAmount || '미입력'}`,
+                    `총 투자금액: ${data.totalInvestAfter || '미입력'}`,
+                    `주식형태: ${data.stockType || '미입력'}`,
+                    `운영사 지분율: ${data.operatorShare || '미입력'}%`
+                ];
+                
+                investmentInfo.forEach(info => {
+                    if (yPosition > pageHeight) {
+                        pdf.addPage();
+                        yPosition = 20;
+                    }
+                    pdf.text(info, 25, yPosition);
+                    yPosition += lineHeight;
+                });
+                
+                // 파일명 생성
+                const companyName = data.companyName || '창업기업';
+                const fileName = `${companyName}_창업지원실적_${today.replace(/\./g, '')}.pdf`;
+                
+                // PDF 저장
+                pdf.save(fileName);
+                
+                // 성공 메시지
+                showExportMessage('PDF', fileName);
+                
+            } catch (error) {
+                console.error('PDF 생성 오류:', error);
+                alert('PDF 생성 중 오류가 발생했습니다.');
+            } finally {
+                // 버튼 활성화
+                const pdfBtn = document.querySelector('.pdf-btn');
+                pdfBtn.disabled = false;
+                pdfBtn.textContent = '📄 PDF로 내보내기';
+            }
+        }
+
+        // 내보내기 성공 메시지
+        function showExportMessage(type, fileName) {
+            const message = `${type} 파일이 성공적으로 생성되었습니다!\n파일명: ${fileName}`;
+            alert(message);
+        }
+
+        // 폼 검증 함수
+        function validateForm() {
+            const errors = [];
+            const form = document.getElementById('startupForm');
+            
+            // 필수 필드 검증
+            const requiredFields = [
+                { id: 'selectionYear', name: '선정년도' },
+                { id: 'selectionMonth', name: '선정월' },
+                { id: 'companyName', name: '창업기업명' },
+                { id: 'establishDate', name: '설립일' },
+                { id: 'residencyType', name: '입주유형' }
+            ];
+            
+            requiredFields.forEach(field => {
+                const element = document.getElementById(field.id);
+                if (!element.value.trim()) {
+                    errors.push(`• ${field.name}은(는) 필수 입력 항목입니다.`);
+                    highlightError(element);
+                } else {
+                    clearError(element);
+                }
+            });
+            
+            // 창업기업명 검증 (한글, 영어, 숫자, 공백만 허용)
+            const companyName = document.getElementById('companyName').value;
+            if (companyName && !/^[가-힣a-zA-Z0-9\s()&.-]+$/.test(companyName)) {
+                errors.push('• 창업기업명에 특수문자가 포함되어 있습니다.');
+                highlightError(document.getElementById('companyName'));
+            }
+            
+            // 설립일 검증 (미래 날짜 불허)
+            const establishDate = document.getElementById('establishDate').value;
+            if (establishDate) {
+                const inputDate = new Date(establishDate);
+                const today = new Date();
+                if (inputDate > today) {
+                    errors.push('• 설립일은 미래 날짜일 수 없습니다.');
+                    highlightError(document.getElementById('establishDate'));
+                }
+            }
+            
+            // 투자금액 검증
+            const investAmount = document.getElementById('investAmount').value;
+            if (investAmount) {
+                const amount = parseInt(investAmount.replace(/,/g, ''));
+                if (isNaN(amount) || amount <= 0) {
+                    errors.push('• 투자금액은 0보다 큰 숫자여야 합니다.');
+                    highlightError(document.getElementById('investAmount'));
+                } else if (amount > 1000000000) { // 10억 이상
+                    errors.push('• 투자금액이 너무 큽니다. 확인해주세요.');
+                    highlightError(document.getElementById('investAmount'));
+                }
+            }
+            
+            // 총 투자금액 검증
+            const totalInvestAfter = document.getElementById('totalInvestAfter').value;
+            if (totalInvestAfter) {
+                const totalAmount = parseInt(totalInvestAfter.replace(/,/g, ''));
+                if (isNaN(totalAmount) || totalAmount <= 0) {
+                    errors.push('• 총 투자금액은 0보다 큰 숫자여야 합니다.');
+                    highlightError(document.getElementById('totalInvestAfter'));
+                }
+            }
+            
+            // 운영사 지분율 검증
+            const operatorShare = document.getElementById('operatorShare').value;
+            if (operatorShare) {
+                const share = parseFloat(operatorShare);
+                if (isNaN(share) || share < 0 || share > 100) {
+                    errors.push('• 운영사 지분율은 0~100% 범위여야 합니다.');
+                    highlightError(document.getElementById('operatorShare'));
+                }
+            }
+            
+            // 주주현황 지분율 합계 검증
+            const shareholderSum = document.getElementById('shareholderSum').textContent;
+            const shareholderAfterSum = document.getElementById('shareholderAfterSum').textContent;
+            
+            if (shareholderSum && !shareholderSum.includes('100%')) {
+                errors.push('• 팁스 추천시 주주현황의 지분율 합계가 100%가 아닙니다.');
+            }
+            
+            if (shareholderAfterSum && !shareholderAfterSum.includes('100%')) {
+                errors.push('• 현재 주주현황의 지분율 합계가 100%가 아닙니다.');
+            }
+            
+            // 입주예외 사유 검증
+            const residencyType = document.getElementById('residencyType').value;
+            if (residencyType === '입주예외') {
+                const exceptionReason = document.getElementById('exceptionReasonType').value;
+                if (!exceptionReason) {
+                    errors.push('• 입주예외 선택시 사유를 입력해야 합니다.');
+                    highlightError(document.getElementById('exceptionReasonType'));
+                }
+                
+                if (exceptionReason === '기타') {
+                    const otherReason = document.getElementById('exceptionReasonOther').value;
+                    if (!otherReason.trim()) {
+                        errors.push('• 기타 사유를 구체적으로 입력해주세요.');
+                        highlightError(document.getElementById('exceptionReasonOther'));
+                    }
+                }
+            }
+            
+            // 입주 예정일 검증
+            const futureResidency = document.getElementById('futureResidency').value;
+            if (futureResidency === '예') {
+                const futureDate = document.getElementById('futureResidencyDate').value;
+                if (!futureDate) {
+                    errors.push('• 입주 예정일을 입력해주세요.');
+                    highlightError(document.getElementById('futureResidencyDate'));
+                } else {
+                    const inputDate = new Date(futureDate);
+                    const today = new Date();
+                    if (inputDate <= today) {
+                        errors.push('• 입주 예정일은 미래 날짜여야 합니다.');
+                        highlightError(document.getElementById('futureResidencyDate'));
+                    }
+                }
+            }
+            
+            return {
+                isValid: errors.length === 0,
+                errors: errors
+            };
+        }
+        
+        // 오류 표시
+        function highlightError(element) {
+            element.style.borderColor = '#ef4444';
+            element.style.boxShadow = '0 0 0 3px rgba(239, 68, 68, 0.1)';
+        }
+        
+        // 오류 제거
+        function clearError(element) {
+            element.style.borderColor = '#e5e7eb';
+            element.style.boxShadow = 'none';
+        }
+        
+        // 실시간 입력 검증
+        function addRealTimeValidation() {
+            // 창업기업명 실시간 검증
+            document.getElementById('companyName').addEventListener('blur', function() {
+                if (this.value && !/^[가-힣a-zA-Z0-9\s()&.-]+$/.test(this.value)) {
+                    highlightError(this);
+                    showFieldError(this, '특수문자는 사용할 수 없습니다.');
+                } else {
+                    clearError(this);
+                    hideFieldError(this);
+                }
+            });
+            
+            // 설립일 실시간 검증
+            document.getElementById('establishDate').addEventListener('change', function() {
+                if (this.value) {
+                    const inputDate = new Date(this.value);
+                    const today = new Date();
+                    if (inputDate > today) {
+                        highlightError(this);
+                        showFieldError(this, '미래 날짜는 선택할 수 없습니다.');
+                    } else {
+                        clearError(this);
+                        hideFieldError(this);
+                    }
+                }
+            });
+            
+            // 투자금액 실시간 검증
+            document.getElementById('investAmount').addEventListener('blur', function() {
+                if (this.value) {
+                    const amount = parseInt(this.value.replace(/,/g, ''));
+                    if (isNaN(amount) || amount <= 0) {
+                        highlightError(this);
+                        showFieldError(this, '올바른 숫자를 입력해주세요.');
+                    } else if (amount > 1000000000) {
+                        highlightError(this);
+                        showFieldError(this, '금액이 너무 큽니다.');
+                    } else {
+                        clearError(this);
+                        hideFieldError(this);
+                    }
+                }
+            });
+        }
+        
+        // 필드 오류 메시지 표시
+        function showFieldError(element, message) {
+            hideFieldError(element); // 기존 메시지 제거
+            
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'field-error';
+            errorDiv.textContent = message;
+            errorDiv.style.color = '#ef4444';
+            errorDiv.style.fontSize = '0.85rem';
+            errorDiv.style.marginTop = '5px';
+            
+            element.parentNode.appendChild(errorDiv);
+        }
+        
+        // 필드 오류 메시지 숨기기
+        function hideFieldError(element) {
+            const existingError = element.parentNode.querySelector('.field-error');
+            if (existingError) {
+                existingError.remove();
             }
         }
 
