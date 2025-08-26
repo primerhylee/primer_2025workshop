@@ -1,0 +1,1092 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>창업기업 지원 및 실적</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #48b6d6 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.98);
+            border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #48b6d6 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.3rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.95;
+        }
+
+        .auto-save-indicator {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            padding: 10px 20px;
+            border-radius: 30px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .auto-save-indicator.saving {
+            background: #fef3c7;
+            border: 1px solid #fbbf24;
+        }
+
+        .auto-save-indicator.saved {
+            background: #d1fae5;
+            border: 1px solid #10b981;
+        }
+
+        .reset-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: white;
+            color: #ef4444;
+            border: 2px solid #ef4444;
+            padding: 10px 20px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .reset-button:hover {
+            background: #ef4444;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
+        }
+
+        .save-icon {
+            width: 20px;
+            height: 20px;
+            animation: rotate 1s linear infinite;
+        }
+
+        .save-icon.saved {
+            animation: none;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .form-container {
+            padding: 40px;
+        }
+
+        .section {
+            margin-bottom: 40px;
+            padding-bottom: 40px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .section:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .section-title {
+            font-size: 1.4rem;
+            color: #4c5ed8;
+            margin-bottom: 25px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+        }
+
+        .section-title::before {
+            content: '';
+            width: 4px;
+            height: 24px;
+            background: linear-gradient(135deg, #667eea 0%, #48b6d6 100%);
+            margin-right: 12px;
+            border-radius: 2px;
+        }
+
+        .help-button {
+            margin-left: 15px;
+            padding: 5px 12px;
+            background: #f3f4f6;
+            color: #4b5563;
+            border: 1px solid #d1d5db;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 400;
+        }
+
+        .help-button:hover {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .guide-modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+
+        .guide-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+
+        .guide-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .guide-title {
+            font-size: 1.3rem;
+            color: #1f2937;
+            font-weight: 600;
+        }
+
+        .close-guide {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #6b7280;
+        }
+
+        .close-guide:hover {
+            color: #ef4444;
+        }
+
+        .guide-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .guide-list li {
+            padding: 10px 15px;
+            margin-bottom: 8px;
+            background: #f9fafb;
+            border-left: 3px solid #667eea;
+            border-radius: 5px;
+            color: #374151;
+            line-height: 1.5;
+        }
+
+        .guide-list li:hover {
+            background: #eff6ff;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #374151;
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+        .required::after {
+            content: ' *';
+            color: #ef4444;
+        }
+
+        input[type="text"],
+        input[type="date"],
+        input[type="number"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-family: 'Noto Sans KR', sans-serif;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        input:disabled {
+            background-color: #f3f4f6;
+            border-color: #d1d5db;
+            color: #9ca3af;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        select {
+            cursor: pointer;
+        }
+
+        .copy-button {
+            background: linear-gradient(135deg, #667eea 0%, #48b6d6 100%);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            margin-top: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .copy-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .investment-box {
+            padding: 20px;
+            margin-bottom: 30px;
+            border-radius: 12px;
+            border-left: 4px solid;
+        }
+
+        .investment-box.recommendation {
+            background: linear-gradient(to right, #eff6ff, #f0f9ff);
+            border-left-color: #3b82f6;
+        }
+
+        .investment-box.selection {
+            background: linear-gradient(to right, #fdf4ff, #faf5ff);
+            border-left-color: #a855f7;
+        }
+
+        .investment-box h3 {
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+
+        .recommendation h3 {
+            color: #1e40af;
+        }
+
+        .selection h3 {
+            color: #7c3aed;
+        }
+
+        .conditional-field {
+            margin-top: 15px;
+            padding: 15px;
+            background: #f9fafb;
+            border-radius: 10px;
+            display: none;
+        }
+
+        .conditional-field.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .submit-section {
+            margin-top: 40px;
+            text-align: center;
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, #667eea 0%, #48b6d6 100%);
+            color: white;
+            border: none;
+            padding: 16px 48px;
+            font-size: 1.1rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            font-weight: 600;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        .info-box {
+            background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+            border-left: 4px solid #3b82f6;
+            padding: 15px 20px;
+            margin-bottom: 25px;
+            border-radius: 8px;
+        }
+
+        .info-box p {
+            color: #1e40af;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .success-message {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            display: none;
+            z-index: 1000;
+        }
+
+        .success-message.show {
+            display: block;
+            animation: popIn 0.5s ease;
+        }
+
+        @keyframes popIn {
+            from {
+                transform: translate(-50%, -50%) scale(0.8);
+                opacity: 0;
+            }
+            to {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 1;
+            }
+        }
+
+        .success-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 20px;
+            background: linear-gradient(135deg, #10b981, #059669);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 40px;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            z-index: 999;
+        }
+
+        .overlay.show {
+            display: block;
+        }
+
+        .disabled-overlay {
+            position: relative;
+        }
+
+        .disabled-overlay::after {
+            content: '비활성화됨';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(156, 163, 175, 0.9);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        input:disabled.show-disabled::after {
+            opacity: 1;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .form-container {
+                padding: 30px 20px;
+            }
+
+            .auto-save-indicator {
+                top: 10px;
+                right: 10px;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 자동저장 인디케이터 -->
+    <div class="auto-save-indicator" id="saveIndicator">
+        <span class="save-icon" id="saveIcon">💾</span>
+        <span id="saveText">자동저장 활성화</span>
+    </div>
+    
+    <!-- 초기화 버튼 -->
+    <button class="reset-button" onclick="confirmReset()">
+        <span>🔄</span> 정보 초기화
+    </button>
+
+    <div class="container">
+        <div class="header">
+            <h1>창업기업 지원 및 실적</h1>
+            <p>아래 양식에 따라 정확한 정보를 입력해 주시기 바랍니다.</p>
+        </div>
+
+        <div class="form-container">
+            <form id="startupForm">
+                <!-- 기본 정보 섹션 -->
+                <div class="section">
+                    <h2 class="section-title">기본 정보</h2>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="selectionYear" class="required">선정년도</label>
+                            <select id="selectionYear" name="selectionYear" required>
+                                <option value="">선택하세요</option>
+                                <option value="2025">2025년</option>
+                                <option value="2024">2024년</option>
+                                <option value="2023">2023년</option>
+                                <option value="2022">2022년</option>
+                                <option value="2021">2021년</option>
+                                <option value="2020">2020년</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="selectionMonth" class="required">선정월</label>
+                            <select id="selectionMonth" name="selectionMonth" required>
+                                <option value="">선택하세요</option>
+                                <option value="1">1월</option>
+                                <option value="2">2월</option>
+                                <option value="3">3월</option>
+                                <option value="4">4월</option>
+                                <option value="5">5월</option>
+                                <option value="6">6월</option>
+                                <option value="7">7월</option>
+                                <option value="8">8월</option>
+                                <option value="9">9월</option>
+                                <option value="10">10월</option>
+                                <option value="11">11월</option>
+                                <option value="12">12월</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="companyName" class="required">창업기업명</label>
+                            <input type="text" id="companyName" name="companyName" required placeholder="기업명을 입력하세요">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="establishDate" class="required">창업기업 설립일</label>
+                            <input type="date" id="establishDate" name="establishDate" required>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 투자 정보 섹션 -->
+                <div class="section">
+                    <h2 class="section-title">투자 정보</h2>
+                    
+                    <div class="investment-box recommendation">
+                        <h3>📌 팁스 추천시 투자 정보</h3>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="investDate">투자일자</label>
+                                <input type="date" id="investDate" name="investDate">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="investAmount">투자금액 (천원)</label>
+                                <input type="text" id="investAmount" name="investAmount" placeholder="예: 100,000" class="number-format">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="shareholders">주주현황 (100%가 되어야 함) <span id="shareholderSum" style="color: #ef4444; font-weight: normal; font-size: 0.9rem;"></span></label>
+                            <textarea id="shareholders" name="shareholders" placeholder="예시:&#10;김중소(22%, 창업기업, 한국)&#10;Sam(12%, 기타, 해외(미국))&#10;AI인베스트먼트(30%, VC, 한국)&#10;운영사(36%, 한국)" style="color: #9ca3af;" oninput="calculateShareholderSum('shareholders', 'shareholderSum')"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="investment-box selection">
+                        <h3>📌 현재(제출일 기준)</h3>
+                        <div class="form-group">
+                            <label for="totalInvestAfter">총 투자금액 (천원)</label>
+                            <input type="text" id="totalInvestAfter" name="totalInvestAfter" placeholder="예: 1,000,000" class="number-format">
+                        </div>
+                        <div class="form-group">
+                            <label for="shareholdersAfter">주주현황 (100%가 되어야 함) <span id="shareholderAfterSum" style="color: #ef4444; font-weight: normal; font-size: 0.9rem;"></span></label>
+                            <button type="button" class="copy-button" onclick="copyShareholders()" style="margin-bottom: 15px;">팁스 추천시 주주현황 불러오기</button>
+                            <textarea id="shareholdersAfter" name="shareholdersAfter" placeholder="예시:&#10;김중소(22%, 창업기업, 한국)&#10;Sam(12%, 기타, 해외(미국))&#10;AI인베스트먼트(30%, VC, 한국)&#10;운영사(36%, 한국)" style="color: #9ca3af;" oninput="calculateShareholderSum('shareholdersAfter', 'shareholderAfterSum')"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="stockType">주식형태</label>
+                            <select id="stockType" name="stockType">
+                                <option value="">선택하세요</option>
+                                <option value="보통주">보통주</option>
+                                <option value="우선주">우선주</option>
+                                <option value="전환우선주">전환우선주</option>
+                                <option value="상환전환우선주">상환전환우선주</option>
+                                <option value="기타">기타</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="operatorShare">운영사 지분율(%)</label>
+                            <input type="number" id="operatorShare" name="operatorShare" min="0" max="100" step="0.01" placeholder="예: 15.5">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 입주 정보 섹션 -->
+                <div class="section">
+                    <h2 class="section-title">입주 정보</h2>
+                    
+                    <div class="form-group">
+                        <label for="residencyType" class="required">입주유형</label>
+                        <select id="residencyType" name="residencyType" required onchange="toggleExceptionReason()">
+                            <option value="">선택하세요</option>
+                            <option value="지정BI">지정BI</option>
+                            <option value="타 운영사 지정 BI">타 운영사 지정 BI</option>
+                            <option value="팁스타운">팁스타운</option>
+                            <option value="창조경제혁신센터">창조경제혁신센터</option>
+                            <option value="입주예외">입주예외</option>
+                            <option value="미입주">미입주</option>
+                        </select>
+                    </div>
+
+                    <div id="exceptionReasonField" class="conditional-field">
+                        <label for="exceptionReasonType">입주예외 사유 선택</label>
+                        <select id="exceptionReasonType" name="exceptionReasonType" onchange="toggleOtherReason()">
+                            <option value="">선택하세요</option>
+                            <option value="최종평가(성공)">최종평가(성공)</option>
+                            <option value="상근 20명 초과">상근 20명 초과</option>
+                            <option value="연구장비,양산시설로 입주불가">연구장비,양산시설로 입주불가</option>
+                            <option value="기타">기타</option>
+                        </select>
+                        <div id="otherReasonField" style="display: none; margin-top: 10px;">
+                            <label for="exceptionReasonOther">기타 사유 입력</label>
+                            <textarea id="exceptionReasonOther" name="exceptionReasonOther" placeholder="예: 기존 사무실 임대계약('18.7)에 따른 미입주"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="biName">BI명</label>
+                            <input type="text" id="biName" name="biName" placeholder="BI명을 입력하세요">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="biAddress">BI주소</label>
+                            <input type="text" id="biAddress" name="biAddress" placeholder="BI 주소를 입력하세요">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="futureResidency">입주 예정 여부</label>
+                            <select id="futureResidency" name="futureResidency" onchange="toggleFutureDate()">
+                                <option value="">선택하세요</option>
+                                <option value="예">예</option>
+                                <option value="아니오">아니오</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="futureResidencyDate">입주 예정일</label>
+                            <input type="date" id="futureResidencyDate" name="futureResidencyDate" disabled>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 국내 사업화 성과 섹션 -->
+                <div class="section">
+                    <h2 class="section-title">국내 사업화 성과</h2>
+                    
+                    <div class="form-group">
+                        <label for="domesticFollowInvest">후속투자</label>
+                        <textarea id="domesticFollowInvest" name="domesticFollowInvest" 
+                                placeholder="예시:
+• AI인베스트로부터 후속투자 유치(20억원)"
+                                style="min-height: 100px; line-height: 1.6;"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="domesticEmployment">고용</label>
+                        <textarea id="domesticEmployment" name="domesticEmployment" 
+                                placeholder="예시:
+• ('18)3명, ('19)4명, ('20)8명 신규 고용
+• 현재 총 15명 근무 중"
+                                style="min-height: 100px; line-height: 1.6;"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="domesticRevenue">매출</label>
+                        <textarea id="domesticRevenue" name="domesticRevenue" 
+                                placeholder="예시:
+• ('18)5천만원, ('19)2억원, ('20)8억원 매출 발생"
+                                style="min-height: 100px; line-height: 1.6;"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="domesticOther">기타</label>
+                        <textarea id="domesticOther" name="domesticOther" 
+                                placeholder="예시:
+• '19년 한국기술대상 대상 수상
+• 국내 특허 출원 2건 등록 1건
+• 코스닥 기술특례상장 예비심사 통과
+• 정부 R&D 과제 수주(5억원)"
+                                style="min-height: 120px; line-height: 1.6;"></textarea>
+                    </div>
+                </div>
+
+                <!-- 글로벌 진출 실적 섹션 -->
+                <div class="section">
+                    <h2 class="section-title">글로벌 진출 실적</h2>
+                    
+                    <div class="form-group">
+                        <label for="globalInvestment">투자유치</label>
+                        <textarea id="globalInvestment" name="globalInvestment" 
+                                placeholder="예시:
+• (미)AB인베스트로부터 후속투자 유치(10억원)
+• 일본 소프트뱅크 벤처스 5억원 투자"
+                                style="min-height: 100px; line-height: 1.6;"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="globalExport">수출</label>
+                        <textarea id="globalExport" name="globalExport" 
+                                placeholder="예시:
+• 누적 수출액 5만불 달성('18년 1만불, '19년 2만불, '20년 2만불)
+• 미국 A기업으로부터 10억원 구매계약 완료"
+                                style="min-height: 100px; line-height: 1.6;"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="globalBranch">현지법인 설립</label>
+                        <textarea id="globalBranch" name="globalBranch" 
+                                placeholder="예시:
+• 미국(샌프란시스코) 법인 설립
+• 중국(상하이) 지사 설립
+• 베트남(하노이) 생산법인 설립
+• 일본(도쿄) 영업소 개설"
+                                style="min-height: 120px; line-height: 1.6;"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="globalOther">기타</label>
+                        <textarea id="globalOther" name="globalOther" 
+                                placeholder="예시:
+• 미국 '아무개' 서비스 런칭
+• 해외 특허 출원 3건 등록 2건
+• CES 2020 혁신상 수상
+• 글로벌 액셀러레이터 프로그램 선정
+• AWS 파트너십 체결"
+                                style="min-height: 140px; line-height: 1.6;"></textarea>
+                    </div>
+                </div>
+
+                <!-- 제출 버튼 -->
+                <div class="submit-section">
+                    <button type="submit" class="submit-btn">정보 제출하기</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 성공 메시지 -->
+    <div class="overlay" id="overlay"></div>
+    <div class="success-message" id="successMessage">
+        <div class="success-icon">✓</div>
+        <h2>제출 완료!</h2>
+        <p>입력하신 정보가 성공적으로 제출되었습니다.</p>
+    </div>
+
+
+    <script>
+        // 자동저장 기능
+        let autoSaveTimer;
+        const AUTOSAVE_DELAY = 3000; // 3초 후 자동저장
+
+        function saveToLocalStorage() {
+            const formData = new FormData(document.getElementById('startupForm'));
+            const data = {};
+            
+            for (let [key, value] of formData.entries()) {
+                data[key] = value;
+            }
+            
+            localStorage.setItem('startupFormData', JSON.stringify(data));
+            
+            // 저장 인디케이터 업데이트
+            const indicator = document.getElementById('saveIndicator');
+            const icon = document.getElementById('saveIcon');
+            const text = document.getElementById('saveText');
+            
+            indicator.classList.remove('saved');
+            indicator.classList.add('saving');
+            icon.textContent = '⏳';
+            text.textContent = '저장 중...';
+            
+            setTimeout(() => {
+                indicator.classList.remove('saving');
+                indicator.classList.add('saved');
+                icon.textContent = '✅';
+                text.textContent = '저장 완료';
+                
+                setTimeout(() => {
+                    icon.textContent = '💾';
+                    text.textContent = '자동저장 활성화';
+                    indicator.classList.remove('saved');
+                }, 2000);
+            }, 500);
+        }
+
+        function loadFromLocalStorage() {
+            const savedData = localStorage.getItem('startupFormData');
+            if (savedData) {
+                const data = JSON.parse(savedData);
+                const form = document.getElementById('startupForm');
+                
+                for (let key in data) {
+                    const field = form.elements[key];
+                    if (field) {
+                        field.value = data[key];
+                    }
+                }
+            }
+        }
+
+        // 페이지 로드시 저장된 데이터 불러오기
+        window.addEventListener('load', loadFromLocalStorage);
+
+        // 입력시 자동저장 트리거
+        document.getElementById('startupForm').addEventListener('input', function() {
+            clearTimeout(autoSaveTimer);
+            autoSaveTimer = setTimeout(saveToLocalStorage, AUTOSAVE_DELAY);
+        });
+
+        // 지분율 자동계산 함수
+        function calculateShareholderSum(textareaId, spanId) {
+            const textarea = document.getElementById(textareaId);
+            const sumSpan = document.getElementById(spanId);
+            const text = textarea.value;
+            
+            // 퍼센트 숫자 추출 (예: 22%, 12.5% 등)
+            const percentages = text.match(/(\d+(?:\.\d+)?)\s*%/g);
+            
+            if (percentages && percentages.length > 0) {
+                let sum = 0;
+                percentages.forEach(percent => {
+                    const num = parseFloat(percent.replace('%', ''));
+                    sum += num;
+                });
+                
+                // 소수점 둘째자리까지 표시
+                sum = Math.round(sum * 100) / 100;
+                
+                if (sum === 100) {
+                    sumSpan.textContent = `✅ 합계: ${sum}%`;
+                    sumSpan.style.color = '#10b981';
+                } else if (sum > 100) {
+                    sumSpan.textContent = `⚠️ 합계: ${sum}% (100% 초과)`;
+                    sumSpan.style.color = '#ef4444';
+                } else {
+                    sumSpan.textContent = `⚠️ 합계: ${sum}% (${100-sum}% 부족)`;
+                    sumSpan.style.color = '#f59e0b';
+                }
+            } else {
+                sumSpan.textContent = '';
+            }
+        }
+
+        // 팁스 추천시 주주현황 복사 기능
+        function copyShareholders() {
+            const originalShareholders = document.getElementById('shareholders').value;
+            const shareholdersAfter = document.getElementById('shareholdersAfter');
+            
+            if (originalShareholders) {
+                shareholdersAfter.value = originalShareholders;
+                shareholdersAfter.style.color = '#000';
+                shareholdersAfter.focus();
+                
+                // 복사 후 지분율 재계산
+                calculateShareholderSum('shareholdersAfter', 'shareholderAfterSum');
+                
+                // 복사 완료 알림
+                const button = event.target;
+                const originalText = button.textContent;
+                button.textContent = '✅ 복사 완료!';
+                button.style.background = 'linear-gradient(135deg, #10b981, #059669)';
+                
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.style.background = '';
+                }, 2000);
+            } else {
+                alert('먼저 팁스 추천시 주주현황을 입력해주세요.');
+            }
+        }
+
+        // 입주예외 선택 시 사유 입력 필드 표시
+        function toggleExceptionReason() {
+            const residencyType = document.getElementById('residencyType').value;
+            const exceptionField = document.getElementById('exceptionReasonField');
+            
+            if (residencyType === '입주예외') {
+                exceptionField.classList.add('active');
+            } else {
+                exceptionField.classList.remove('active');
+                // 입주예외가 아닐 때 값 초기화
+                document.getElementById('exceptionReasonType').value = '';
+                document.getElementById('exceptionReasonOther').value = '';
+                document.getElementById('otherReasonField').style.display = 'none';
+            }
+        }
+
+        // 입주예외 사유에서 기타 선택시 입력 필드 표시
+        function toggleOtherReason() {
+            const reasonType = document.getElementById('exceptionReasonType').value;
+            const otherField = document.getElementById('otherReasonField');
+            
+            if (reasonType === '기타') {
+                otherField.style.display = 'block';
+            } else {
+                otherField.style.display = 'none';
+                document.getElementById('exceptionReasonOther').value = '';
+            }
+        }
+
+        // 주주현황 placeholder 처리
+        document.getElementById('shareholders').addEventListener('focus', function() {
+            if (this.value === '') {
+                this.style.color = '#000';
+            }
+        });
+
+        document.getElementById('shareholders').addEventListener('blur', function() {
+            if (this.value === '') {
+                this.style.color = '#9ca3af';
+            }
+        });
+
+        document.getElementById('shareholders').addEventListener('input', function() {
+            this.style.color = '#000';
+            calculateShareholderSum('shareholders', 'shareholderSum');
+        });
+
+        document.getElementById('shareholdersAfter').addEventListener('focus', function() {
+            if (this.value === '') {
+                this.style.color = '#000';
+            }
+        });
+
+        document.getElementById('shareholdersAfter').addEventListener('blur', function() {
+            if (this.value === '') {
+                this.style.color = '#9ca3af';
+            }
+        });
+
+        document.getElementById('shareholdersAfter').addEventListener('input', function() {
+            this.style.color = '#000';
+            calculateShareholderSum('shareholdersAfter', 'shareholderAfterSum');
+        });
+
+        // 입주 예정 여부에 따른 날짜 필드 활성화
+        function toggleFutureDate() {
+            const futureResidency = document.getElementById('futureResidency').value;
+            const dateField = document.getElementById('futureResidencyDate');
+            
+            if (futureResidency === '예') {
+                dateField.disabled = false;
+                dateField.required = true;
+                dateField.style.background = 'white';
+            } else {
+                dateField.disabled = true;
+                dateField.required = false;
+                dateField.value = '';
+                dateField.style.background = '#f3f4f6';
+            }
+        }
+
+        // 천단위 콤마 추가 함수
+        function addCommas(num) {
+            return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+        }
+
+        // 콤마 제거 함수
+        function removeCommas(num) {
+            return num.replace(/,/g, '');
+        }
+
+        // 숫자 포맷팅 이벤트 리스너
+        document.querySelectorAll('.number-format').forEach(function(input) {
+            input.addEventListener('input', function(e) {
+                // 숫자가 아닌 문자 제거 (콤마 제외)
+                let value = e.target.value.replace(/[^\d,]/g, '');
+                // 기존 콤마 제거
+                value = removeCommas(value);
+                // 새로운 콤마 추가
+                if (value) {
+                    e.target.value = addCommas(value);
+                }
+            });
+
+            input.addEventListener('blur', function(e) {
+                // 포커스를 잃을 때 포맷팅 재적용
+                let value = removeCommas(e.target.value);
+                if (value) {
+                    e.target.value = addCommas(value);
+                }
+            });
+        });
+
+        // 운영사 지분율 필드 포맷팅
+        document.getElementById('operatorShare').addEventListener('input', function(e) {
+            if (e.target.value < 0) e.target.value = 0;
+            if (e.target.value > 100) e.target.value = 100;
+        });
+
+        // 폼 제출 처리
+        document.getElementById('startupForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // 폼 데이터 수집
+            const formData = new FormData(this);
+            const data = {};
+            
+            for (let [key, value] of formData.entries()) {
+                data[key] = value;
+            }
+            
+            // 여기에서 실제로는 서버로 데이터를 전송해야 합니다.
+            console.log('제출된 데이터:', data);
+            
+            // 로컬스토리지 클리어 (옵션)
+            localStorage.removeItem('startupFormData');
+            
+            // 성공 메시지 표시
+            document.getElementById('overlay').classList.add('show');
+            document.getElementById('successMessage').classList.add('show');
+            
+            // 3초 후 메시지 숨기기
+            setTimeout(() => {
+                document.getElementById('overlay').classList.remove('show');
+                document.getElementById('successMessage').classList.remove('show');
+                
+                // 폼 초기화 (옵션)
+                // this.reset();
+            }, 3000);
+        });
+
+        // 정보 초기화 기능
+        function confirmReset() {
+            if (confirm('모든 입력 정보가 삭제됩니다. 정말 초기화하시겠습니까?')) {
+                // 폼 초기화
+                document.getElementById('startupForm').reset();
+                
+                // 로컬스토리지 클리어
+                localStorage.removeItem('startupFormData');
+                
+                // 지분율 합계 초기화
+                document.getElementById('shareholderSum').textContent = '';
+                document.getElementById('shareholderAfterSum').textContent = '';
+                
+                // 텍스트area 색상 초기화
+                document.getElementById('shareholders').style.color = '#9ca3af';
+                document.getElementById('shareholdersAfter').style.color = '#9ca3af';
+                
+                alert('모든 정보가 초기화되었습니다.');
+            }
+        }
+
+    </script>
+</body>
+</html>
