@@ -1,0 +1,1222 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>창업기업 데이터 대시보드</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- 데이터 내보내기 라이브러리 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #48b6d6 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .dashboard-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .header h1 {
+            color: #2d3748;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #4a5568;
+            font-size: 1.1rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .clickable-card {
+            cursor: pointer;
+            position: relative;
+        }
+
+        .clickable-card::after {
+            content: '👆';
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            font-size: 1.2rem;
+        }
+
+        .clickable-card:hover::after {
+            opacity: 0.7;
+        }
+
+        .clickable-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.2);
+        }
+
+        .stat-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+
+        .stat-number {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #2d3748;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            color: #4a5568;
+            font-size: 1rem;
+        }
+
+
+
+        .data-table {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .table-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 20px;
+        }
+
+        .submissions-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        .submissions-table th,
+        .submissions-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .submissions-table th {
+            background: #f7fafc;
+            font-weight: 600;
+            color: #2d3748;
+        }
+
+        .submissions-table tr:hover {
+            background: #f7fafc;
+        }
+
+        .action-btn {
+            padding: 5px 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            margin-right: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .view-btn {
+            background: #667eea;
+            color: white;
+        }
+
+        .view-btn:hover {
+            background: #5a67d8;
+        }
+
+        .delete-btn {
+            background: #e53e3e;
+            color: white;
+        }
+
+        .delete-btn:hover {
+            background: #c53030;
+        }
+
+        .refresh-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .refresh-btn:hover {
+            background: #5a67d8;
+            transform: translateY(-2px);
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #4a5568;
+        }
+
+        .no-data {
+            text-align: center;
+            padding: 40px;
+            color: #4a5568;
+            font-style: italic;
+        }
+
+        /* 상세 보기 모달 */
+        .detail-modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+
+        .detail-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 900px;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            width: 90%;
+        }
+
+        .detail-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        .detail-title {
+            font-size: 1.5rem;
+            color: #2d3748;
+            font-weight: 700;
+        }
+
+        .close-detail {
+            background: none;
+            border: none;
+            font-size: 1.8rem;
+            cursor: pointer;
+            color: #6b7280;
+            padding: 5px;
+        }
+
+        .close-detail:hover {
+            color: #ef4444;
+        }
+
+        .detail-section {
+            margin-bottom: 25px;
+            padding: 20px;
+            background: #f9fafb;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+
+        .section-header {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+
+        .section-icon {
+            margin-right: 10px;
+            font-size: 1.3rem;
+        }
+
+        .detail-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+
+        .detail-item {
+            background: white;
+            padding: 12px 15px;
+            border-radius: 8px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .detail-label {
+            font-size: 0.85rem;
+            color: #6b7280;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        .detail-value {
+            color: #2d3748;
+            font-weight: 500;
+            word-break: break-word;
+        }
+
+        .detail-textarea {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #e5e7eb;
+            margin-top: 10px;
+            white-space: pre-wrap;
+            line-height: 1.6;
+            color: #2d3748;
+        }
+
+        .empty-value {
+            color: #9ca3af;
+            font-style: italic;
+        }
+
+        .export-section {
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid #e5e7eb;
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .modal-export-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            color: white;
+        }
+
+        .modal-excel-btn {
+            background: linear-gradient(135deg, #16a085, #1abc9c);
+        }
+
+        .modal-excel-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(22, 160, 133, 0.3);
+        }
+
+        .modal-pdf-btn {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+        }
+
+        .modal-pdf-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
+        }
+
+        /* 기업 목록 모달 */
+        .companies-modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+
+        .companies-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 600px;
+            max-height: 70vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            width: 90%;
+        }
+
+        .companies-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        .companies-title {
+            font-size: 1.4rem;
+            color: #2d3748;
+            font-weight: 700;
+        }
+
+        .close-companies {
+            background: none;
+            border: none;
+            font-size: 1.8rem;
+            cursor: pointer;
+            color: #6b7280;
+            padding: 5px;
+        }
+
+        .close-companies:hover {
+            color: #ef4444;
+        }
+
+        .companies-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .company-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            margin-bottom: 10px;
+            background: #f9fafb;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+            transition: all 0.3s ease;
+        }
+
+        .company-item:hover {
+            background: #eff6ff;
+            transform: translateX(5px);
+        }
+
+        .company-info {
+            flex-grow: 1;
+        }
+
+        .company-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 5px;
+        }
+
+        .company-details {
+            font-size: 0.9rem;
+            color: #6b7280;
+        }
+
+        .company-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .quick-action-btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.3s ease;
+            color: white;
+        }
+
+        .view-quick-btn {
+            background: #667eea;
+        }
+
+        .view-quick-btn:hover {
+            background: #5a67d8;
+        }
+
+        .export-quick-btn {
+            background: #16a085;
+        }
+
+        .export-quick-btn:hover {
+            background: #138d75;
+        }
+
+        .companies-summary {
+            background: #eff6ff;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+            border: 1px solid #dbeafe;
+        }
+
+        .summary-text {
+            color: #1e40af;
+            font-weight: 500;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .dashboard-container {
+                padding: 10px;
+            }
+
+            .clickable-card .stat-label small {
+                display: none;
+            }
+
+            .companies-content {
+                width: 95%;
+                padding: 20px;
+                max-height: 80vh;
+            }
+
+            .company-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+
+            .company-actions {
+                width: 100%;
+                justify-content: flex-end;
+            }
+
+            .company-details {
+                font-size: 0.8rem;
+                line-height: 1.4;
+            }
+
+            .large-card {
+                padding: 30px 20px;
+            }
+
+            .large-card .stat-icon {
+                font-size: 3rem !important;
+            }
+
+            .large-card .stat-number {
+                font-size: 2.5rem !important;
+            }
+
+            .large-card .stat-label {
+                font-size: 1.1rem !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <div class="header">
+            <h1>📊 창업기업 데이터 대시보드</h1>
+            <p>제출된 창업기업 지원 및 실적 데이터를 한눈에 확인하세요</p>
+        </div>
+
+        <div style="display: flex; gap: 15px; margin-bottom: 20px; flex-wrap: wrap;">
+            <button class="refresh-btn" onclick="loadDashboardData()">🔄 데이터 새로고침</button>
+            <a href="/google-sheets-setup.html" class="refresh-btn" style="text-decoration: none; display: inline-block;">📊 구글 시트 연동 설정</a>
+        </div>
+
+        <!-- 총 제출 기업수 카드 (중앙 배치) -->
+        <div style="display: flex; justify-content: center; margin-bottom: 40px;">
+            <div class="stat-card clickable-card large-card" onclick="showCompaniesModal()" style="max-width: 400px; width: 100%;">
+                <div class="stat-icon" style="font-size: 3.5rem;">🏢</div>
+                <div class="stat-number" id="totalCompanies" style="font-size: 3rem;">0</div>
+                <div class="stat-label" style="font-size: 1.2rem;">총 제출 기업수 <small style="opacity: 0.7; font-size: 0.9rem;">(클릭하여 목록 보기)</small></div>
+                <div style="margin-top: 10px; font-size: 0.9rem; opacity: 0.8;">
+                    마지막 업데이트: <span id="lastUpdate">-</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 데이터 테이블 -->
+        <div class="data-table">
+            <h3 class="table-title">📋 제출된 기업 목록</h3>
+            <div id="tableContainer">
+                <div class="loading">데이터를 불러오는 중...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 기업 목록 모달 -->
+    <div class="companies-modal" id="companiesModal">
+        <div class="companies-content">
+            <div class="companies-header">
+                <h2 class="companies-title">📋 제출한 기업 목록</h2>
+                <button class="close-companies" onclick="closeCompaniesModal()">&times;</button>
+            </div>
+            <div class="companies-summary" id="companiesSummary">
+                <div class="summary-text">총 <span id="summaryCount">0</span>개 기업이 제출했습니다</div>
+            </div>
+            <ul class="companies-list" id="companiesList">
+                <!-- 동적으로 생성됩니다 -->
+            </ul>
+        </div>
+    </div>
+
+    <!-- 상세 보기 모달 -->
+    <div class="detail-modal" id="detailModal">
+        <div class="detail-content">
+            <div class="detail-header">
+                <h2 class="detail-title" id="detailTitle">기업 정보 상세</h2>
+                <button class="close-detail" onclick="closeDetailModal()">&times;</button>
+            </div>
+            <div id="detailBody">
+                <!-- 동적으로 생성됩니다 -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let dashboardData = [];
+        let autoRefreshInterval;
+
+        // 페이지 로드시 데이터 로드 및 자동 새로고침 시작
+        window.addEventListener('load', function() {
+            loadDashboardData();
+            startAutoRefresh();
+        });
+
+        // 자동 새로고침 시작 (30초마다)
+        function startAutoRefresh() {
+            autoRefreshInterval = setInterval(loadDashboardData, 30000); // 30초
+            console.log('✅ 자동 새로고침 시작 (30초 간격)');
+        }
+
+        // 자동 새로고침 중지
+        function stopAutoRefresh() {
+            if (autoRefreshInterval) {
+                clearInterval(autoRefreshInterval);
+                console.log('⏹️ 자동 새로고침 중지');
+            }
+        }
+
+        // 페이지 숨김/표시시 자동 새로고침 제어
+        document.addEventListener('visibilitychange', function() {
+            if (document.hidden) {
+                stopAutoRefresh();
+            } else {
+                startAutoRefresh();
+                loadDashboardData(); // 페이지로 돌아올 때 즉시 새로고침
+            }
+        });
+
+        // 키보드 단축키 지원
+        document.addEventListener('keydown', function(event) {
+            // ESC 키로 모든 모달 닫기
+            if (event.key === 'Escape') {
+                closeDetailModal();
+                closeCompaniesModal();
+            }
+            
+            // Ctrl + L로 기업 목록 모달 열기
+            if (event.ctrlKey && event.key === 'l') {
+                event.preventDefault();
+                showCompaniesModal();
+            }
+            
+            // Ctrl + R로 데이터 새로고침
+            if (event.ctrlKey && event.key === 'r') {
+                event.preventDefault();
+                loadDashboardData();
+            }
+        });
+
+        // 대시보드 데이터 로드
+        async function loadDashboardData() {
+            try {
+                const response = await fetch('/api/submissions');
+                const result = await response.json();
+                
+                if (result.success) {
+                    dashboardData = result.submissions;
+                    updateStatistics();
+                    updateTable();
+                } else {
+                    throw new Error('데이터 로드 실패');
+                }
+            } catch (error) {
+                console.error('대시보드 데이터 로드 오류:', error);
+                document.getElementById('tableContainer').innerHTML = 
+                    '<div class="no-data">서버 연결 오류: 데이터를 불러올 수 없습니다.</div>';
+            }
+        }
+
+        // 통계 업데이트 (간소화)
+        function updateStatistics() {
+            const totalCompanies = dashboardData.length;
+            const lastUpdate = new Date().toLocaleString('ko-KR');
+            
+            document.getElementById('totalCompanies').textContent = totalCompanies;
+            document.getElementById('lastUpdate').textContent = lastUpdate;
+        }
+
+
+
+        // 테이블 업데이트
+        function updateTable() {
+            const container = document.getElementById('tableContainer');
+            
+            if (dashboardData.length === 0) {
+                container.innerHTML = '<div class="no-data">아직 제출된 데이터가 없습니다.</div>';
+                return;
+            }
+
+            let tableHTML = `
+                <table class="submissions-table">
+                    <thead>
+                        <tr>
+                            <th>회사명</th>
+                            <th>선정년도</th>
+                            <th>제출일시</th>
+                            <th>액션</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            dashboardData.forEach(submission => {
+                const date = new Date(submission.timestamp).toLocaleString('ko-KR');
+                tableHTML += `
+                    <tr>
+                        <td>${submission.companyName || '미입력'}</td>
+                        <td>${submission.selectionYear || '미입력'}</td>
+                        <td>${date}</td>
+                        <td>
+                            <button class="action-btn view-btn" onclick="viewSubmission('${submission.id}')">
+                                👁️ 보기
+                            </button>
+                            <button class="action-btn delete-btn" onclick="deleteSubmission('${submission.id}')">
+                                🗑️ 삭제
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            tableHTML += '</tbody></table>';
+            container.innerHTML = tableHTML;
+        }
+
+        // 제출 데이터 상세 보기
+        async function viewSubmission(id) {
+            try {
+                const response = await fetch(`/api/submission/${id}`);
+                const result = await response.json();
+                
+                if (result.success) {
+                    showDetailModal(result.submission);
+                } else {
+                    alert('데이터를 불러올 수 없습니다.');
+                }
+            } catch (error) {
+                console.error('데이터 조회 오류:', error);
+                alert('데이터 조회 중 오류가 발생했습니다.');
+            }
+        }
+
+        // 상세 모달 표시
+        function showDetailModal(submission) {
+            const data = submission.data;
+            const modal = document.getElementById('detailModal');
+            const title = document.getElementById('detailTitle');
+            const body = document.getElementById('detailBody');
+            
+            title.textContent = `${data.companyName || '기업명 미입력'} - 상세 정보`;
+            
+            body.innerHTML = `
+                <!-- 기본 정보 -->
+                <div class="detail-section">
+                    <div class="section-header">
+                        <span class="section-icon">🏢</span>
+                        기본 정보
+                    </div>
+                    <div class="detail-grid">
+                        <div class="detail-item">
+                            <div class="detail-label">선정년도</div>
+                            <div class="detail-value">${data.selectionYear || '<span class="empty-value">미입력</span>'}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">선정월</div>
+                            <div class="detail-value">${data.selectionMonth || '<span class="empty-value">미입력</span>'}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">창업기업명</div>
+                            <div class="detail-value">${data.companyName || '<span class="empty-value">미입력</span>'}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">설립일</div>
+                            <div class="detail-value">${data.establishDate || '<span class="empty-value">미입력</span>'}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">제출일시</div>
+                            <div class="detail-value">${new Date(submission.timestamp).toLocaleString('ko-KR')}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">제출 ID</div>
+                            <div class="detail-value">${submission.id}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 투자 정보 -->
+                <div class="detail-section">
+                    <div class="section-header">
+                        <span class="section-icon">💰</span>
+                        투자 정보
+                    </div>
+                    <div class="detail-grid">
+                        <div class="detail-item">
+                            <div class="detail-label">투자일자</div>
+                            <div class="detail-value">${data.investDate || '<span class="empty-value">미입력</span>'}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">투자금액</div>
+                            <div class="detail-value">${data.investAmount ? data.investAmount + '천원' : '<span class="empty-value">미입력</span>'}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">총 투자금액 (현재)</div>
+                            <div class="detail-value">${data.totalInvestAfter ? data.totalInvestAfter + '천원' : '<span class="empty-value">미입력</span>'}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">주식형태</div>
+                            <div class="detail-value">${data.stockType || '<span class="empty-value">미입력</span>'}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">운영사 지분율</div>
+                            <div class="detail-value">${data.operatorShare ? data.operatorShare + '%' : '<span class="empty-value">미입력</span>'}</div>
+                        </div>
+                    </div>
+                    ${data.shareholders ? `
+                        <div class="detail-label" style="margin-top: 15px;">주주현황 (팁스 추천시)</div>
+                        <div class="detail-textarea">${data.shareholders}</div>
+                    ` : ''}
+                    ${data.shareholdersAfter ? `
+                        <div class="detail-label" style="margin-top: 15px;">주주현황 (현재)</div>
+                        <div class="detail-textarea">${data.shareholdersAfter}</div>
+                    ` : ''}
+                </div>
+
+                <!-- 입주 정보 -->
+                <div class="detail-section">
+                    <div class="section-header">
+                        <span class="section-icon">🏠</span>
+                        입주 정보
+                    </div>
+                    <div class="detail-grid">
+                        <div class="detail-item">
+                            <div class="detail-label">입주유형</div>
+                            <div class="detail-value">${data.residencyType || '<span class="empty-value">미입력</span>'}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">BI명</div>
+                            <div class="detail-value">${data.biName || '<span class="empty-value">미입력</span>'}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">BI주소</div>
+                            <div class="detail-value">${data.biAddress || '<span class="empty-value">미입력</span>'}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">입주 예정 여부</div>
+                            <div class="detail-value">${data.futureResidency || '<span class="empty-value">미입력</span>'}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">입주 예정일</div>
+                            <div class="detail-value">${data.futureResidencyDate || '<span class="empty-value">미입력</span>'}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">입주예외 사유</div>
+                            <div class="detail-value">${data.exceptionReasonType || '<span class="empty-value">미입력</span>'}</div>
+                        </div>
+                    </div>
+                    ${data.exceptionReasonOther ? `
+                        <div class="detail-label" style="margin-top: 15px;">기타 사유</div>
+                        <div class="detail-textarea">${data.exceptionReasonOther}</div>
+                    ` : ''}
+                </div>
+
+                <!-- 국내 사업화 성과 -->
+                <div class="detail-section">
+                    <div class="section-header">
+                        <span class="section-icon">🇰🇷</span>
+                        국내 사업화 성과
+                    </div>
+                    ${data.domesticFollowInvest ? `
+                        <div class="detail-label">후속투자</div>
+                        <div class="detail-textarea">${data.domesticFollowInvest}</div>
+                    ` : '<div class="empty-value">후속투자 정보 없음</div>'}
+                    
+                    ${data.domesticEmployment ? `
+                        <div class="detail-label" style="margin-top: 15px;">고용</div>
+                        <div class="detail-textarea">${data.domesticEmployment}</div>
+                    ` : '<div class="empty-value" style="margin-top: 15px;">고용 정보 없음</div>'}
+                    
+                    ${data.domesticRevenue ? `
+                        <div class="detail-label" style="margin-top: 15px;">매출</div>
+                        <div class="detail-textarea">${data.domesticRevenue}</div>
+                    ` : '<div class="empty-value" style="margin-top: 15px;">매출 정보 없음</div>'}
+                    
+                    ${data.domesticOther ? `
+                        <div class="detail-label" style="margin-top: 15px;">기타</div>
+                        <div class="detail-textarea">${data.domesticOther}</div>
+                    ` : '<div class="empty-value" style="margin-top: 15px;">기타 정보 없음</div>'}
+                </div>
+
+                <!-- 글로벌 진출 실적 -->
+                <div class="detail-section">
+                    <div class="section-header">
+                        <span class="section-icon">🌍</span>
+                        글로벌 진출 실적
+                    </div>
+                    ${data.globalInvestment ? `
+                        <div class="detail-label">투자유치</div>
+                        <div class="detail-textarea">${data.globalInvestment}</div>
+                    ` : '<div class="empty-value">투자유치 정보 없음</div>'}
+                    
+                    ${data.globalExport ? `
+                        <div class="detail-label" style="margin-top: 15px;">수출</div>
+                        <div class="detail-textarea">${data.globalExport}</div>
+                    ` : '<div class="empty-value" style="margin-top: 15px;">수출 정보 없음</div>'}
+                    
+                    ${data.globalBranch ? `
+                        <div class="detail-label" style="margin-top: 15px;">현지법인 설립</div>
+                        <div class="detail-textarea">${data.globalBranch}</div>
+                    ` : '<div class="empty-value" style="margin-top: 15px;">현지법인 정보 없음</div>'}
+                    
+                    ${data.globalOther ? `
+                        <div class="detail-label" style="margin-top: 15px;">기타</div>
+                        <div class="detail-textarea">${data.globalOther}</div>
+                    ` : '<div class="empty-value" style="margin-top: 15px;">기타 정보 없음</div>'}
+                </div>
+
+                <!-- 내보내기 버튼 -->
+                <div class="export-section">
+                    <button class="modal-export-btn modal-excel-btn" onclick="exportSubmissionToExcel('${submission.id}')">
+                        📊 Excel로 내보내기
+                    </button>
+                    <button class="modal-export-btn modal-pdf-btn" onclick="exportSubmissionToPDF('${submission.id}')">
+                        📄 PDF로 내보내기
+                    </button>
+                </div>
+            `;
+            
+            modal.style.display = 'block';
+        }
+
+        // 상세 모달 닫기
+        function closeDetailModal() {
+            document.getElementById('detailModal').style.display = 'none';
+        }
+
+        // 기업 목록 모달 표시
+        function showCompaniesModal() {
+            const modal = document.getElementById('companiesModal');
+            const summaryCount = document.getElementById('summaryCount');
+            const companiesList = document.getElementById('companiesList');
+            
+            // 총 기업수 업데이트
+            summaryCount.textContent = dashboardData.length;
+            
+            // 기업 목록 생성
+            companiesList.innerHTML = '';
+            
+            if (dashboardData.length === 0) {
+                companiesList.innerHTML = '<li style="text-align: center; padding: 40px; color: #6b7280; font-style: italic;">아직 제출된 기업이 없습니다.</li>';
+            } else {
+                // 제출 시간 순으로 정렬 (최신순)
+                const sortedData = [...dashboardData].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+                
+                sortedData.forEach((submission, index) => {
+                    const companyName = submission.companyName || '기업명 미입력';
+                    const selectionYear = submission.selectionYear || '미입력';
+                    const submitDate = new Date(submission.timestamp).toLocaleDateString('ko-KR');
+                    const submitTime = new Date(submission.timestamp).toLocaleTimeString('ko-KR', { 
+                        hour: '2-digit', 
+                        minute: '2-digit' 
+                    });
+                    
+                    const listItem = document.createElement('li');
+                    listItem.className = 'company-item';
+                    listItem.innerHTML = `
+                        <div class="company-info">
+                            <div class="company-name">${index + 1}. ${companyName}</div>
+                            <div class="company-details">
+                                📅 선정년도: ${selectionYear} | 
+                                🕒 제출: ${submitDate} ${submitTime} | 
+                                🆔 ID: ${submission.id.substring(0, 8)}...
+                            </div>
+                        </div>
+                        <div class="company-actions">
+                            <button class="quick-action-btn view-quick-btn" onclick="viewSubmissionFromModal('${submission.id}')">
+                                👁️ 보기
+                            </button>
+                            <button class="quick-action-btn export-quick-btn" onclick="exportSubmissionToExcel('${submission.id}')">
+                                📊 Excel
+                            </button>
+                        </div>
+                    `;
+                    companiesList.appendChild(listItem);
+                });
+            }
+            
+            modal.style.display = 'block';
+        }
+
+        // 기업 목록 모달 닫기
+        function closeCompaniesModal() {
+            document.getElementById('companiesModal').style.display = 'none';
+        }
+
+        // 모달에서 상세 보기 (기업 목록 모달을 닫고 상세 모달 열기)
+        function viewSubmissionFromModal(id) {
+            closeCompaniesModal();
+            viewSubmission(id);
+        }
+
+        // 모달 외부 클릭시 닫기
+        window.onclick = function(event) {
+            const detailModal = document.getElementById('detailModal');
+            const companiesModal = document.getElementById('companiesModal');
+            
+            if (event.target === detailModal) {
+                closeDetailModal();
+            }
+            
+            if (event.target === companiesModal) {
+                closeCompaniesModal();
+            }
+        }
+
+        // 제출 데이터 삭제
+        async function deleteSubmission(id) {
+            if (!confirm('정말로 이 데이터를 삭제하시겠습니까?')) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/submission/${id}`, {
+                    method: 'DELETE'
+                });
+                const result = await response.json();
+                
+                if (result.success) {
+                    alert('데이터가 삭제되었습니다.');
+                    loadDashboardData(); // 데이터 새로고침
+                } else {
+                    alert('삭제 실패: ' + result.message);
+                }
+            } catch (error) {
+                console.error('삭제 오류:', error);
+                alert('삭제 중 오류가 발생했습니다.');
+            }
+        }
+
+        // 개별 제출 데이터 Excel 내보내기
+        async function exportSubmissionToExcel(submissionId) {
+            try {
+                const response = await fetch(`/api/submission/${submissionId}`);
+                const result = await response.json();
+                
+                if (!result.success) {
+                    alert('데이터를 불러올 수 없습니다.');
+                    return;
+                }
+
+                const data = result.submission.data;
+                
+                // Excel 워크북 생성
+                const wb = XLSX.utils.book_new();
+                
+                // 기본 정보 시트
+                const basicData = [
+                    ['항목', '값'],
+                    ['선정년도', data.selectionYear || ''],
+                    ['선정월', data.selectionMonth || ''],
+                    ['창업기업명', data.companyName || ''],
+                    ['설립일', data.establishDate || ''],
+                    ['제출일시', new Date(result.submission.timestamp).toLocaleString('ko-KR')],
+                    ['제출 ID', result.submission.id]
+                ];
+                
+                // 투자 정보 시트
+                const investmentData = [
+                    ['항목', '값'],
+                    ['투자일자', data.investDate || ''],
+                    ['투자금액', data.investAmount || ''],
+                    ['주주현황 (팁스 추천시)', data.shareholders || ''],
+                    ['총 투자금액 (현재)', data.totalInvestAfter || ''],
+                    ['주주현황 (현재)', data.shareholdersAfter || ''],
+                    ['주식형태', data.stockType || ''],
+                    ['운영사 지분율', data.operatorShare || '']
+                ];
+                
+                // 입주 정보 시트
+                const residencyData = [
+                    ['항목', '값'],
+                    ['입주유형', data.residencyType || ''],
+                    ['입주예외 사유', data.exceptionReasonType || ''],
+                    ['기타 사유', data.exceptionReasonOther || ''],
+                    ['BI명', data.biName || ''],
+                    ['BI주소', data.biAddress || ''],
+                    ['입주 예정 여부', data.futureResidency || ''],
+                    ['입주 예정일', data.futureResidencyDate || '']
+                ];
+                
+                // 국내 성과 시트
+                const domesticData = [
+                    ['항목', '내용'],
+                    ['후속투자', data.domesticFollowInvest || ''],
+                    ['고용', data.domesticEmployment || ''],
+                    ['매출', data.domesticRevenue || ''],
+                    ['기타', data.domesticOther || '']
+                ];
+                
+                // 글로벌 실적 시트
+                const globalData = [
+                    ['항목', '내용'],
+                    ['투자유치', data.globalInvestment || ''],
+                    ['수출', data.globalExport || ''],
+                    ['현지법인 설립', data.globalBranch || ''],
+                    ['기타', data.globalOther || '']
+                ];
+                
+                // 시트 추가
+                const ws1 = XLSX.utils.aoa_to_sheet(basicData);
+                const ws2 = XLSX.utils.aoa_to_sheet(investmentData);
+                const ws3 = XLSX.utils.aoa_to_sheet(residencyData);
+                const ws4 = XLSX.utils.aoa_to_sheet(domesticData);
+                const ws5 = XLSX.utils.aoa_to_sheet(globalData);
+                
+                XLSX.utils.book_append_sheet(wb, ws1, '기본정보');
+                XLSX.utils.book_append_sheet(wb, ws2, '투자정보');
+                XLSX.utils.book_append_sheet(wb, ws3, '입주정보');
+                XLSX.utils.book_append_sheet(wb, ws4, '국내성과');
+                XLSX.utils.book_append_sheet(wb, ws5, '글로벌실적');
+                
+                // 파일명 생성
+                const companyName = data.companyName || '창업기업';
+                const today = new Date().toISOString().split('T')[0];
+                const fileName = `${companyName}_창업지원실적_${today}.xlsx`;
+                
+                // 파일 다운로드
+                XLSX.writeFile(wb, fileName);
+                
+                alert(`Excel 파일이 다운로드되었습니다!\n파일명: ${fileName}`);
+                
+            } catch (error) {
+                console.error('Excel 내보내기 오류:', error);
+                alert('Excel 내보내기 중 오류가 발생했습니다.');
+            }
+        }
+
+        // 개별 제출 데이터 PDF 내보내기
+        async function exportSubmissionToPDF(submissionId) {
+            try {
+                const response = await fetch(`/api/submission/${submissionId}`);
+                const result = await response.json();
+                
+                if (!result.success) {
+                    alert('데이터를 불러올 수 없습니다.');
+                    return;
+                }
+
+                const data = result.submission.data;
+                const { jsPDF } = window.jspdf;
+                const pdf = new jsPDF('p', 'mm', 'a4');
+                
+                // PDF 제목
+                pdf.setFontSize(20);
+                pdf.text('창업기업 지원 및 실적', 105, 20, { align: 'center' });
+                
+                // 기업명과 날짜
+                pdf.setFontSize(12);
+                pdf.text(`기업명: ${data.companyName || '미입력'}`, 20, 35);
+                pdf.text(`제출일: ${new Date(result.submission.timestamp).toLocaleDateString('ko-KR')}`, 20, 45);
+                
+                let yPosition = 60;
+                const lineHeight = 7;
+                
+                // 기본 정보
+                pdf.setFontSize(14);
+                pdf.text('1. 기본 정보', 20, yPosition);
+                yPosition += 10;
+                
+                pdf.setFontSize(10);
+                const basicInfo = [
+                    `선정년도: ${data.selectionYear || '미입력'}`,
+                    `선정월: ${data.selectionMonth || '미입력'}`,
+                    `창업기업명: ${data.companyName || '미입력'}`,
+                    `설립일: ${data.establishDate || '미입력'}`
+                ];
+                
+                basicInfo.forEach(info => {
+                    pdf.text(info, 25, yPosition);
+                    yPosition += lineHeight;
+                });
+                
+                // 파일명 생성
+                const companyName = data.companyName || '창업기업';
+                const fileName = `${companyName}_창업지원실적_${new Date().toISOString().split('T')[0].replace(/-/g, '')}.pdf`;
+                
+                // PDF 저장
+                pdf.save(fileName);
+                
+                alert(`PDF 파일이 다운로드되었습니다!\n파일명: ${fileName}`);
+                
+            } catch (error) {
+                console.error('PDF 내보내기 오류:', error);
+                alert('PDF 내보내기 중 오류가 발생했습니다.');
+            }
+        }
+    </script>
+</body>
+</html>
