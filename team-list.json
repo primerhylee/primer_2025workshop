@@ -1,0 +1,313 @@
+[
+  {
+    "id": 1,
+    "year": 2015,
+    "teamName": "투블루",
+    "category": "시즌5",
+    "representative": "우혁준",
+    "email": "junwoo@tubloo.com"
+  },
+  {
+    "id": 2,
+    "year": 2015,
+    "teamName": "비손콘텐츠",
+    "category": "시즌5",
+    "representative": "류호석",
+    "email": "andyryu@pisoncontents.com",
+    "note": "강병석 (부사장) ",
+    "additionalEmail": "diego@pison.kr"
+  },
+  {
+    "id": 3,
+    "year": 2015,
+    "teamName": "포그리트",
+    "category": "시즌5",
+    "representative": "박태준",
+    "email": "joon@4grit.com",
+    "note": "전정윤",
+    "additionalEmail": "yoony@4grit.com"
+  },
+  {
+    "id": 4,
+    "year": 2015,
+    "teamName": "아이오",
+    "category": "시즌5",
+    "representative": "서기운",
+    "email": "gyu@switcher.co.kr",
+    "note": "이재훈",
+    "additionalEmail": "hoon@switcher.co.kr"
+  },
+  {
+    "id": 5,
+    "year": 2015,
+    "teamName": "큐픽스",
+    "category": "시즌5",
+    "representative": "배석훈",
+    "email": "simon.bae@cupix.com",
+    "note": "최동호(Managing Director)",
+    "additionalEmail": "alex.choi@cupix.com",
+    "remark": "pditteam.com 부작관 인재풀은 영영 사업 지"
+  },
+  {
+    "id": 6,
+    "year": 2016,
+    "teamName": "체크멀",
+    "category": "시즌5",
+    "representative": "김정훈",
+    "email": "jk@checkmal.com",
+    "note": "이문희 (이사)",
+    "additionalEmail": "moony2ee@checkmal.com"
+  },
+  {
+    "id": 7,
+    "year": 2016,
+    "teamName": "라프텔",
+    "category": "시즌5",
+    "representative": "김범준",
+    "email": "rafy@ridi.com"
+  },
+  {
+    "id": 8,
+    "year": 2017,
+    "teamName": "패이지콜",
+    "category": "시즌5",
+    "representative": "박주렁",
+    "email": "jurung@pagecall.com",
+    "note": "이연서 (디렉터)",
+    "additionalEmail": "yeonseo@pagecall.com"
+  },
+  {
+    "id": 9,
+    "year": 2018,
+    "teamName": "플러스티브이",
+    "category": "시즌5",
+    "representative": "조재화",
+    "email": "jaehwa@plustv.io"
+  },
+  {
+    "id": 10,
+    "year": 2018,
+    "teamName": "팀엘리시움",
+    "category": "시즌5",
+    "representative": "김원진",
+    "email": "wjkim@teamelysium.kr",
+    "note": "주성수,박은식",
+    "additionalEmail": "seongsu.joo@teamelysium.kr, espark@teamelysium.kr"
+  },
+  {
+    "id": 11,
+    "year": 2018,
+    "teamName": "큐라미스",
+    "category": "시즌5",
+    "representative": "성정준",
+    "email": "jjsaint66@gmail.com",
+    "note": "이승철 (과장)",
+    "additionalEmail": "seungchul.lee@curamys.co.kr"
+  },
+  {
+    "id": 12,
+    "year": 2019,
+    "teamName": "프로젝트노아",
+    "category": "시즌5",
+    "representative": "박근우",
+    "email": "park@doctornoah.net",
+    "note": "권수정 (팀장)",
+    "additionalEmail": "sue@doctornoah.net"
+  },
+  {
+    "id": 13,
+    "year": 2019,
+    "teamName": "마인드로직",
+    "category": "시즌5",
+    "representative": "김진욱",
+    "email": "jinwook@mindlogic.ai",
+    "note": "박미현 (매니저)",
+    "additionalEmail": "mihyun.park@mindlogic.ai"
+  },
+  {
+    "id": 14,
+    "year": 2019,
+    "teamName": "셀미트",
+    "category": "시즌5",
+    "representative": "박길준",
+    "email": "giljun.park@thecellmeat.com",
+    "note": "이경진 (운영파트장)",
+    "additionalEmail": "miyoung.lee@thecellmeat.com"
+  },
+  {
+    "id": 15,
+    "year": 2020,
+    "teamName": "랑데뷰",
+    "category": "시즌5",
+    "representative": "박주홍",
+    "email": "juhong.park@farmily.ai"
+  },
+  {
+    "id": 16,
+    "year": 2020,
+    "teamName": "트라이폴리곤 (유모델러)",
+    "category": "시즌5",
+    "representative": "황재식",
+    "email": "Jaesik.H@umodeler.com",
+    "note": "김세은",
+    "additionalEmail": "Seeun.K@umodeler.com"
+  },
+  {
+    "id": 17,
+    "year": 2020,
+    "teamName": "인스유틸",
+    "category": "시즌5",
+    "representative": "김진성",
+    "email": "jskim@insutil.com"
+  },
+  {
+    "id": 18,
+    "year": 2021,
+    "teamName": "투모런스",
+    "category": "시즌5",
+    "representative": "최재영",
+    "email": "tim@fitco.style"
+  },
+  {
+    "id": 19,
+    "year": 2021,
+    "teamName": "리스틀리",
+    "category": "시즌5",
+    "representative": "최창민",
+    "email": "changmin@listly.io"
+  },
+  {
+    "id": 20,
+    "year": 2022,
+    "teamName": "레디로버스트머신",
+    "category": "시즌5",
+    "representative": "정태랑",
+    "email": "taerang.jung@gmail.com"
+  },
+  {
+    "id": 21,
+    "year": 2022,
+    "teamName": "위스피온",
+    "category": "시즌5",
+    "representative": "황성우",
+    "email": "wespion.one@gmail.com"
+  },
+  {
+    "id": 22,
+    "year": 2022,
+    "teamName": "세샤트",
+    "category": "시즌5",
+    "representative": "이윤지",
+    "email": "yoonjilee@noteing.com"
+  },
+  {
+    "id": 23,
+    "year": 2022,
+    "teamName": "다이나메딕",
+    "category": "시즌5",
+    "representative": "최형섭",
+    "email": "isidore@dynamedic.co.kr",
+    "note": "왕현정",
+    "additionalEmail": "jay.wang@dynamedic.co.kr"
+  },
+  {
+    "id": 24,
+    "year": 2023,
+    "teamName": "마켓스타디움",
+    "category": "시즌5",
+    "representative": "이기훈",
+    "email": "dennis@marketstadium.com"
+  },
+  {
+    "id": 25,
+    "year": 2023,
+    "teamName": "플리크라운지",
+    "category": "시즌5",
+    "representative": "김범욱",
+    "email": "joey@fleeklounge.com"
+  },
+  {
+    "id": 26,
+    "year": 2023,
+    "teamName": "카본사우루스",
+    "category": "시즌5",
+    "representative": "최현준",
+    "email": "hyunjun.choi@carbonsaurus.com"
+  },
+  {
+    "id": 27,
+    "year": 2023,
+    "teamName": "유동산",
+    "category": "시즌5",
+    "representative": "오준식",
+    "email": "junsik.oh@youdongsan.com"
+  },
+  {
+    "id": 28,
+    "year": 2024,
+    "teamName": "그랜터",
+    "category": "시즌5",
+    "representative": "이영인",
+    "email": "youngin@granter.biz"
+  },
+  {
+    "id": 29,
+    "year": 2024,
+    "teamName": "소유에프앤비",
+    "category": "시즌5",
+    "representative": "윤서연",
+    "email": "ysy@soyoufnb.com",
+    "note": "이황신 (상무)",
+    "additionalEmail": "lee@soyoufnb.com"
+  },
+  {
+    "id": 30,
+    "year": 2024,
+    "teamName": "데일리페이",
+    "category": "시즌5",
+    "representative": "이해우",
+    "email": "ceo@daily-pay.co.kr",
+    "note": "양현모 (매니저)",
+    "additionalEmail": "hyunmo@daily-pay.co.kr"
+  },
+  {
+    "id": 31,
+    "year": 2024,
+    "teamName": "루모스",
+    "category": "시즌5",
+    "representative": "김경진",
+    "email": "jin@llumos.co"
+  },
+  {
+    "id": 32,
+    "year": 2024,
+    "teamName": "쿰 테라퓨틱스",
+    "category": "시즌5",
+    "representative": "오재학",
+    "email": "jaehak.oh@qumtherapeutics.com"
+  },
+  {
+    "id": 33,
+    "year": 2024,
+    "teamName": "라이브어트",
+    "category": "시즌5",
+    "representative": "박해동",
+    "email": "bowl-b@livet.co.kr"
+  },
+  {
+    "id": 34,
+    "year": 2025,
+    "teamName": "스웰엑스",
+    "category": "시즌5",
+    "representative": "박재형",
+    "email": "robert@swirlx.co"
+  },
+  {
+    "id": 35,
+    "year": 2025,
+    "teamName": "반조",
+    "category": "시즌5",
+    "representative": "최혜란",
+    "email": "banzo.hr.choi@gmail.com"
+  }
+]

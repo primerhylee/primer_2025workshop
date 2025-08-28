@@ -2,42 +2,29 @@
 // 이 파일은 구글 시트 API 키와 스프레드시트 ID를 관리합니다.
 
 const GOOGLE_SHEETS_CONFIG = {
-    // 구글 API 키 (Google Cloud Console에서 발급)
-    API_KEY: 'YOUR_GOOGLE_API_KEY_HERE',
+    // Google Apps Script 웹앱 URL (배포 후 받은 URL을 여기에 입력)
+    APPS_SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbwbI8u-ygWcHOw12XCIL4sWINIs8e0c_Ds_Tg1YEtHdv7Y3vZNWf3Xu4MvgvWRg0KWp/exec',
     
-    // 구글 스프레드시트 ID (URL에서 추출)
-    // https://docs.google.com/spreadsheets/d/SPREADSHEET_ID/edit 에서 SPREADSHEET_ID 부분
-    SPREADSHEET_ID: 'YOUR_SPREADSHEET_ID_HERE',
+    // 기존 API 방식 설정 (사용하지 않음 - 주석 처리)
+    // API_KEY: 'YOUR_GOOGLE_API_KEY_HERE',
+    // SPREADSHEET_ID: 'YOUR_SPREADSHEET_ID_HERE',
+    // SHEET_NAME: '창업기업_데이터',
     
-    // 시트 이름
-    SHEET_NAME: '창업기업_데이터',
-    
-    // 헤더 행 (첫 번째 행에 들어갈 컬럼명)
+    // 헤더 행 (Apps Script에서 자동으로 생성됨)
     HEADERS: [
         '제출일시',
-        '제출ID',
+        '기업명',
         '선정년도',
         '선정월',
-        '창업기업명',
         '설립일',
         '투자일자',
         '투자금액',
-        '총투자금액',
-        '주식형태',
-        '운영사지분율',
         '입주유형',
-        'BI명',
-        'BI주소',
-        '입주예정여부',
-        '입주예정일',
         '후속투자',
         '고용현황',
         '매출현황',
-        '국내기타',
         '글로벌투자',
-        '글로벌수출',
-        '현지법인',
-        '글로벌기타'
+        '글로벌수출'
     ]
 };
 
@@ -52,18 +39,22 @@ if (typeof module !== 'undefined' && module.exports) {
 }
 
 /*
-구글 시트 설정 방법:
+Google Apps Script 연동 설정 방법:
 
-1. Google Cloud Console (https://console.cloud.google.com/) 접속
-2. 새 프로젝트 생성 또는 기존 프로젝트 선택
-3. Google Sheets API 활성화
-4. 사용자 인증 정보 → API 키 생성
-5. 구글 시트 새로 만들기
-6. 시트 URL에서 스프레드시트 ID 복사
-7. 시트를 '링크가 있는 모든 사용자' 편집 권한으로 공유
-8. 위의 YOUR_GOOGLE_API_KEY_HERE와 YOUR_SPREADSHEET_ID_HERE를 실제 값으로 교체
+🚀 더 쉽고 안전한 방법입니다!
 
-주의사항:
-- API 키는 보안상 중요하므로 공개 저장소에 업로드하지 마세요
-- 실제 운영시에는 환경변수나 별도 설정 파일로 관리하세요
+1. 구글 시트 생성 (https://sheets.google.com)
+2. 확장 프로그램 → Apps Script 클릭
+3. 제공된 코드를 복사하여 붙여넣기
+4. 스프레드시트 ID를 코드에 입력
+5. 배포 → 새 배포 → 웹앱으로 배포
+6. 웹앱 URL을 복사하여 APPS_SCRIPT_URL에 입력
+
+장점:
+✅ API 키 불필요 (보안 강화)
+✅ 설정이 더 간단
+✅ 구글에서 직접 관리
+✅ 자동 권한 관리
+
+자세한 설정 방법: http://localhost:3000/google-apps-script-setup.html
 */
