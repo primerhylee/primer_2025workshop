@@ -26,8 +26,8 @@
 
         body {
             font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-            color: #e2e8f0;
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            color: #1e293b;
             min-height: 100vh;
             padding: 20px;
         }
@@ -42,10 +42,11 @@
             text-align: center;
             margin-bottom: 40px;
             padding: 40px 20px;
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(255, 255, 255, 0.8);
             backdrop-filter: blur(10px);
             border-radius: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            box-shadow: 0 4px 20px rgba(59, 130, 246, 0.1);
         }
 
         .header h1 {
@@ -60,7 +61,7 @@
 
         .header p {
             font-size: 1.2rem;
-            color: #94a3b8;
+            color: #64748b;
         }
 
         /* Stats Cards */
@@ -72,19 +73,20 @@
         }
 
         .stat-card {
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(255, 255, 255, 0.9);
             backdrop-filter: blur(10px);
             border-radius: 16px;
             padding: 30px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.2);
             transition: all 0.3s ease;
             cursor: pointer;
+            box-shadow: 0 2px 10px rgba(59, 130, 246, 0.08);
         }
 
         .stat-card:hover {
             transform: translateY(-5px);
             border-color: #3B82F6;
-            box-shadow: 0 10px 40px rgba(59, 130, 246, 0.3);
+            box-shadow: 0 10px 40px rgba(59, 130, 246, 0.2);
         }
 
         .stat-card .icon {
@@ -101,7 +103,7 @@
 
         .stat-card h3 {
             font-size: 0.9rem;
-            color: #94a3b8;
+            color: #64748b;
             margin-bottom: 10px;
             font-weight: 500;
         }
@@ -109,7 +111,7 @@
         .stat-card .value {
             font-size: 2rem;
             font-weight: 700;
-            color: #fff;
+            color: #1e293b;
             margin-bottom: 5px;
         }
 
@@ -137,17 +139,18 @@
         }
 
         .chart-container {
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(255, 255, 255, 0.9);
             backdrop-filter: blur(10px);
             border-radius: 16px;
             padding: 30px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            box-shadow: 0 2px 10px rgba(59, 130, 246, 0.08);
         }
 
         .chart-container h2 {
             font-size: 1.5rem;
             margin-bottom: 20px;
-            color: #fff;
+            color: #1e293b;
             display: flex;
             align-items: center;
             gap: 10px;
@@ -166,13 +169,13 @@
             display: flex;
             gap: 10px;
             margin-bottom: 20px;
-            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+            border-bottom: 2px solid rgba(59, 130, 246, 0.2);
         }
 
         .tab-button {
             background: transparent;
             border: none;
-            color: #94a3b8;
+            color: #64748b;
             padding: 15px 30px;
             font-size: 1.1rem;
             font-weight: 600;
@@ -189,9 +192,102 @@
         }
 
         .tab-button.active {
-            color: #fff;
+            color: #1e293b;
             border-bottom-color: #3B82F6;
             background: rgba(59, 130, 246, 0.1);
+        }
+
+        /* Quick Navigation */
+        .quick-nav {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            box-shadow: 0 2px 10px rgba(59, 130, 246, 0.08);
+        }
+
+        .quick-nav h3 {
+            font-size: 1rem;
+            color: #64748b;
+            margin-bottom: 15px;
+            font-weight: 500;
+        }
+
+        .quick-nav-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .quick-nav-btn {
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            color: #3B82F6;
+            padding: 10px 20px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-radius: 8px;
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .quick-nav-btn:hover {
+            background: #3B82F6;
+            color: #fff;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+
+        .quick-nav-btn i {
+            font-size: 1rem;
+        }
+
+        /* Year Tabs */
+        .year-tabs {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 20px;
+            padding: 10px;
+            background: rgba(59, 130, 246, 0.05);
+            border-radius: 12px;
+            flex-wrap: wrap;
+        }
+
+        .year-tab-button,
+        .year-tab-button-income,
+        .year-tab-button-chart {
+            background: rgba(255, 255, 255, 0.8);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            color: #64748b;
+            padding: 8px 16px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-radius: 8px;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .year-tab-button:hover,
+        .year-tab-button-income:hover,
+        .year-tab-button-chart:hover {
+            background: rgba(59, 130, 246, 0.1);
+            border-color: #3B82F6;
+            color: #3B82F6;
+        }
+
+        .year-tab-button.active,
+        .year-tab-button-income.active,
+        .year-tab-button-chart.active {
+            background: #3B82F6;
+            color: #fff;
+            border-color: #3B82F6;
         }
 
         .tab-content {
@@ -223,17 +319,17 @@
         }
 
         .modal-content {
-            background: linear-gradient(135deg, rgba(30, 41, 59, 0.95) 0%, rgba(15, 23, 42, 0.95) 100%);
+            background: rgba(255, 255, 255, 0.98);
             backdrop-filter: blur(20px);
             border-radius: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.2);
             padding: 40px;
             max-width: 900px;
             width: 90%;
             max-height: 80vh;
             overflow-y: auto;
             position: relative;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
         }
 
         .modal-header {
@@ -247,7 +343,7 @@
 
         .modal-header h2 {
             font-size: 2rem;
-            color: #fff;
+            color: #1e293b;
             display: flex;
             align-items: center;
             gap: 15px;
@@ -305,7 +401,8 @@
 
         .modal-table td {
             padding: 12px 15px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            border-bottom: 1px solid rgba(59, 130, 246, 0.1);
+            color: #334155;
         }
 
         .modal-table td[contenteditable="true"] {
@@ -325,7 +422,51 @@
         }
 
         .modal-table tr:hover {
-            background: rgba(255, 255, 255, 0.02);
+            background: rgba(59, 130, 246, 0.03);
+        }
+
+        /* 대분류 컬럼 스타일 */
+        .modal-table td.category-col {
+            font-weight: 600;
+            color: #3B82F6;
+            background: rgba(59, 130, 246, 0.08);
+        }
+
+        .category-select {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.9);
+            color: #1e293b;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .category-select:focus {
+            outline: 2px solid #3B82F6;
+            background: #fff;
+        }
+
+        .category-select.support {
+            background: rgba(59, 130, 246, 0.12);
+            color: #3B82F6;
+            border-color: rgba(59, 130, 246, 0.4);
+        }
+
+        .category-select.discovery {
+            background: rgba(139, 92, 246, 0.12);
+            color: #8B5CF6;
+            border-color: rgba(139, 92, 246, 0.4);
+        }
+
+        .category-select.general {
+            background: rgba(16, 185, 129, 0.12);
+            color: #10b981;
+            border-color: rgba(16, 185, 129, 0.4);
         }
 
         .modal-actions {
@@ -432,19 +573,20 @@
 
         /* Data Table */
         .table-container {
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(255, 255, 255, 0.9);
             backdrop-filter: blur(10px);
             border-radius: 16px;
             padding: 30px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.2);
             margin-top: 30px;
             overflow-x: auto;
+            box-shadow: 0 2px 10px rgba(59, 130, 246, 0.08);
         }
 
         .table-container h2 {
             font-size: 1.5rem;
             margin-bottom: 20px;
-            color: #fff;
+            color: #1e293b;
         }
 
         table {
@@ -466,11 +608,12 @@
 
         td {
             padding: 15px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            border-bottom: 1px solid rgba(59, 130, 246, 0.1);
+            color: #334155;
         }
 
         tr:hover {
-            background: rgba(255, 255, 255, 0.02);
+            background: rgba(59, 130, 246, 0.03);
         }
 
         /* Responsive */
@@ -511,6 +654,33 @@
         <div class="header">
             <h1>2025년 프라이머 전략팀 워크샵</h1>
             <p>재무 현황 및 예산 분석</p>
+        </div>
+
+        <!-- Quick Navigation -->
+        <div class="quick-nav">
+            <h3><i class="fas fa-compass"></i> 빠른 이동</h3>
+            <div class="quick-nav-buttons">
+                <button class="quick-nav-btn" onclick="scrollToSection('expense-structure')">
+                    <i class="fas fa-layer-group"></i>
+                    지출 구조
+                </button>
+                <button class="quick-nav-btn" onclick="scrollToSection('yearly-trend')">
+                    <i class="fas fa-chart-line"></i>
+                    항목별 예산 추이
+                </button>
+                <button class="quick-nav-btn" onclick="scrollToSection('revenue-forecast')">
+                    <i class="fas fa-crystal-ball"></i>
+                    수입 예측
+                </button>
+                <button class="quick-nav-btn" onclick="scrollToSection('change-history')">
+                    <i class="fas fa-balance-scale"></i>
+                    연도별 변동 내역
+                </button>
+                <button class="quick-nav-btn" onclick="scrollToSection('detail-table')">
+                    <i class="fas fa-table"></i>
+                    상세 내역 테이블
+                </button>
+            </div>
         </div>
 
         <!-- Stats Cards -->
@@ -562,6 +732,18 @@
                         <i class="fas fa-times"></i>
                     </button>
                 </div>
+
+                <!-- 연도 탭 -->
+                <div class="year-tabs">
+                    <button class="year-tab-button active" data-year="2025" onclick="switchExpenseYear('2025')">2025</button>
+                    <button class="year-tab-button" data-year="2024" onclick="switchExpenseYear('2024')">2024</button>
+                    <button class="year-tab-button" data-year="2023" onclick="switchExpenseYear('2023')">2023</button>
+                    <button class="year-tab-button" data-year="2022" onclick="switchExpenseYear('2022')">2022</button>
+                    <button class="year-tab-button" data-year="2021" onclick="switchExpenseYear('2021')">2021</button>
+                    <button class="year-tab-button" data-year="2020" onclick="switchExpenseYear('2020')">2020</button>
+                    <button class="year-tab-button" data-year="2019" onclick="switchExpenseYear('2019')">2019</button>
+                </div>
+
                 <div class="modal-table-container">
                     <div class="excel-buttons">
                         <button class="btn btn-add" onclick="addExpenseRow()">
@@ -582,47 +764,83 @@
                     <table class="modal-table" id="expense-table">
                         <thead>
                             <tr>
-                                <th>항목</th>
-                                <th>금액 (억원)</th>
                                 <th>분류</th>
+                                <th>상세분류</th>
+                                <th>금액 (백만원)</th>
                                 <th>비고</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
+                                <td>
+                                    <select class="category-select support" onchange="updateCategoryClass(this)">
+                                        <option value="지원" selected>지원</option>
+                                        <option value="발굴">발굴</option>
+                                        <option value="일반관리비">일반관리비</option>
+                                    </select>
+                                </td>
                                 <td contenteditable="true">멘토링비</td>
-                                <td contenteditable="true">3.5</td>
-                                <td contenteditable="true">지원</td>
+                                <td contenteditable="true">350</td>
                                 <td contenteditable="true">스타트업 멘토링 프로그램</td>
                             </tr>
                             <tr>
+                                <td>
+                                    <select class="category-select support" onchange="updateCategoryClass(this)">
+                                        <option value="지원" selected>지원</option>
+                                        <option value="발굴">발굴</option>
+                                        <option value="일반관리비">일반관리비</option>
+                                    </select>
+                                </td>
                                 <td contenteditable="true">교육지원비</td>
-                                <td contenteditable="true">2.8</td>
-                                <td contenteditable="true">지원</td>
+                                <td contenteditable="true">280</td>
                                 <td contenteditable="true">교육 프로그램 운영</td>
                             </tr>
                             <tr>
+                                <td>
+                                    <select class="category-select support" onchange="updateCategoryClass(this)">
+                                        <option value="지원" selected>지원</option>
+                                        <option value="발굴">발굴</option>
+                                        <option value="일반관리비">일반관리비</option>
+                                    </select>
+                                </td>
                                 <td contenteditable="true">공간지원비</td>
-                                <td contenteditable="true">2.1</td>
-                                <td contenteditable="true">지원</td>
+                                <td contenteditable="true">210</td>
                                 <td contenteditable="true">사무 공간 제공</td>
                             </tr>
                             <tr>
+                                <td>
+                                    <select class="category-select discovery" onchange="updateCategoryClass(this)">
+                                        <option value="지원">지원</option>
+                                        <option value="발굴" selected>발굴</option>
+                                        <option value="일반관리비">일반관리비</option>
+                                    </select>
+                                </td>
                                 <td contenteditable="true">네트워킹 행사</td>
-                                <td contenteditable="true">2.2</td>
-                                <td contenteditable="true">발굴</td>
+                                <td contenteditable="true">220</td>
                                 <td contenteditable="true">창업자 네트워킹 이벤트</td>
                             </tr>
                             <tr>
+                                <td>
+                                    <select class="category-select general" onchange="updateCategoryClass(this)">
+                                        <option value="지원">지원</option>
+                                        <option value="발굴">발굴</option>
+                                        <option value="일반관리비" selected>일반관리비</option>
+                                    </select>
+                                </td>
                                 <td contenteditable="true">인건비</td>
-                                <td contenteditable="true">4.5</td>
-                                <td contenteditable="true">일반관리비</td>
+                                <td contenteditable="true">450</td>
                                 <td contenteditable="true">직원 급여</td>
                             </tr>
                             <tr>
+                                <td>
+                                    <select class="category-select general" onchange="updateCategoryClass(this)">
+                                        <option value="지원">지원</option>
+                                        <option value="발굴">발굴</option>
+                                        <option value="일반관리비" selected>일반관리비</option>
+                                    </select>
+                                </td>
                                 <td contenteditable="true">사무실 임차료</td>
-                                <td contenteditable="true">2.1</td>
-                                <td contenteditable="true">일반관리비</td>
+                                <td contenteditable="true">210</td>
                                 <td contenteditable="true">월세 및 관리비</td>
                             </tr>
                         </tbody>
@@ -644,6 +862,18 @@
                         <i class="fas fa-times"></i>
                     </button>
                 </div>
+
+                <!-- 연도 탭 -->
+                <div class="year-tabs">
+                    <button class="year-tab-button-income active" data-year="2025" onclick="switchIncomeYear('2025')">2025</button>
+                    <button class="year-tab-button-income" data-year="2024" onclick="switchIncomeYear('2024')">2024</button>
+                    <button class="year-tab-button-income" data-year="2023" onclick="switchIncomeYear('2023')">2023</button>
+                    <button class="year-tab-button-income" data-year="2022" onclick="switchIncomeYear('2022')">2022</button>
+                    <button class="year-tab-button-income" data-year="2021" onclick="switchIncomeYear('2021')">2021</button>
+                    <button class="year-tab-button-income" data-year="2020" onclick="switchIncomeYear('2020')">2020</button>
+                    <button class="year-tab-button-income" data-year="2019" onclick="switchIncomeYear('2019')">2019</button>
+                </div>
+
                 <div class="modal-table-container">
                     <div class="excel-buttons">
                         <button class="btn btn-add" onclick="addIncomeRow()">
@@ -664,8 +894,8 @@
                     <table class="modal-table" id="income-table">
                         <thead>
                             <tr>
-                                <th>항목</th>
-                                <th>금액 (억원)</th>
+                                <th>상세분류</th>
+                                <th>금액 (백만원)</th>
                                 <th>수입원</th>
                                 <th>비고</th>
                             </tr>
@@ -673,31 +903,31 @@
                         <tbody>
                             <tr>
                                 <td contenteditable="true">정부 지원금</td>
-                                <td contenteditable="true">8.5</td>
+                                <td contenteditable="true">850</td>
                                 <td contenteditable="true">정부사업</td>
                                 <td contenteditable="true">중소기업청 지원</td>
                             </tr>
                             <tr>
                                 <td contenteditable="true">투자 수익</td>
-                                <td contenteditable="true">6.2</td>
+                                <td contenteditable="true">620</td>
                                 <td contenteditable="true">투자</td>
                                 <td contenteditable="true">포트폴리오 기업 EXIT</td>
                             </tr>
                             <tr>
                                 <td contenteditable="true">교육 사업</td>
-                                <td contenteditable="true">3.8</td>
+                                <td contenteditable="true">380</td>
                                 <td contenteditable="true">자체사업</td>
                                 <td contenteditable="true">교육 프로그램 수익</td>
                             </tr>
                             <tr>
                                 <td contenteditable="true">컨설팅</td>
-                                <td contenteditable="true">2.5</td>
+                                <td contenteditable="true">250</td>
                                 <td contenteditable="true">자체사업</td>
                                 <td contenteditable="true">기업 컨설팅 수익</td>
                             </tr>
                             <tr>
                                 <td contenteditable="true">기타 수입</td>
-                                <td contenteditable="true">1.5</td>
+                                <td contenteditable="true">150</td>
                                 <td contenteditable="true">기타</td>
                                 <td contenteditable="true">임대 수익 등</td>
                             </tr>
@@ -741,7 +971,7 @@
                         <thead>
                             <tr>
                                 <th>계좌/항목</th>
-                                <th>잔액 (억원)</th>
+                                <th>잔액 (백만원)</th>
                                 <th>종류</th>
                                 <th>비고</th>
                             </tr>
@@ -749,19 +979,19 @@
                         <tbody>
                             <tr>
                                 <td contenteditable="true">운영자금 계좌</td>
-                                <td contenteditable="true">2.1</td>
+                                <td contenteditable="true">210</td>
                                 <td contenteditable="true">예금</td>
                                 <td contenteditable="true">일상 운영 자금</td>
                             </tr>
                             <tr>
                                 <td contenteditable="true">투자 펀드</td>
-                                <td contenteditable="true">1.5</td>
+                                <td contenteditable="true">150</td>
                                 <td contenteditable="true">투자</td>
                                 <td contenteditable="true">스타트업 투자금</td>
                             </tr>
                             <tr>
                                 <td contenteditable="true">적립금</td>
-                                <td contenteditable="true">0.6</td>
+                                <td contenteditable="true">60</td>
                                 <td contenteditable="true">예금</td>
                                 <td contenteditable="true">비상 준비금</td>
                             </tr>
@@ -776,13 +1006,25 @@
         </div>
 
         <!-- Charts Grid -->
-        <div class="chart-grid">
+        <div class="chart-grid" id="expense-structure">
             <!-- 지출 구조 (탭) -->
-            <div class="chart-container">
+            <div class="chart-container chart-full">
                 <h2>
                     <i class="fas fa-layer-group"></i>
-                    2025년 지출 구조
+                    지출 구조
                 </h2>
+
+                <!-- 연도 탭 -->
+                <div class="year-tabs">
+                    <button class="year-tab-button-chart active" data-year="2025" onclick="switchExpenseChartYear('2025')">2025</button>
+                    <button class="year-tab-button-chart" data-year="2024" onclick="switchExpenseChartYear('2024')">2024</button>
+                    <button class="year-tab-button-chart" data-year="2023" onclick="switchExpenseChartYear('2023')">2023</button>
+                    <button class="year-tab-button-chart" data-year="2022" onclick="switchExpenseChartYear('2022')">2022</button>
+                    <button class="year-tab-button-chart" data-year="2021" onclick="switchExpenseChartYear('2021')">2021</button>
+                    <button class="year-tab-button-chart" data-year="2020" onclick="switchExpenseChartYear('2020')">2020</button>
+                    <button class="year-tab-button-chart" data-year="2019" onclick="switchExpenseChartYear('2019')">2019</button>
+                </div>
+
                 <div class="tabs-container">
                     <div class="tabs">
                         <button class="tab-button active" data-tab="support">지원</button>
@@ -800,19 +1042,10 @@
                     </div>
                 </div>
             </div>
-
-            <!-- 월별 수입/지출 -->
-            <div class="chart-container">
-                <h2>
-                    <i class="fas fa-chart-bar"></i>
-                    월별 수입/지출 현황
-                </h2>
-                <canvas id="monthlyChart"></canvas>
-            </div>
         </div>
 
         <!-- 연도별 추이 (Full Width) -->
-        <div class="chart-grid">
+        <div class="chart-grid" id="yearly-trend">
             <div class="chart-container chart-full">
                 <h2>
                     <i class="fas fa-chart-line"></i>
@@ -823,7 +1056,7 @@
         </div>
 
         <!-- 수입 예측 (Full Width) -->
-        <div class="chart-grid">
+        <div class="chart-grid" id="revenue-forecast">
             <div class="chart-container chart-full">
                 <h2>
                     <i class="fas fa-crystal-ball"></i>
@@ -834,7 +1067,7 @@
         </div>
 
         <!-- 변동 내역 -->
-        <div class="chart-grid">
+        <div class="chart-grid" id="change-history">
             <div class="chart-container chart-full">
                 <h2>
                     <i class="fas fa-balance-scale"></i>
@@ -845,7 +1078,7 @@
         </div>
 
         <!-- Data Table -->
-        <div class="table-container">
+        <div class="table-container" id="detail-table">
             <h2><i class="fas fa-table"></i> 항목별 상세 내역</h2>
             <table>
                 <thead>
@@ -906,8 +1139,43 @@
 
     <script>
         // Chart.js 기본 설정
-        Chart.defaults.color = '#94a3b8';
-        Chart.defaults.borderColor = 'rgba(255, 255, 255, 0.1)';
+        Chart.defaults.color = '#64748b';
+        Chart.defaults.borderColor = 'rgba(59, 130, 246, 0.2)';
+
+        // 스크롤 이동 함수
+        function scrollToSection(sectionId) {
+            const section = document.getElementById(sectionId);
+            if (section) {
+                section.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        }
+
+        // 분류 드롭다운 색상 업데이트
+        function updateCategoryClass(selectElement) {
+            const value = selectElement.value;
+            selectElement.className = 'category-select';
+
+            if (value === '지원') {
+                selectElement.classList.add('support');
+            } else if (value === '발굴') {
+                selectElement.classList.add('discovery');
+            } else if (value === '일반관리비') {
+                selectElement.classList.add('general');
+            }
+        }
+
+        // 천단위 콤마 추가 함수
+        function formatNumber(num) {
+            return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
+
+        // 콤마 제거 함수
+        function parseNumber(str) {
+            return parseFloat(str.toString().replace(/,/g, '')) || 0;
+        }
 
         // 탭 전환 기능
         const tabButtons = document.querySelectorAll('.tab-button');
@@ -926,6 +1194,10 @@
             });
         });
 
+        // 현재 선택된 연도 저장
+        let currentExpenseYear = '2025';
+        let currentIncomeYear = '2025';
+
         // 모달 열기 기능
         const statCards = document.querySelectorAll('.stat-card[data-modal]');
         statCards.forEach(card => {
@@ -934,6 +1206,11 @@
                 const modal = document.getElementById(modalType + '-modal');
                 if (modal) {
                     modal.classList.add('active');
+                    if (modalType === 'expense') {
+                        loadExpenseYear(currentExpenseYear);
+                    } else if (modalType === 'income') {
+                        loadIncomeYear(currentIncomeYear);
+                    }
                 }
             });
         });
@@ -960,9 +1237,15 @@
             const tbody = document.querySelector('#expense-table tbody');
             const newRow = tbody.insertRow();
             newRow.innerHTML = `
-                <td contenteditable="true">새 항목</td>
+                <td>
+                    <select class="category-select support" onchange="updateCategoryClass(this)">
+                        <option value="지원" selected>지원</option>
+                        <option value="발굴">발굴</option>
+                        <option value="일반관리비">일반관리비</option>
+                    </select>
+                </td>
+                <td contenteditable="true">새 상세분류</td>
                 <td contenteditable="true">0</td>
-                <td contenteditable="true">분류</td>
                 <td contenteditable="true">비고</td>
             `;
         }
@@ -971,7 +1254,7 @@
             const tbody = document.querySelector('#income-table tbody');
             const newRow = tbody.insertRow();
             newRow.innerHTML = `
-                <td contenteditable="true">새 항목</td>
+                <td contenteditable="true">새 상세분류</td>
                 <td contenteditable="true">0</td>
                 <td contenteditable="true">수입원</td>
                 <td contenteditable="true">비고</td>
@@ -989,63 +1272,190 @@
             `;
         }
 
-        // 데이터 저장 기능
-        function saveExpenseData() {
+        // 연도 전환 기능
+        function switchExpenseYear(year) {
+            // 먼저 현재 연도 데이터 저장
+            saveCurrentExpenseYear();
+
+            // 연도 변경
+            currentExpenseYear = year;
+
+            // 탭 활성화 상태 변경
+            document.querySelectorAll('.year-tab-button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelector(`.year-tab-button[data-year="${year}"]`).classList.add('active');
+
+            // 해당 연도 데이터 로드
+            loadExpenseYear(year);
+        }
+
+        // 현재 보고 있는 연도 데이터 저장
+        function saveCurrentExpenseYear() {
             const table = document.getElementById('expense-table');
             const rows = table.querySelectorAll('tbody tr');
-            let totalExpense = 0;
 
             const data = [];
             rows.forEach(row => {
                 const cells = row.querySelectorAll('td');
+                const selectElement = cells[0].querySelector('select');
                 const rowData = {
-                    item: cells[0].textContent,
-                    amount: parseFloat(cells[1].textContent) || 0,
-                    category: cells[2].textContent,
+                    category: selectElement ? selectElement.value : cells[0].textContent,
+                    item: cells[1].textContent,
+                    amount: parseNumber(cells[2].textContent),
                     note: cells[3].textContent
                 };
-                totalExpense += rowData.amount;
                 data.push(rowData);
             });
 
-            // 로컬 스토리지에 저장
-            localStorage.setItem('expenseData', JSON.stringify(data));
+            // 연도별로 저장
+            localStorage.setItem(`expenseData_${currentExpenseYear}`, JSON.stringify(data));
+        }
 
-            // 총 지출 카드 업데이트
-            const expenseCard = document.querySelector('.stat-card[data-modal="expense"] .value');
-            expenseCard.textContent = totalExpense.toFixed(1) + '억원';
+        // 연도별 데이터 로드
+        function loadExpenseYear(year) {
+            const savedData = localStorage.getItem(`expenseData_${year}`);
+            const tbody = document.querySelector('#expense-table tbody');
+            tbody.innerHTML = '';
+
+            if (savedData) {
+                const data = JSON.parse(savedData);
+                data.forEach(row => {
+                    const category = row.category || '지원';
+                    let categoryClass = 'support';
+                    if (category === '발굴') categoryClass = 'discovery';
+                    else if (category === '일반관리비') categoryClass = 'general';
+
+                    const tr = tbody.insertRow();
+                    tr.innerHTML = `
+                        <td>
+                            <select class="category-select ${categoryClass}" onchange="updateCategoryClass(this)">
+                                <option value="지원" ${category === '지원' ? 'selected' : ''}>지원</option>
+                                <option value="발굴" ${category === '발굴' ? 'selected' : ''}>발굴</option>
+                                <option value="일반관리비" ${category === '일반관리비' ? 'selected' : ''}>일반관리비</option>
+                            </select>
+                        </td>
+                        <td contenteditable="true">${row.item}</td>
+                        <td contenteditable="true">${formatNumber(row.amount)}</td>
+                        <td contenteditable="true">${row.note}</td>
+                    `;
+                });
+            } else {
+                // 기본 샘플 데이터
+                tbody.innerHTML = `
+                    <tr>
+                        <td>
+                            <select class="category-select support" onchange="updateCategoryClass(this)">
+                                <option value="지원" selected>지원</option>
+                                <option value="발굴">발굴</option>
+                                <option value="일반관리비">일반관리비</option>
+                            </select>
+                        </td>
+                        <td contenteditable="true">새 상세분류</td>
+                        <td contenteditable="true">0</td>
+                        <td contenteditable="true">비고</td>
+                    </tr>
+                `;
+            }
+        }
+
+        // 데이터 저장 기능
+        function saveExpenseData() {
+            saveCurrentExpenseYear();
+
+            // 2025년 데이터로 카드 업데이트 (메인 화면 표시용, 백만원을 억원으로 변환)
+            const data2025 = localStorage.getItem('expenseData_2025');
+            if (data2025) {
+                const parsed = JSON.parse(data2025);
+                let total = 0;
+                parsed.forEach(row => {
+                    total += row.amount;
+                });
+
+                const expenseCard = document.querySelector('.stat-card[data-modal="expense"] .value');
+                expenseCard.textContent = (total / 100).toFixed(1) + '억원';
+            }
 
             // 성공 메시지
             alert('지출 데이터가 저장되었습니다!');
             closeModal('expense-modal');
         }
 
-        function saveIncomeData() {
+        // 총 수입 연도 전환 기능
+        function switchIncomeYear(year) {
+            saveCurrentIncomeYear();
+            currentIncomeYear = year;
+
+            document.querySelectorAll('.year-tab-button-income').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelector(`.year-tab-button-income[data-year="${year}"]`).classList.add('active');
+
+            loadIncomeYear(year);
+        }
+
+        function saveCurrentIncomeYear() {
             const table = document.getElementById('income-table');
             const rows = table.querySelectorAll('tbody tr');
-            let totalIncome = 0;
 
             const data = [];
             rows.forEach(row => {
                 const cells = row.querySelectorAll('td');
                 const rowData = {
                     item: cells[0].textContent,
-                    amount: parseFloat(cells[1].textContent) || 0,
+                    amount: parseNumber(cells[1].textContent),
                     source: cells[2].textContent,
                     note: cells[3].textContent
                 };
-                totalIncome += rowData.amount;
                 data.push(rowData);
             });
 
-            // 로컬 스토리지에 저장
-            localStorage.setItem('incomeData', JSON.stringify(data));
+            localStorage.setItem(`incomeData_${currentIncomeYear}`, JSON.stringify(data));
+        }
 
-            // 총 수입 카드 업데이트
-            const incomeCard = document.querySelector('.stat-card[data-modal="income"] .value');
-            incomeCard.textContent = totalIncome.toFixed(1) + '억원';
+        function loadIncomeYear(year) {
+            const savedData = localStorage.getItem(`incomeData_${year}`);
+            const tbody = document.querySelector('#income-table tbody');
+            tbody.innerHTML = '';
 
-            // 성공 메시지
+            if (savedData) {
+                const data = JSON.parse(savedData);
+                data.forEach(row => {
+                    const tr = tbody.insertRow();
+                    tr.innerHTML = `
+                        <td contenteditable="true">${row.item}</td>
+                        <td contenteditable="true">${formatNumber(row.amount)}</td>
+                        <td contenteditable="true">${row.source}</td>
+                        <td contenteditable="true">${row.note}</td>
+                    `;
+                });
+            } else {
+                tbody.innerHTML = `
+                    <tr>
+                        <td contenteditable="true">새 상세분류</td>
+                        <td contenteditable="true">0</td>
+                        <td contenteditable="true">수입원</td>
+                        <td contenteditable="true">비고</td>
+                    </tr>
+                `;
+            }
+        }
+
+        function saveIncomeData() {
+            saveCurrentIncomeYear();
+
+            const data2025 = localStorage.getItem('incomeData_2025');
+            if (data2025) {
+                const parsed = JSON.parse(data2025);
+                let total = 0;
+                parsed.forEach(row => {
+                    total += row.amount;
+                });
+
+                const incomeCard = document.querySelector('.stat-card[data-modal="income"] .value');
+                incomeCard.textContent = (total / 100).toFixed(1) + '억원';
+            }
+
             alert('수입 데이터가 저장되었습니다!');
             closeModal('income-modal');
         }
@@ -1060,7 +1470,7 @@
                 const cells = row.querySelectorAll('td');
                 const rowData = {
                     account: cells[0].textContent,
-                    amount: parseFloat(cells[1].textContent) || 0,
+                    amount: parseNumber(cells[1].textContent),
                     type: cells[2].textContent,
                     note: cells[3].textContent
                 };
@@ -1071,9 +1481,9 @@
             // 로컬 스토리지에 저장
             localStorage.setItem('balanceData', JSON.stringify(data));
 
-            // 잔액 카드 업데이트
+            // 잔액 카드 업데이트 (백만원을 억원으로 변환)
             const balanceCard = document.querySelector('.stat-card[data-modal="balance"] .value');
-            balanceCard.textContent = totalBalance.toFixed(1) + '억원';
+            balanceCard.textContent = (totalBalance / 100).toFixed(1) + '억원';
 
             // 성공 메시지
             alert('잔액 데이터가 저장되었습니다!');
@@ -1098,11 +1508,22 @@
                 tbody.innerHTML = '';
 
                 jsonData.forEach(row => {
+                    const category = row['분류'] || row['category'] || '지원';
+                    let categoryClass = 'support';
+                    if (category === '발굴') categoryClass = 'discovery';
+                    else if (category === '일반관리비') categoryClass = 'general';
+
                     const tr = tbody.insertRow();
                     tr.innerHTML = `
-                        <td contenteditable="true">${row['항목'] || row['item'] || ''}</td>
-                        <td contenteditable="true">${row['금액'] || row['금액 (억원)'] || row['amount'] || 0}</td>
-                        <td contenteditable="true">${row['분류'] || row['category'] || ''}</td>
+                        <td>
+                            <select class="category-select ${categoryClass}" onchange="updateCategoryClass(this)">
+                                <option value="지원" ${category === '지원' ? 'selected' : ''}>지원</option>
+                                <option value="발굴" ${category === '발굴' ? 'selected' : ''}>발굴</option>
+                                <option value="일반관리비" ${category === '일반관리비' ? 'selected' : ''}>일반관리비</option>
+                            </select>
+                        </td>
+                        <td contenteditable="true">${row['상세분류'] || row['항목'] || row['item'] || ''}</td>
+                        <td contenteditable="true">${row['금액'] || row['금액 (백만원)'] || row['금액 (억원)'] || row['amount'] || 0}</td>
                         <td contenteditable="true">${row['비고'] || row['note'] || ''}</td>
                     `;
                 });
@@ -1131,8 +1552,8 @@
                 jsonData.forEach(row => {
                     const tr = tbody.insertRow();
                     tr.innerHTML = `
-                        <td contenteditable="true">${row['항목'] || row['item'] || ''}</td>
-                        <td contenteditable="true">${row['금액'] || row['금액 (억원)'] || row['amount'] || 0}</td>
+                        <td contenteditable="true">${row['상세분류'] || row['항목'] || row['item'] || ''}</td>
+                        <td contenteditable="true">${row['금액'] || row['금액 (백만원)'] || row['금액 (억원)'] || row['amount'] || 0}</td>
                         <td contenteditable="true">${row['수입원'] || row['source'] || ''}</td>
                         <td contenteditable="true">${row['비고'] || row['note'] || ''}</td>
                     `;
@@ -1163,7 +1584,7 @@
                     const tr = tbody.insertRow();
                     tr.innerHTML = `
                         <td contenteditable="true">${row['계좌/항목'] || row['account'] || ''}</td>
-                        <td contenteditable="true">${row['잔액'] || row['잔액 (억원)'] || row['amount'] || 0}</td>
+                        <td contenteditable="true">${row['잔액'] || row['잔액 (백만원)'] || row['잔액 (억원)'] || row['amount'] || 0}</td>
                         <td contenteditable="true">${row['종류'] || row['type'] || ''}</td>
                         <td contenteditable="true">${row['비고'] || row['note'] || ''}</td>
                     `;
@@ -1185,10 +1606,11 @@
             const data = [];
             rows.forEach(row => {
                 const cells = row.querySelectorAll('td');
+                const selectElement = cells[0].querySelector('select');
                 data.push({
-                    '항목': cells[0].textContent,
-                    '금액 (억원)': parseFloat(cells[1].textContent) || 0,
-                    '분류': cells[2].textContent,
+                    '분류': selectElement ? selectElement.value : cells[0].textContent,
+                    '상세분류': cells[1].textContent,
+                    '금액 (백만원)': parseNumber(cells[2].textContent),
                     '비고': cells[3].textContent
                 });
             });
@@ -1209,8 +1631,8 @@
             rows.forEach(row => {
                 const cells = row.querySelectorAll('td');
                 data.push({
-                    '항목': cells[0].textContent,
-                    '금액 (억원)': parseFloat(cells[1].textContent) || 0,
+                    '상세분류': cells[0].textContent,
+                    '금액 (백만원)': parseNumber(cells[1].textContent),
                     '수입원': cells[2].textContent,
                     '비고': cells[3].textContent
                 });
@@ -1233,7 +1655,7 @@
                 const cells = row.querySelectorAll('td');
                 data.push({
                     '계좌/항목': cells[0].textContent,
-                    '잔액 (억원)': parseFloat(cells[1].textContent) || 0,
+                    '잔액 (백만원)': parseNumber(cells[1].textContent),
                     '종류': cells[2].textContent,
                     '비고': cells[3].textContent
                 });
@@ -1248,46 +1670,42 @@
 
         // 페이지 로드 시 저장된 데이터 불러오기
         window.addEventListener('load', () => {
-            // 지출 데이터 로드
-            const expenseData = localStorage.getItem('expenseData');
-            if (expenseData) {
-                const data = JSON.parse(expenseData);
-                const tbody = document.querySelector('#expense-table tbody');
-                tbody.innerHTML = '';
+            // 기존 expenseData를 expenseData_2025로 마이그레이션
+            const oldExpenseData = localStorage.getItem('expenseData');
+            if (oldExpenseData && !localStorage.getItem('expenseData_2025')) {
+                localStorage.setItem('expenseData_2025', oldExpenseData);
+                localStorage.removeItem('expenseData');
+            }
+
+            // 2025년 지출 데이터로 카드 업데이트 (백만원을 억원으로 변환)
+            const expenseData2025 = localStorage.getItem('expenseData_2025');
+            if (expenseData2025) {
+                const data = JSON.parse(expenseData2025);
                 let total = 0;
                 data.forEach(row => {
-                    const tr = tbody.insertRow();
-                    tr.innerHTML = `
-                        <td contenteditable="true">${row.item}</td>
-                        <td contenteditable="true">${row.amount}</td>
-                        <td contenteditable="true">${row.category}</td>
-                        <td contenteditable="true">${row.note}</td>
-                    `;
                     total += row.amount;
                 });
                 const expenseCard = document.querySelector('.stat-card[data-modal="expense"] .value');
-                expenseCard.textContent = total.toFixed(1) + '억원';
+                expenseCard.textContent = (total / 100).toFixed(1) + '억원';
             }
 
-            // 수입 데이터 로드
-            const incomeData = localStorage.getItem('incomeData');
-            if (incomeData) {
-                const data = JSON.parse(incomeData);
-                const tbody = document.querySelector('#income-table tbody');
-                tbody.innerHTML = '';
+            // 기존 incomeData를 incomeData_2025로 마이그레이션
+            const oldIncomeData = localStorage.getItem('incomeData');
+            if (oldIncomeData && !localStorage.getItem('incomeData_2025')) {
+                localStorage.setItem('incomeData_2025', oldIncomeData);
+                localStorage.removeItem('incomeData');
+            }
+
+            // 2025년 수입 데이터로 카드 업데이트 (백만원을 억원으로 변환)
+            const incomeData2025 = localStorage.getItem('incomeData_2025');
+            if (incomeData2025) {
+                const data = JSON.parse(incomeData2025);
                 let total = 0;
                 data.forEach(row => {
-                    const tr = tbody.insertRow();
-                    tr.innerHTML = `
-                        <td contenteditable="true">${row.item}</td>
-                        <td contenteditable="true">${row.amount}</td>
-                        <td contenteditable="true">${row.source}</td>
-                        <td contenteditable="true">${row.note}</td>
-                    `;
                     total += row.amount;
                 });
                 const incomeCard = document.querySelector('.stat-card[data-modal="income"] .value');
-                incomeCard.textContent = total.toFixed(1) + '억원';
+                incomeCard.textContent = (total / 100).toFixed(1) + '억원';
             }
 
             // 잔액 데이터 로드
@@ -1301,25 +1719,31 @@
                     const tr = tbody.insertRow();
                     tr.innerHTML = `
                         <td contenteditable="true">${row.account}</td>
-                        <td contenteditable="true">${row.amount}</td>
+                        <td contenteditable="true">${formatNumber(row.amount)}</td>
                         <td contenteditable="true">${row.type}</td>
                         <td contenteditable="true">${row.note}</td>
                     `;
                     total += row.amount;
                 });
                 const balanceCard = document.querySelector('.stat-card[data-modal="balance"] .value');
-                balanceCard.textContent = total.toFixed(1) + '억원';
+                balanceCard.textContent = (total / 100).toFixed(1) + '억원';
             }
         });
 
+        // 현재 선택된 차트 연도
+        let currentChartYear = '2025';
+
+        // 차트 인스턴스 저장
+        let supportChart, discoveryChart, generalChart;
+
         // 1. 지원 세부항목 (도넛 차트)
         const supportCtx = document.getElementById('supportChart').getContext('2d');
-        new Chart(supportCtx, {
+        supportChart = new Chart(supportCtx, {
             type: 'doughnut',
             data: {
                 labels: ['멘토링비', '교육지원비', '공간지원비', '마케팅지원비', '기타지원'],
                 datasets: [{
-                    data: [3.5, 2.8, 2.1, 1.5, 0.8],
+                    data: [350, 280, 210, 150, 80],
                     backgroundColor: [
                         '#3B82F6',
                         '#06B6D4',
@@ -1347,7 +1771,7 @@
                     tooltip: {
                         callbacks: {
                             label: function(context) {
-                                return context.label + ': ' + context.parsed + '억원';
+                                return context.label + ': ' + formatNumber(context.parsed) + '백만원';
                             }
                         }
                     }
@@ -1357,12 +1781,12 @@
 
         // 2. 발굴 세부항목 (도넛 차트)
         const discoveryCtx = document.getElementById('discoveryChart').getContext('2d');
-        new Chart(discoveryCtx, {
+        discoveryChart = new Chart(discoveryCtx, {
             type: 'doughnut',
             data: {
                 labels: ['네트워킹 행사', '스카우팅', '데모데이', 'IR 지원', '평가비용'],
                 datasets: [{
-                    data: [2.2, 1.8, 1.5, 1.2, 0.9],
+                    data: [220, 180, 150, 120, 90],
                     backgroundColor: [
                         '#3B82F6',
                         '#06B6D4',
@@ -1390,7 +1814,7 @@
                     tooltip: {
                         callbacks: {
                             label: function(context) {
-                                return context.label + ': ' + context.parsed + '억원';
+                                return context.label + ': ' + formatNumber(context.parsed) + '백만원';
                             }
                         }
                     }
@@ -1400,12 +1824,12 @@
 
         // 3. 일반관리비 세부항목 (도넛 차트)
         const generalCtx = document.getElementById('generalChart').getContext('2d');
-        new Chart(generalCtx, {
+        generalChart = new Chart(generalCtx, {
             type: 'doughnut',
             data: {
                 labels: ['인건비', '사무실 임차료', '운영비', '시스템 운영', '기타 경비'],
                 datasets: [{
-                    data: [4.5, 2.1, 1.3, 0.8, 0.5],
+                    data: [450, 210, 130, 80, 50],
                     backgroundColor: [
                         '#3B82F6',
                         '#06B6D4',
@@ -1433,7 +1857,7 @@
                     tooltip: {
                         callbacks: {
                             label: function(context) {
-                                return context.label + ': ' + context.parsed + '억원';
+                                return context.label + ': ' + formatNumber(context.parsed) + '백만원';
                             }
                         }
                     }
@@ -1441,56 +1865,72 @@
             }
         });
 
-        // 4. 월별 수입/지출 현황
-        const monthlyChartCtx = document.getElementById('monthlyChart').getContext('2d');
-        new Chart(monthlyChartCtx, {
-            type: 'bar',
-            data: {
-                labels: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월'],
-                datasets: [{
-                    label: '수입',
-                    data: [2.1, 1.8, 2.3, 2.5, 2.0, 2.2, 2.4, 2.1, 2.3, 2.8],
-                    backgroundColor: '#3B82F6',
-                    borderRadius: 8
-                }, {
-                    label: '지출',
-                    data: [1.6, 1.5, 1.9, 2.0, 1.7, 1.8, 1.9, 1.6, 1.8, 2.1],
-                    backgroundColor: '#06B6D4',
-                    borderRadius: 8
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: {
-                        position: 'bottom',
-                        labels: {
-                            padding: 20
-                        }
-                    }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        ticks: {
-                            callback: function(value) {
-                                return value + '억원';
-                            }
-                        },
-                        grid: {
-                            color: 'rgba(255, 255, 255, 0.05)'
-                        }
-                    },
-                    x: {
-                        grid: {
-                            display: false
-                        }
-                    }
-                }
-            }
-        });
+        // 연도별 차트 데이터 전환 함수
+        function switchExpenseChartYear(year) {
+            currentChartYear = year;
 
-        // 5. 2019-2025년 항목별 예산 추이
+            // 탭 활성화 상태 변경
+            document.querySelectorAll('.year-tab-button-chart').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelector(`.year-tab-button-chart[data-year="${year}"]`).classList.add('active');
+
+            // 해당 연도의 데이터 로드
+            const yearData = localStorage.getItem(`expenseData_${year}`);
+
+            if (yearData) {
+                const data = JSON.parse(yearData);
+
+                // 분류별로 데이터 집계
+                const supportData = {};
+                const discoveryData = {};
+                const generalData = {};
+
+                data.forEach(row => {
+                    const category = row.category || '지원';
+                    const item = row.item || '기타';
+                    const amount = row.amount || 0;
+
+                    if (category === '지원') {
+                        supportData[item] = (supportData[item] || 0) + amount;
+                    } else if (category === '발굴') {
+                        discoveryData[item] = (discoveryData[item] || 0) + amount;
+                    } else if (category === '일반관리비') {
+                        generalData[item] = (generalData[item] || 0) + amount;
+                    }
+                });
+
+                // 지원 차트 업데이트
+                supportChart.data.labels = Object.keys(supportData);
+                supportChart.data.datasets[0].data = Object.values(supportData);
+                supportChart.update();
+
+                // 발굴 차트 업데이트
+                discoveryChart.data.labels = Object.keys(discoveryData);
+                discoveryChart.data.datasets[0].data = Object.values(discoveryData);
+                discoveryChart.update();
+
+                // 일반관리비 차트 업데이트
+                generalChart.data.labels = Object.keys(generalData);
+                generalChart.data.datasets[0].data = Object.values(generalData);
+                generalChart.update();
+            } else {
+                // 데이터가 없으면 기본 값 표시
+                supportChart.data.labels = ['데이터 없음'];
+                supportChart.data.datasets[0].data = [0];
+                supportChart.update();
+
+                discoveryChart.data.labels = ['데이터 없음'];
+                discoveryChart.data.datasets[0].data = [0];
+                discoveryChart.update();
+
+                generalChart.data.labels = ['데이터 없음'];
+                generalChart.data.datasets[0].data = [0];
+                generalChart.update();
+            }
+        }
+
+        // 4. 2019-2025년 항목별 예산 추이
         const yearlyTrendCtx = document.getElementById('yearlyTrendChart').getContext('2d');
         new Chart(yearlyTrendCtx, {
             type: 'line',
@@ -1556,12 +1996,12 @@
                             }
                         },
                         grid: {
-                            color: 'rgba(255, 255, 255, 0.05)'
+                            color: 'rgba(59, 130, 246, 0.1)'
                         }
                     },
                     x: {
                         grid: {
-                            color: 'rgba(255, 255, 255, 0.05)'
+                            color: 'rgba(59, 130, 246, 0.1)'
                         }
                     }
                 }
@@ -1630,12 +2070,12 @@
                             }
                         },
                         grid: {
-                            color: 'rgba(255, 255, 255, 0.05)'
+                            color: 'rgba(59, 130, 246, 0.1)'
                         }
                     },
                     x: {
                         grid: {
-                            color: 'rgba(255, 255, 255, 0.05)'
+                            color: 'rgba(59, 130, 246, 0.1)'
                         }
                     }
                 }
@@ -1684,7 +2124,7 @@
                             }
                         },
                         grid: {
-                            color: 'rgba(255, 255, 255, 0.05)'
+                            color: 'rgba(59, 130, 246, 0.1)'
                         }
                     },
                     x: {
