@@ -425,6 +425,13 @@
             white-space: nowrap;
         }
 
+        /* 분류 컬럼 너비 제한 */
+        #expense-table th:first-child,
+        #expense-table td:first-child {
+            width: 130px;
+            max-width: 130px;
+        }
+
         .modal-table td {
             padding: 12px 15px;
             border-bottom: 1px solid rgba(59, 130, 246, 0.1);
