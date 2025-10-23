@@ -353,6 +353,32 @@
             color: #3B82F6;
         }
 
+        .modal-header-actions {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .modal-goto-btn {
+            background: rgba(59, 130, 246, 0.15);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            color: #3B82F6;
+            font-size: 1rem;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .modal-goto-btn:hover {
+            background: rgba(59, 130, 246, 0.25);
+            transform: translateY(-2px);
+        }
+
         .modal-close {
             background: rgba(239, 68, 68, 0.2);
             border: 1px solid rgba(239, 68, 68, 0.3);
@@ -433,7 +459,8 @@
         }
 
         .category-select {
-            width: 100%;
+            width: auto;
+            min-width: 120px;
             padding: 8px 12px;
             border: 1px solid rgba(59, 130, 246, 0.3);
             border-radius: 6px;
@@ -728,9 +755,14 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h2><i class="fas fa-chart-line"></i> 총 지출 상세</h2>
-                    <button class="modal-close" onclick="closeModal('expense-modal')">
-                        <i class="fas fa-times"></i>
-                    </button>
+                    <div class="modal-header-actions">
+                        <button class="modal-goto-btn" onclick="goToYearlyComparison()" title="연도별 비교 표로 이동">
+                            <i class="fas fa-table"></i>
+                        </button>
+                        <button class="modal-close" onclick="closeModal('expense-modal')">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
                 </div>
 
                 <!-- 연도 탭 -->
@@ -1032,13 +1064,19 @@
                         <button class="tab-button" data-tab="general">일반관리비</button>
                     </div>
                     <div class="tab-content active" id="support-tab">
-                        <canvas id="supportChart"></canvas>
+                        <div style="max-height: 350px; position: relative;">
+                            <canvas id="supportChart"></canvas>
+                        </div>
                     </div>
                     <div class="tab-content" id="discovery-tab">
-                        <canvas id="discoveryChart"></canvas>
+                        <div style="max-height: 350px; position: relative;">
+                            <canvas id="discoveryChart"></canvas>
+                        </div>
                     </div>
                     <div class="tab-content" id="general-tab">
-                        <canvas id="generalChart"></canvas>
+                        <div style="max-height: 350px; position: relative;">
+                            <canvas id="generalChart"></canvas>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1151,6 +1189,14 @@
                     block: 'start'
                 });
             }
+        }
+
+        // 연도별 비교로 이동 (모달에서)
+        function goToYearlyComparison() {
+            closeModal('expense-modal');
+            setTimeout(() => {
+                scrollToSection('change-history');
+            }, 300);
         }
 
         // 분류 드롭다운 색상 업데이트
@@ -1757,14 +1803,14 @@
             },
             options: {
                 responsive: true,
-                maintainAspectRatio: true,
+                maintainAspectRatio: false,
                 plugins: {
                     legend: {
                         position: 'bottom',
                         labels: {
-                            padding: 20,
+                            padding: 15,
                             font: {
-                                size: 12
+                                size: 11
                             }
                         }
                     },
@@ -1800,14 +1846,14 @@
             },
             options: {
                 responsive: true,
-                maintainAspectRatio: true,
+                maintainAspectRatio: false,
                 plugins: {
                     legend: {
                         position: 'bottom',
                         labels: {
-                            padding: 20,
+                            padding: 15,
                             font: {
-                                size: 12
+                                size: 11
                             }
                         }
                     },
@@ -1843,14 +1889,14 @@
             },
             options: {
                 responsive: true,
-                maintainAspectRatio: true,
+                maintainAspectRatio: false,
                 plugins: {
                     legend: {
                         position: 'bottom',
                         labels: {
-                            padding: 20,
+                            padding: 15,
                             font: {
-                                size: 12
+                                size: 11
                             }
                         }
                     },
