@@ -1073,6 +1073,16 @@
                     <button class="year-tab-button-chart" data-year="2019" onclick="switchExpenseChartYear('2019')">2019</button>
                 </div>
 
+                <!-- 대분류 비교 차트 -->
+                <div style="background: rgba(255, 255, 255, 0.95); border-radius: 16px; padding: 25px; margin-bottom: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.08);">
+                    <h3 style="font-size: 1.1rem; color: #1e293b; margin-bottom: 20px; font-weight: 600;">
+                        <i class="fas fa-chart-pie"></i> 대분류별 지출 비교
+                    </h3>
+                    <div style="max-height: 300px; position: relative;">
+                        <canvas id="categoryComparisonChart"></canvas>
+                    </div>
+                </div>
+
                 <div class="tabs-container">
                     <div class="tabs" style="display: flex; justify-content: space-between; align-items: center;">
                         <div style="display: flex; gap: 10px;">
@@ -1966,7 +1976,32 @@
         let currentChartYear = '2025';
 
         // 차트 인스턴스 저장
-        let supportChart, discoveryChart, generalChart;
+        let supportChart, discoveryChart, generalChart, categoryComparisonChart;
+
+        // 예쁜 색상 팔레트
+        const colorPalette1 = [
+            '#6366F1', // 인디고
+            '#8B5CF6', // 보라
+            '#EC4899', // 핑크
+            '#F59E0B', // 앰버
+            '#10B981'  // 에메랄드
+        ];
+
+        const colorPalette2 = [
+            '#3B82F6', // 블루
+            '#06B6D4', // 시안
+            '#14B8A6', // 틸
+            '#10B981', // 그린
+            '#84CC16'  // 라임
+        ];
+
+        const colorPalette3 = [
+            '#F59E0B', // 앰버
+            '#EF4444', // 레드
+            '#EC4899', // 핑크
+            '#A855F7', // 퍼플
+            '#6366F1'  // 인디고
+        ];
 
         // 1. 지원 세부항목 (도넛 차트)
         const supportCtx = document.getElementById('supportChart').getContext('2d');
@@ -1976,15 +2011,11 @@
                 labels: ['멘토링비', '교육지원비', '공간지원비', '마케팅지원비', '기타지원'],
                 datasets: [{
                     data: [350, 280, 210, 150, 80],
-                    backgroundColor: [
-                        '#3B82F6',
-                        '#06B6D4',
-                        '#8B5CF6',
-                        '#EC4899',
-                        '#F59E0B'
-                    ],
-                    borderWidth: 2,
-                    borderColor: '#1e293b'
+                    backgroundColor: colorPalette1,
+                    borderWidth: 3,
+                    borderColor: '#ffffff',
+                    hoverBorderWidth: 5,
+                    hoverBorderColor: '#ffffff'
                 }]
             },
             options: {
@@ -2019,15 +2050,11 @@
                 labels: ['네트워킹 행사', '스카우팅', '데모데이', 'IR 지원', '평가비용'],
                 datasets: [{
                     data: [220, 180, 150, 120, 90],
-                    backgroundColor: [
-                        '#3B82F6',
-                        '#06B6D4',
-                        '#8B5CF6',
-                        '#EC4899',
-                        '#F59E0B'
-                    ],
-                    borderWidth: 2,
-                    borderColor: '#1e293b'
+                    backgroundColor: colorPalette2,
+                    borderWidth: 3,
+                    borderColor: '#ffffff',
+                    hoverBorderWidth: 5,
+                    hoverBorderColor: '#ffffff'
                 }]
             },
             options: {
@@ -2062,15 +2089,11 @@
                 labels: ['인건비', '사무실 임차료', '운영비', '시스템 운영', '기타 경비'],
                 datasets: [{
                     data: [450, 210, 130, 80, 50],
-                    backgroundColor: [
-                        '#3B82F6',
-                        '#06B6D4',
-                        '#8B5CF6',
-                        '#EC4899',
-                        '#F59E0B'
-                    ],
-                    borderWidth: 2,
-                    borderColor: '#1e293b'
+                    backgroundColor: colorPalette3,
+                    borderWidth: 3,
+                    borderColor: '#ffffff',
+                    hoverBorderWidth: 5,
+                    hoverBorderColor: '#ffffff'
                 }]
             },
             options: {
@@ -2090,6 +2113,54 @@
                         callbacks: {
                             label: function(context) {
                                 return context.label + ': ' + formatNumber(context.parsed) + '백만원';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // 4. 대분류 비교 차트 (도넛 차트)
+        const categoryComparisonCtx = document.getElementById('categoryComparisonChart').getContext('2d');
+        categoryComparisonChart = new Chart(categoryComparisonCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['지원', '발굴', '일반관리비'],
+                datasets: [{
+                    data: [1070, 760, 920],
+                    backgroundColor: [
+                        '#6366F1',  // 지원 - 인디고
+                        '#14B8A6',  // 발굴 - 틸
+                        '#F59E0B'   // 일반관리비 - 앰버
+                    ],
+                    borderWidth: 4,
+                    borderColor: '#ffffff',
+                    hoverBorderWidth: 6,
+                    hoverBorderColor: '#ffffff'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'right',
+                        labels: {
+                            padding: 20,
+                            font: {
+                                size: 13,
+                                weight: '600'
+                            },
+                            usePointStyle: true,
+                            pointStyle: 'circle'
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                const percentage = ((context.parsed / total) * 100).toFixed(1);
+                                return context.label + ': ' + formatNumber(context.parsed) + '백만원 (' + percentage + '%)';
                             }
                         }
                     }
@@ -2344,6 +2415,14 @@
                 generalChart.data.datasets[0].data = Object.values(generalData);
                 generalChart.update();
 
+                // 대분류 비교 차트 업데이트
+                const supportTotal = Object.values(supportData).reduce((a, b) => a + b, 0);
+                const discoveryTotal = Object.values(discoveryData).reduce((a, b) => a + b, 0);
+                const generalTotal = Object.values(generalData).reduce((a, b) => a + b, 0);
+
+                categoryComparisonChart.data.datasets[0].data = [supportTotal, discoveryTotal, generalTotal];
+                categoryComparisonChart.update();
+
                 // 옵션 1: 상세 테이블 업데이트
                 updateDetailTables(supportData, discoveryData, generalData);
 
@@ -2362,6 +2441,9 @@
                 generalChart.data.labels = ['데이터 없음'];
                 generalChart.data.datasets[0].data = [0];
                 generalChart.update();
+
+                categoryComparisonChart.data.datasets[0].data = [0, 0, 0];
+                categoryComparisonChart.update();
 
                 // 빈 테이블 표시
                 updateDetailTables({}, {}, {});
