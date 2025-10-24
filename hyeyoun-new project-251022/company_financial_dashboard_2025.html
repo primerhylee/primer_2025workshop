@@ -789,6 +789,9 @@
                             <i class="fas fa-plus"></i> 항목 추가
                         </button>
                         <div class="excel-buttons-right">
+                            <button class="btn btn-excel" onclick="downloadExpenseTemplate()" style="background: rgba(139, 92, 246, 0.2); color: #8B5CF6; border-color: rgba(139, 92, 246, 0.3);">
+                                <i class="fas fa-file-download"></i> 양식 다운로드
+                            </button>
                             <div class="file-input-wrapper">
                                 <button class="btn btn-excel">
                                     <i class="fas fa-upload"></i> 엑셀 업로드
@@ -919,6 +922,9 @@
                             <i class="fas fa-plus"></i> 항목 추가
                         </button>
                         <div class="excel-buttons-right">
+                            <button class="btn btn-excel" onclick="downloadIncomeTemplate()" style="background: rgba(139, 92, 246, 0.2); color: #8B5CF6; border-color: rgba(139, 92, 246, 0.3);">
+                                <i class="fas fa-file-download"></i> 양식 다운로드
+                            </button>
                             <div class="file-input-wrapper">
                                 <button class="btn btn-excel">
                                     <i class="fas fa-upload"></i> 엑셀 업로드
@@ -995,6 +1001,9 @@
                             <i class="fas fa-plus"></i> 항목 추가
                         </button>
                         <div class="excel-buttons-right">
+                            <button class="btn btn-excel" onclick="downloadBalanceTemplate()" style="background: rgba(139, 92, 246, 0.2); color: #8B5CF6; border-color: rgba(139, 92, 246, 0.3);">
+                                <i class="fas fa-file-download"></i> 양식 다운로드
+                            </button>
                             <div class="file-input-wrapper">
                                 <button class="btn btn-excel">
                                     <i class="fas fa-upload"></i> 엑셀 업로드
@@ -1647,6 +1656,86 @@
             };
             reader.readAsArrayBuffer(file);
             event.target.value = '';
+        }
+
+        // ========== 엑셀 양식 다운로드 기능 ==========
+
+        // 총 지출 양식 다운로드
+        function downloadExpenseTemplate() {
+            const templateData = [
+                {
+                    '분류': '지원',
+                    '상세분류': '멘토링비',
+                    '금액 (백만원)': 350,
+                    '비고': '스타트업 멘토링 프로그램'
+                },
+                {
+                    '분류': '발굴',
+                    '상세분류': '네트워킹 행사',
+                    '금액 (백만원)': 220,
+                    '비고': '창업자 네트워킹 이벤트'
+                },
+                {
+                    '분류': '일반관리비',
+                    '상세분류': '인건비',
+                    '금액 (백만원)': 450,
+                    '비고': '직원 급여'
+                }
+            ];
+
+            const worksheet = XLSX.utils.json_to_sheet(templateData);
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, '총 지출 양식');
+
+            XLSX.writeFile(workbook, '총_지출_업로드_양식.xlsx');
+        }
+
+        // 총 수입 양식 다운로드
+        function downloadIncomeTemplate() {
+            const templateData = [
+                {
+                    '상세분류': '정부 지원금',
+                    '금액 (백만원)': 850,
+                    '수입원': '정부사업',
+                    '비고': '중소기업청 지원'
+                },
+                {
+                    '상세분류': '투자 수익',
+                    '금액 (백만원)': 620,
+                    '수입원': '투자',
+                    '비고': '포트폴리오 기업 EXIT'
+                }
+            ];
+
+            const worksheet = XLSX.utils.json_to_sheet(templateData);
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, '총 수입 양식');
+
+            XLSX.writeFile(workbook, '총_수입_업로드_양식.xlsx');
+        }
+
+        // 잔액 양식 다운로드
+        function downloadBalanceTemplate() {
+            const templateData = [
+                {
+                    '계좌/항목': '운영자금 계좌',
+                    '잔액 (백만원)': 210,
+                    '종류': '예금',
+                    '비고': '일상 운영 자금'
+                },
+                {
+                    '계좌/항목': '투자 펀드',
+                    '잔액 (백만원)': 150,
+                    '종류': '투자',
+                    '비고': '스타트업 투자금'
+                }
+            ];
+
+            const worksheet = XLSX.utils.json_to_sheet(templateData);
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, '잔액 양식');
+
+            XLSX.writeFile(workbook, '잔액_업로드_양식.xlsx');
         }
 
         // ========== 엑셀 다운로드 기능 ==========
