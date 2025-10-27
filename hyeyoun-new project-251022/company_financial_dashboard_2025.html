@@ -1053,6 +1053,67 @@
             </div>
         </div>
 
+        <!-- 상세 내역 모달 (드릴다운) -->
+        <div id="detail-modal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2><i class="fas fa-list-alt"></i> <span id="detail-modal-title">상세 내역</span></h2>
+                    <button class="modal-close" onclick="closeModal('detail-modal')">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+
+                <!-- 연도 탭 -->
+                <div class="year-tabs">
+                    <button class="year-tab-button active" data-year="2025" onclick="switchDetailYear('2025')">2025</button>
+                    <button class="year-tab-button" data-year="2024" onclick="switchDetailYear('2024')">2024</button>
+                    <button class="year-tab-button" data-year="2023" onclick="switchDetailYear('2023')">2023</button>
+                    <button class="year-tab-button" data-year="2022" onclick="switchDetailYear('2022')">2022</button>
+                    <button class="year-tab-button" data-year="2021" onclick="switchDetailYear('2021')">2021</button>
+                    <button class="year-tab-button" data-year="2020" onclick="switchDetailYear('2020')">2020</button>
+                    <button class="year-tab-button" data-year="2019" onclick="switchDetailYear('2019')">2019</button>
+                </div>
+
+                <div class="modal-table-container">
+                    <div class="excel-buttons">
+                        <button class="btn btn-add" onclick="addDetailRow()">
+                            <i class="fas fa-plus"></i> 항목 추가
+                        </button>
+                        <div class="excel-buttons-right">
+                            <button class="btn btn-excel" onclick="downloadDetailTemplate()" style="background: rgba(139, 92, 246, 0.2); color: #8B5CF6; border-color: rgba(139, 92, 246, 0.3);">
+                                <i class="fas fa-file-download"></i> 양식 다운로드
+                            </button>
+                            <div class="file-input-wrapper">
+                                <button class="btn btn-excel">
+                                    <i class="fas fa-upload"></i> 엑셀 업로드
+                                </button>
+                                <input type="file" id="detail-upload" accept=".xlsx, .xls" onchange="uploadDetailExcel(event)">
+                            </div>
+                            <button class="btn btn-excel" onclick="downloadDetailExcel()">
+                                <i class="fas fa-download"></i> 엑셀 다운로드
+                            </button>
+                        </div>
+                    </div>
+                    <table class="modal-table" id="detail-table">
+                        <thead>
+                            <tr>
+                                <th>소분류</th>
+                                <th>금액 (백만원)</th>
+                                <th>비고</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- 데이터가 동적으로 로드됩니다 -->
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-actions">
+                    <button class="btn btn-secondary" onclick="closeModal('detail-modal')">취소</button>
+                    <button class="btn btn-primary" onclick="saveDetailData()">저장</button>
+                </div>
+            </div>
+        </div>
+
         <!-- Charts Grid -->
         <div class="chart-grid" id="expense-structure">
             <!-- 지출 구조 (탭) -->
@@ -1388,6 +1449,247 @@
             }
         }
 
+        // 상세 내역 모달 열기 (드릴다운)
+        let currentDetailCategory = '';
+        let currentDetailItem = '';
+        let currentDetailYear = '2025';
+
+        function openDetailModal(category, itemName, year) {
+            currentDetailCategory = category;
+            currentDetailItem = itemName;
+            currentDetailYear = year;
+
+            // 모달 제목 업데이트
+            document.getElementById('detail-modal-title').textContent = `${category} > ${itemName} 상세 내역`;
+
+            // 연도 탭 업데이트
+            document.querySelectorAll('#detail-modal .year-tab-button').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.dataset.year === year) {
+                    btn.classList.add('active');
+                }
+            });
+
+            // 상세 데이터 로드
+            loadDetailData(category, itemName, year);
+
+            // 모달 열기
+            document.getElementById('detail-modal').classList.add('active');
+        }
+
+        // 상세 데이터 로드
+        function loadDetailData(category, itemName, year) {
+            const key = `detailData_${year}`;
+            const savedData = localStorage.getItem(key);
+            const tbody = document.querySelector('#detail-table tbody');
+            tbody.innerHTML = '';
+
+            if (savedData) {
+                const allData = JSON.parse(savedData);
+                // 해당 카테고리와 아이템에 맞는 데이터만 필터링
+                const filteredData = allData.filter(row =>
+                    row.category === category && row.item === itemName
+                );
+
+                if (filteredData.length > 0) {
+                    filteredData.forEach(row => {
+                        const tr = tbody.insertRow();
+                        tr.innerHTML = `
+                            <td contenteditable="true">${row.subitem || ''}</td>
+                            <td contenteditable="true">${formatNumber(row.amount || 0)}</td>
+                            <td contenteditable="true">${row.note || ''}</td>
+                        `;
+                    });
+                } else {
+                    // 데이터가 없으면 빈 행 1개
+                    tbody.innerHTML = `
+                        <tr>
+                            <td contenteditable="true">새 항목</td>
+                            <td contenteditable="true">0</td>
+                            <td contenteditable="true">비고</td>
+                        </tr>
+                    `;
+                }
+            } else {
+                // 저장된 데이터가 없으면 빈 행 1개
+                tbody.innerHTML = `
+                    <tr>
+                        <td contenteditable="true">새 항목</td>
+                        <td contenteditable="true">0</td>
+                        <td contenteditable="true">비고</td>
+                    </tr>
+                `;
+            }
+        }
+
+        // 상세 데이터 저장
+        function saveDetailData() {
+            const table = document.getElementById('detail-table');
+            const rows = table.querySelectorAll('tbody tr');
+
+            const key = `detailData_${currentDetailYear}`;
+            const savedData = localStorage.getItem(key);
+            let allData = savedData ? JSON.parse(savedData) : [];
+
+            // 기존 데이터에서 현재 카테고리/아이템 제거
+            allData = allData.filter(row =>
+                !(row.category === currentDetailCategory && row.item === currentDetailItem)
+            );
+
+            // 새 데이터 추가
+            rows.forEach(row => {
+                const cells = row.querySelectorAll('td');
+                const rowData = {
+                    category: currentDetailCategory,
+                    item: currentDetailItem,
+                    subitem: cells[0].textContent.trim(),
+                    amount: parseNumber(cells[1].textContent),
+                    note: cells[2].textContent.trim()
+                };
+                if (rowData.subitem && rowData.amount > 0) {
+                    allData.push(rowData);
+                }
+            });
+
+            // 저장
+            localStorage.setItem(key, JSON.stringify(allData));
+
+            // 메인 차트 업데이트 (선택적)
+            switchExpenseChartYear(currentDetailYear);
+
+            closeModal('detail-modal');
+            alert('저장되었습니다!');
+        }
+
+        // 상세 항목 추가
+        function addDetailRow() {
+            const tbody = document.querySelector('#detail-table tbody');
+            const newRow = tbody.insertRow();
+            newRow.innerHTML = `
+                <td contenteditable="true">새 항목</td>
+                <td contenteditable="true">0</td>
+                <td contenteditable="true">비고</td>
+            `;
+        }
+
+        // 상세 연도 전환
+        function switchDetailYear(year) {
+            currentDetailYear = year;
+
+            // 탭 활성화
+            document.querySelectorAll('#detail-modal .year-tab-button').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.dataset.year === year) {
+                    btn.classList.add('active');
+                }
+            });
+
+            // 데이터 로드
+            loadDetailData(currentDetailCategory, currentDetailItem, year);
+        }
+
+        // 상세 템플릿 다운로드
+        function downloadDetailTemplate() {
+            const templateData = [
+                {
+                    '대분류': '일반관리비',
+                    '중분류': '인건비',
+                    '소분류': '급여',
+                    '금액 (백만원)': 500,
+                    '비고': '직원 월급여'
+                },
+                {
+                    '대분류': '일반관리비',
+                    '중분류': '인건비',
+                    '소분류': '상여금',
+                    '금액 (백만원)': 300,
+                    '비고': '성과급'
+                },
+                {
+                    '대분류': '지원',
+                    '중분류': '멘토링비',
+                    '소분류': '전문가 멘토링',
+                    '금액 (백만원)': 200,
+                    '비고': '외부 전문가 초청'
+                }
+            ];
+
+            const worksheet = XLSX.utils.json_to_sheet(templateData);
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, '상세내역 양식');
+            XLSX.writeFile(workbook, '상세내역_업로드_양식.xlsx');
+        }
+
+        // 상세 엑셀 업로드
+        function uploadDetailExcel(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const data = new Uint8Array(e.target.result);
+                const workbook = XLSX.read(data, { type: 'array' });
+                const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+                const rows = XLSX.utils.sheet_to_json(firstSheet);
+
+                const key = `detailData_${currentDetailYear}`;
+                const savedData = localStorage.getItem(key);
+                let allData = savedData ? JSON.parse(savedData) : [];
+
+                // 기존 데이터에서 현재 카테고리/아이템 제거
+                allData = allData.filter(row =>
+                    !(row.category === currentDetailCategory && row.item === currentDetailItem)
+                );
+
+                // 새 데이터 추가
+                rows.forEach(row => {
+                    const category = row['대분류'] || row['category'] || currentDetailCategory;
+                    const item = row['중분류'] || row['item'] || currentDetailItem;
+
+                    // 현재 모달의 카테고리/아이템과 일치하는 것만 추가
+                    if (category === currentDetailCategory && item === currentDetailItem) {
+                        allData.push({
+                            category: category,
+                            item: item,
+                            subitem: row['소분류'] || row['subitem'] || '',
+                            amount: parseNumber(row['금액 (백만원)'] || row['amount'] || 0),
+                            note: row['비고'] || row['note'] || ''
+                        });
+                    }
+                });
+
+                localStorage.setItem(key, JSON.stringify(allData));
+                loadDetailData(currentDetailCategory, currentDetailItem, currentDetailYear);
+                alert('업로드 완료!');
+            };
+
+            reader.readAsArrayBuffer(file);
+            event.target.value = '';
+        }
+
+        // 상세 엑셀 다운로드
+        function downloadDetailExcel() {
+            const table = document.getElementById('detail-table');
+            const rows = table.querySelectorAll('tbody tr');
+
+            const data = [];
+            rows.forEach(row => {
+                const cells = row.querySelectorAll('td');
+                data.push({
+                    '대분류': currentDetailCategory,
+                    '중분류': currentDetailItem,
+                    '소분류': cells[0].textContent.trim(),
+                    '금액 (백만원)': parseNumber(cells[1].textContent),
+                    '비고': cells[2].textContent.trim()
+                });
+            });
+
+            const worksheet = XLSX.utils.json_to_sheet(data);
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, '상세내역');
+            XLSX.writeFile(workbook, `상세내역_${currentDetailCategory}_${currentDetailItem}_${currentDetailYear}.xlsx`);
+        }
+
         // 모달 배경 클릭 시 닫기
         document.querySelectorAll('.modal').forEach(modal => {
             modal.addEventListener('click', (e) => {
@@ -1657,7 +1959,7 @@
 
         // ========== 엑셀 업로드 기능 ==========
 
-        // 총 지출 엑셀 업로드
+        // 총 지출 엑셀 업로드 (3단계 구조 지원)
         function uploadExpenseExcel(event) {
             const file = event.target.files[0];
             if (!file) return;
@@ -1672,28 +1974,63 @@
                 const tbody = document.querySelector('#expense-table tbody');
                 tbody.innerHTML = '';
 
-                jsonData.forEach(row => {
-                    const category = row['분류'] || row['category'] || '지원';
-                    let categoryClass = 'support';
-                    if (category === '발굴') categoryClass = 'discovery';
-                    else if (category === '일반관리비') categoryClass = 'general';
+                // 상세 데이터 저장용
+                const detailDataKey = `detailData_${currentExpenseYear}`;
+                let detailData = [];
 
-                    const tr = tbody.insertRow();
-                    tr.innerHTML = `
-                        <td>
-                            <select class="category-select ${categoryClass}" onchange="updateCategoryClass(this)">
-                                <option value="지원" ${category === '지원' ? 'selected' : ''}>지원</option>
-                                <option value="발굴" ${category === '발굴' ? 'selected' : ''}>발굴</option>
-                                <option value="일반관리비" ${category === '일반관리비' ? 'selected' : ''}>일반관리비</option>
-                            </select>
-                        </td>
-                        <td contenteditable="true">${row['상세분류'] || row['항목'] || row['item'] || ''}</td>
-                        <td contenteditable="true">${row['금액'] || row['금액 (백만원)'] || row['금액 (억원)'] || row['amount'] || 0}</td>
-                        <td contenteditable="true">${row['비고'] || row['note'] || ''}</td>
-                    `;
+                // 중복 제거를 위한 Set
+                const addedItems = new Set();
+
+                jsonData.forEach(row => {
+                    const category = row['분류'] || row['대분류'] || row['category'] || '지원';
+                    const item = row['상세분류'] || row['중분류'] || row['항목'] || row['item'] || '';
+                    const subitem = row['소분류'] || row['subitem'] || '';
+                    const amount = parseNumber(row['금액'] || row['금액 (백만원)'] || row['금액 (억원)'] || row['amount'] || 0);
+                    const note = row['비고'] || row['note'] || '';
+
+                    // 소분류가 있는 경우 상세 데이터에 추가
+                    if (subitem) {
+                        detailData.push({
+                            category: category,
+                            item: item,
+                            subitem: subitem,
+                            amount: amount,
+                            note: note
+                        });
+                    }
+
+                    // 중분류(상세분류)를 메인 테이블에 추가 (중복 방지)
+                    const itemKey = `${category}|${item}`;
+                    if (!addedItems.has(itemKey) && item) {
+                        addedItems.add(itemKey);
+
+                        let categoryClass = 'support';
+                        if (category === '발굴') categoryClass = 'discovery';
+                        else if (category === '일반관리비') categoryClass = 'general';
+
+                        const tr = tbody.insertRow();
+                        tr.innerHTML = `
+                            <td>
+                                <select class="category-select ${categoryClass}" onchange="updateCategoryClass(this)">
+                                    <option value="지원" ${category === '지원' ? 'selected' : ''}>지원</option>
+                                    <option value="발굴" ${category === '발굴' ? 'selected' : ''}>발굴</option>
+                                    <option value="일반관리비" ${category === '일반관리비' ? 'selected' : ''}>일반관리비</option>
+                                </select>
+                            </td>
+                            <td contenteditable="true">${item}</td>
+                            <td contenteditable="true">${formatNumber(amount)}</td>
+                            <td contenteditable="true">${note}</td>
+                        `;
+                    }
                 });
 
-                alert('엑셀 파일이 성공적으로 업로드되었습니다!');
+                // 상세 데이터가 있으면 저장
+                if (detailData.length > 0) {
+                    localStorage.setItem(detailDataKey, JSON.stringify(detailData));
+                }
+
+                alert('엑셀 파일이 성공적으로 업로드되었습니다!' +
+                      (detailData.length > 0 ? `\n상세 항목 ${detailData.length}개가 포함되어 있습니다.` : ''));
             };
             reader.readAsArrayBuffer(file);
             event.target.value = ''; // 같은 파일 재선택 가능하도록
@@ -1763,32 +2100,60 @@
 
         // ========== 엑셀 양식 다운로드 기능 ==========
 
-        // 총 지출 양식 다운로드
+        // 총 지출 양식 다운로드 (3단계 구조 지원)
         function downloadExpenseTemplate() {
             const templateData = [
                 {
                     '분류': '지원',
                     '상세분류': '멘토링비',
+                    '소분류': '',
                     '금액 (백만원)': 350,
                     '비고': '스타트업 멘토링 프로그램'
                 },
                 {
                     '분류': '발굴',
                     '상세분류': '네트워킹 행사',
+                    '소분류': '',
                     '금액 (백만원)': 220,
                     '비고': '창업자 네트워킹 이벤트'
                 },
                 {
                     '분류': '일반관리비',
                     '상세분류': '인건비',
-                    '금액 (백만원)': 450,
-                    '비고': '직원 급여'
+                    '소분류': '급여',
+                    '금액 (백만원)': 500,
+                    '비고': '직원 월급여'
+                },
+                {
+                    '분류': '일반관리비',
+                    '상세분류': '인건비',
+                    '소분류': '상여금',
+                    '금액 (백만원)': 300,
+                    '비고': '성과급'
+                },
+                {
+                    '분류': '일반관리비',
+                    '상세분류': '인건비',
+                    '소분류': '퇴직금',
+                    '금액 (백만원)': 300,
+                    '비고': '퇴직적립금'
                 }
             ];
 
             const worksheet = XLSX.utils.json_to_sheet(templateData);
             const workbook = XLSX.utils.book_new();
             XLSX.utils.book_append_sheet(workbook, worksheet, '총 지출 양식');
+
+            // 참고사항 시트 추가
+            const notesData = [
+                { '항목': '분류', '설명': '지원, 발굴, 일반관리비 중 선택', '필수': 'O' },
+                { '항목': '상세분류', '설명': '중분류 항목명 (예: 인건비, 멘토링비)', '필수': 'O' },
+                { '항목': '소분류', '설명': '상세 항목명 (선택사항, 입력 시 차트 클릭으로 조회 가능)', '필수': 'X' },
+                { '항목': '금액 (백만원)', '설명': '백만원 단위 금액', '필수': 'O' },
+                { '항목': '비고', '설명': '추가 설명', '필수': 'X' }
+            ];
+            const notesSheet = XLSX.utils.json_to_sheet(notesData);
+            XLSX.utils.book_append_sheet(workbook, notesSheet, '작성 가이드');
 
             XLSX.writeFile(workbook, '총_지출_업로드_양식.xlsx');
         }
@@ -2024,6 +2389,13 @@
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
+                onClick: (event, activeElements) => {
+                    if (activeElements.length > 0) {
+                        const index = activeElements[0].index;
+                        const itemName = supportChart.data.labels[index];
+                        openDetailModal('지원', itemName, currentChartYear);
+                    }
+                },
                 plugins: {
                     legend: {
                         position: 'bottom',
@@ -2032,6 +2404,11 @@
                             font: {
                                 size: 11
                             }
+                        },
+                        onClick: (event, legendItem, legend) => {
+                            const index = legendItem.index;
+                            const itemName = supportChart.data.labels[index];
+                            openDetailModal('지원', itemName, currentChartYear);
                         }
                     },
                     tooltip: {
@@ -2063,6 +2440,13 @@
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
+                onClick: (event, activeElements) => {
+                    if (activeElements.length > 0) {
+                        const index = activeElements[0].index;
+                        const itemName = discoveryChart.data.labels[index];
+                        openDetailModal('발굴', itemName, currentChartYear);
+                    }
+                },
                 plugins: {
                     legend: {
                         position: 'bottom',
@@ -2071,6 +2455,11 @@
                             font: {
                                 size: 11
                             }
+                        },
+                        onClick: (event, legendItem, legend) => {
+                            const index = legendItem.index;
+                            const itemName = discoveryChart.data.labels[index];
+                            openDetailModal('발굴', itemName, currentChartYear);
                         }
                     },
                     tooltip: {
@@ -2102,6 +2491,13 @@
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
+                onClick: (event, activeElements) => {
+                    if (activeElements.length > 0) {
+                        const index = activeElements[0].index;
+                        const itemName = generalChart.data.labels[index];
+                        openDetailModal('일반관리비', itemName, currentChartYear);
+                    }
+                },
                 plugins: {
                     legend: {
                         position: 'bottom',
@@ -2110,6 +2506,11 @@
                             font: {
                                 size: 11
                             }
+                        },
+                        onClick: (event, legendItem, legend) => {
+                            const index = legendItem.index;
+                            const itemName = generalChart.data.labels[index];
+                            openDetailModal('일반관리비', itemName, currentChartYear);
                         }
                     },
                     tooltip: {
