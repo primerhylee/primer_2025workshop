@@ -1075,10 +1075,13 @@
 
                 <!-- 대분류 비교 차트 -->
                 <div style="background: rgba(255, 255, 255, 0.95); border-radius: 16px; padding: 25px; margin-bottom: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.08);">
-                    <h3 style="font-size: 1.1rem; color: #1e293b; margin-bottom: 20px; font-weight: 600;">
-                        <i class="fas fa-chart-pie"></i> 대분류별 지출 비교
+                    <h3 style="font-size: 1.1rem; color: #1e293b; margin-bottom: 10px; font-weight: 600;">
+                        <i class="fas fa-chart-pie"></i> 지출 구조 (클릭하여 상세 보기)
                     </h3>
-                    <div style="max-height: 300px; position: relative;">
+                    <p style="font-size: 0.85rem; color: #64748b; margin-bottom: 20px;">
+                        💡 차트를 클릭하면 해당 분류의 상세 내역을 확인할 수 있습니다
+                    </p>
+                    <div style="max-height: 300px; position: relative; cursor: pointer;">
                         <canvas id="categoryComparisonChart"></canvas>
                     </div>
                 </div>
@@ -2120,6 +2123,38 @@
             }
         });
 
+        // 탭 전환 함수
+        function switchTab(tabName) {
+            // 모든 탭 버튼 비활성화
+            document.querySelectorAll('.tab-button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            // 모든 탭 콘텐츠 숨기기
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+
+            // 선택된 탭 활성화
+            const selectedButton = document.querySelector(`.tab-button[data-tab="${tabName}"]`);
+            if (selectedButton) {
+                selectedButton.classList.add('active');
+            }
+
+            const selectedContent = document.getElementById(`${tabName}-tab`);
+            if (selectedContent) {
+                selectedContent.classList.add('active');
+            }
+
+            // 해당 섹션으로 스크롤
+            setTimeout(() => {
+                const tabsContainer = document.querySelector('.tabs-container');
+                if (tabsContainer) {
+                    tabsContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                }
+            }, 100);
+        }
+
         // 4. 대분류 비교 차트 (도넛 차트)
         const categoryComparisonCtx = document.getElementById('categoryComparisonChart').getContext('2d');
         categoryComparisonChart = new Chart(categoryComparisonCtx, {
@@ -2142,6 +2177,13 @@
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
+                onClick: (event, activeElements) => {
+                    if (activeElements.length > 0) {
+                        const index = activeElements[0].index;
+                        const tabNames = ['support', 'discovery', 'general'];
+                        switchTab(tabNames[index]);
+                    }
+                },
                 plugins: {
                     legend: {
                         position: 'right',
@@ -2153,6 +2195,11 @@
                             },
                             usePointStyle: true,
                             pointStyle: 'circle'
+                        },
+                        onClick: (event, legendItem, legend) => {
+                            const index = legendItem.index;
+                            const tabNames = ['support', 'discovery', 'general'];
+                            switchTab(tabNames[index]);
                         }
                     },
                     tooltip: {
