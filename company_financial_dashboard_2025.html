@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>2025년 프라이머 전략팀 워크샵</title>
+    <title>프라이머 전략팀 워크샵</title>
 
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -26,7 +26,7 @@
 
         body {
             font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            background: linear-gradient(135deg, #FFF5F5 0%, #FFEDD5 100%);
             color: #1e293b;
             min-height: 100vh;
             padding: 20px;
@@ -45,18 +45,25 @@
             background: rgba(255, 255, 255, 0.8);
             backdrop-filter: blur(10px);
             border-radius: 20px;
-            border: 1px solid rgba(59, 130, 246, 0.2);
-            box-shadow: 0 4px 20px rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            box-shadow: 0 4px 20px rgba(239, 68, 68, 0.1);
         }
 
         .header h1 {
             font-size: 3rem;
             font-weight: 700;
-            background: linear-gradient(135deg, #3B82F6 0%, #06B6D4 100%);
+            background: linear-gradient(135deg, #DC2626 0%, #F97316 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
             margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .header h1:hover {
+            transform: scale(1.02);
+            opacity: 0.8;
         }
 
         .header p {
@@ -77,16 +84,16 @@
             backdrop-filter: blur(10px);
             border-radius: 16px;
             padding: 30px;
-            border: 1px solid rgba(59, 130, 246, 0.2);
+            border: 1px solid rgba(239, 68, 68, 0.2);
             transition: all 0.3s ease;
             cursor: pointer;
-            box-shadow: 0 2px 10px rgba(59, 130, 246, 0.08);
+            box-shadow: 0 2px 10px rgba(239, 68, 68, 0.08);
         }
 
         .stat-card:hover {
             transform: translateY(-5px);
-            border-color: #3B82F6;
-            box-shadow: 0 10px 40px rgba(59, 130, 246, 0.2);
+            border-color: #EF4444;
+            box-shadow: 0 10px 40px rgba(239, 68, 68, 0.2);
         }
 
         .stat-card .icon {
@@ -98,7 +105,7 @@
             justify-content: center;
             font-size: 1.8rem;
             margin-bottom: 15px;
-            background: linear-gradient(135deg, #3B82F6 0%, #06B6D4 100%);
+            background: linear-gradient(135deg, #DC2626 0%, #F97316 100%);
         }
 
         .stat-card h3 {
@@ -143,8 +150,8 @@
             backdrop-filter: blur(10px);
             border-radius: 16px;
             padding: 30px;
-            border: 1px solid rgba(59, 130, 246, 0.2);
-            box-shadow: 0 2px 10px rgba(59, 130, 246, 0.08);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            box-shadow: 0 2px 10px rgba(239, 68, 68, 0.08);
         }
 
         .chart-container h2 {
@@ -154,10 +161,11 @@
             display: flex;
             align-items: center;
             gap: 10px;
+            font-weight: 700;
         }
 
         .chart-container h2 i {
-            color: #3B82F6;
+            color: #EF4444;
         }
 
         /* Tabs */
@@ -169,7 +177,7 @@
             display: flex;
             gap: 10px;
             margin-bottom: 20px;
-            border-bottom: 2px solid rgba(59, 130, 246, 0.2);
+            border-bottom: 2px solid rgba(239, 68, 68, 0.2);
         }
 
         .tab-button {
@@ -188,13 +196,13 @@
         }
 
         .tab-button:hover {
-            color: #3B82F6;
+            color: #DC2626;
         }
 
         .tab-button.active {
             color: #1e293b;
-            border-bottom-color: #3B82F6;
-            background: rgba(59, 130, 246, 0.1);
+            border-bottom-color: #EF4444;
+            background: rgba(239, 68, 68, 0.1);
         }
 
         /* Quick Navigation */
@@ -204,8 +212,8 @@
             border-radius: 16px;
             padding: 20px;
             margin-bottom: 30px;
-            border: 1px solid rgba(59, 130, 246, 0.2);
-            box-shadow: 0 2px 10px rgba(59, 130, 246, 0.08);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            box-shadow: 0 2px 10px rgba(239, 68, 68, 0.08);
         }
 
         .quick-nav h3 {
@@ -222,9 +230,9 @@
         }
 
         .quick-nav-btn {
-            background: rgba(59, 130, 246, 0.1);
-            border: 1px solid rgba(59, 130, 246, 0.3);
-            color: #3B82F6;
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #DC2626;
             padding: 10px 20px;
             font-size: 0.95rem;
             font-weight: 600;
@@ -238,10 +246,10 @@
         }
 
         .quick-nav-btn:hover {
-            background: #3B82F6;
+            background: #EF4444;
             color: #fff;
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
         }
 
         .quick-nav-btn i {
@@ -254,7 +262,7 @@
             gap: 5px;
             margin-bottom: 20px;
             padding: 10px;
-            background: rgba(59, 130, 246, 0.05);
+            background: rgba(239, 68, 68, 0.05);
             border-radius: 12px;
             flex-wrap: wrap;
         }
@@ -263,7 +271,7 @@
         .year-tab-button-income,
         .year-tab-button-chart {
             background: rgba(255, 255, 255, 0.8);
-            border: 1px solid rgba(59, 130, 246, 0.2);
+            border: 1px solid rgba(239, 68, 68, 0.2);
             color: #64748b;
             padding: 8px 16px;
             font-size: 0.95rem;
@@ -277,17 +285,17 @@
         .year-tab-button:hover,
         .year-tab-button-income:hover,
         .year-tab-button-chart:hover {
-            background: rgba(59, 130, 246, 0.1);
-            border-color: #3B82F6;
-            color: #3B82F6;
+            background: rgba(239, 68, 68, 0.1);
+            border-color: #EF4444;
+            color: #DC2626;
         }
 
         .year-tab-button.active,
         .year-tab-button-income.active,
         .year-tab-button-chart.active {
-            background: #3B82F6;
+            background: #EF4444;
             color: #fff;
-            border-color: #3B82F6;
+            border-color: #EF4444;
         }
 
         .tab-content {
@@ -338,7 +346,7 @@
             align-items: center;
             margin-bottom: 30px;
             padding-bottom: 20px;
-            border-bottom: 2px solid rgba(59, 130, 246, 0.3);
+            border-bottom: 2px solid rgba(239, 68, 68, 0.3);
         }
 
         .modal-header h2 {
@@ -350,7 +358,7 @@
         }
 
         .modal-header h2 i {
-            color: #3B82F6;
+            color: #EF4444;
         }
 
         .modal-header-actions {
@@ -360,9 +368,9 @@
         }
 
         .modal-goto-btn {
-            background: rgba(59, 130, 246, 0.15);
-            border: 1px solid rgba(59, 130, 246, 0.3);
-            color: #3B82F6;
+            background: rgba(239, 68, 68, 0.15);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #EF4444;
             font-size: 1rem;
             width: 40px;
             height: 40px;
@@ -375,7 +383,7 @@
         }
 
         .modal-goto-btn:hover {
-            background: rgba(59, 130, 246, 0.25);
+            background: rgba(239, 68, 68, 0.25);
             transform: translateY(-2px);
         }
 
@@ -411,7 +419,7 @@
         }
 
         .modal-table thead {
-            background: rgba(59, 130, 246, 0.15);
+            background: rgba(239, 68, 68, 0.15);
             position: sticky;
             top: 0;
         }
@@ -419,10 +427,11 @@
         .modal-table th {
             padding: 15px;
             text-align: left;
-            font-weight: 600;
-            color: #3B82F6;
-            border-bottom: 2px solid rgba(59, 130, 246, 0.3);
+            font-weight: 700;
+            color: #1e293b;
+            border-bottom: 2px solid rgba(239, 68, 68, 0.3);
             white-space: nowrap;
+            background: rgba(239, 68, 68, 0.1);
         }
 
         /* 분류 컬럼 너비 제한 */
@@ -434,42 +443,42 @@
 
         .modal-table td {
             padding: 12px 15px;
-            border-bottom: 1px solid rgba(59, 130, 246, 0.1);
+            border-bottom: 1px solid rgba(239, 68, 68, 0.1);
             color: #334155;
         }
 
         .modal-table td[contenteditable="true"] {
-            background: rgba(59, 130, 246, 0.05);
+            background: rgba(239, 68, 68, 0.05);
             border-radius: 4px;
             cursor: text;
             transition: all 0.2s ease;
         }
 
         .modal-table td[contenteditable="true"]:hover {
-            background: rgba(59, 130, 246, 0.1);
+            background: rgba(239, 68, 68, 0.1);
         }
 
         .modal-table td[contenteditable="true"]:focus {
-            outline: 2px solid #3B82F6;
-            background: rgba(59, 130, 246, 0.15);
+            outline: 2px solid #EF4444;
+            background: rgba(239, 68, 68, 0.15);
         }
 
         .modal-table tr:hover {
-            background: rgba(59, 130, 246, 0.03);
+            background: rgba(239, 68, 68, 0.03);
         }
 
         /* 대분류 컬럼 스타일 */
         .modal-table td.category-col {
             font-weight: 600;
-            color: #3B82F6;
-            background: rgba(59, 130, 246, 0.08);
+            color: #DC2626;
+            background: rgba(239, 68, 68, 0.08);
         }
 
         .category-select {
             width: auto;
             min-width: 120px;
             padding: 8px 12px;
-            border: 1px solid rgba(59, 130, 246, 0.3);
+            border: 1px solid rgba(239, 68, 68, 0.3);
             border-radius: 6px;
             background: rgba(255, 255, 255, 0.9);
             color: #1e293b;
@@ -481,14 +490,14 @@
         }
 
         .category-select:focus {
-            outline: 2px solid #3B82F6;
+            outline: 2px solid #EF4444;
             background: #fff;
         }
 
         .category-select.support {
-            background: rgba(59, 130, 246, 0.12);
-            color: #3B82F6;
-            border-color: rgba(59, 130, 246, 0.4);
+            background: rgba(239, 68, 68, 0.12);
+            color: #DC2626;
+            border-color: rgba(239, 68, 68, 0.4);
         }
 
         .category-select.discovery {
@@ -522,13 +531,13 @@
         }
 
         .btn-primary {
-            background: linear-gradient(135deg, #3B82F6 0%, #06B6D4 100%);
+            background: linear-gradient(135deg, #DC2626 0%, #F97316 100%);
             color: #fff;
         }
 
         .btn-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 5px 20px rgba(59, 130, 246, 0.4);
+            box-shadow: 0 5px 20px rgba(239, 68, 68, 0.4);
         }
 
         .btn-secondary {
@@ -565,6 +574,23 @@
 
         .btn-excel:hover {
             background: rgba(34, 197, 94, 0.3);
+        }
+
+        .btn-delete {
+            background: rgba(239, 68, 68, 0.1);
+            color: #EF4444;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .btn-delete:hover {
+            background: #EF4444;
+            color: #fff;
+            transform: scale(1.05);
         }
 
         .excel-buttons {
@@ -611,16 +637,17 @@
             backdrop-filter: blur(10px);
             border-radius: 16px;
             padding: 30px;
-            border: 1px solid rgba(59, 130, 246, 0.2);
+            border: 1px solid rgba(239, 68, 68, 0.2);
             margin-top: 30px;
             overflow-x: auto;
-            box-shadow: 0 2px 10px rgba(59, 130, 246, 0.08);
+            box-shadow: 0 2px 10px rgba(239, 68, 68, 0.08);
         }
 
         .table-container h2 {
             font-size: 1.5rem;
             margin-bottom: 20px;
             color: #1e293b;
+            font-weight: 700;
         }
 
         table {
@@ -629,25 +656,25 @@
         }
 
         thead {
-            background: rgba(59, 130, 246, 0.1);
+            background: rgba(239, 68, 68, 0.1);
         }
 
         th {
             padding: 15px;
             text-align: left;
-            font-weight: 600;
-            color: #3B82F6;
-            border-bottom: 2px solid rgba(59, 130, 246, 0.3);
+            font-weight: 700;
+            color: #1e293b;
+            border-bottom: 2px solid rgba(239, 68, 68, 0.3);
         }
 
         td {
             padding: 15px;
-            border-bottom: 1px solid rgba(59, 130, 246, 0.1);
+            border-bottom: 1px solid rgba(239, 68, 68, 0.1);
             color: #334155;
         }
 
         tr:hover {
-            background: rgba(59, 130, 246, 0.03);
+            background: rgba(239, 68, 68, 0.03);
         }
 
         /* Responsive */
@@ -686,8 +713,7 @@
     <div class="container">
         <!-- Header -->
         <div class="header">
-            <h1>2025년 프라이머 전략팀 워크샵</h1>
-            <p>재무 현황 및 예산 분석</p>
+            <h1 onclick="location.reload()">프라이머 전략팀 워크샵</h1>
         </div>
 
         <!-- Quick Navigation -->
@@ -810,6 +836,7 @@
                                 <th>상세분류</th>
                                 <th>금액 (백만원)</th>
                                 <th>비고</th>
+                                <th style="width: 80px;">삭제</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -824,6 +851,7 @@
                                 <td contenteditable="true">멘토링비</td>
                                 <td contenteditable="true">350</td>
                                 <td contenteditable="true">스타트업 멘토링 프로그램</td>
+                                <td><button class="btn-delete" onclick="deleteRow(this)"><i class="fas fa-trash"></i></button></td>
                             </tr>
                             <tr>
                                 <td>
@@ -836,6 +864,7 @@
                                 <td contenteditable="true">교육지원비</td>
                                 <td contenteditable="true">280</td>
                                 <td contenteditable="true">교육 프로그램 운영</td>
+                                <td><button class="btn-delete" onclick="deleteRow(this)"><i class="fas fa-trash"></i></button></td>
                             </tr>
                             <tr>
                                 <td>
@@ -848,6 +877,7 @@
                                 <td contenteditable="true">공간지원비</td>
                                 <td contenteditable="true">210</td>
                                 <td contenteditable="true">사무 공간 제공</td>
+                                <td><button class="btn-delete" onclick="deleteRow(this)"><i class="fas fa-trash"></i></button></td>
                             </tr>
                             <tr>
                                 <td>
@@ -860,6 +890,7 @@
                                 <td contenteditable="true">네트워킹 행사</td>
                                 <td contenteditable="true">220</td>
                                 <td contenteditable="true">창업자 네트워킹 이벤트</td>
+                                <td><button class="btn-delete" onclick="deleteRow(this)"><i class="fas fa-trash"></i></button></td>
                             </tr>
                             <tr>
                                 <td>
@@ -872,6 +903,7 @@
                                 <td contenteditable="true">인건비</td>
                                 <td contenteditable="true">450</td>
                                 <td contenteditable="true">직원 급여</td>
+                                <td><button class="btn-delete" onclick="deleteRow(this)"><i class="fas fa-trash"></i></button></td>
                             </tr>
                             <tr>
                                 <td>
@@ -884,6 +916,7 @@
                                 <td contenteditable="true">사무실 임차료</td>
                                 <td contenteditable="true">210</td>
                                 <td contenteditable="true">월세 및 관리비</td>
+                                <td><button class="btn-delete" onclick="deleteRow(this)"><i class="fas fa-trash"></i></button></td>
                             </tr>
                         </tbody>
                     </table>
@@ -943,6 +976,7 @@
                                 <th>금액 (백만원)</th>
                                 <th>수입원</th>
                                 <th>비고</th>
+                                <th style="width: 80px;">삭제</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -951,30 +985,35 @@
                                 <td contenteditable="true">850</td>
                                 <td contenteditable="true">정부사업</td>
                                 <td contenteditable="true">중소기업청 지원</td>
+                                <td><button class="btn-delete" onclick="deleteRow(this)"><i class="fas fa-trash"></i></button></td>
                             </tr>
                             <tr>
                                 <td contenteditable="true">투자 수익</td>
                                 <td contenteditable="true">620</td>
                                 <td contenteditable="true">투자</td>
                                 <td contenteditable="true">포트폴리오 기업 EXIT</td>
+                                <td><button class="btn-delete" onclick="deleteRow(this)"><i class="fas fa-trash"></i></button></td>
                             </tr>
                             <tr>
                                 <td contenteditable="true">교육 사업</td>
                                 <td contenteditable="true">380</td>
                                 <td contenteditable="true">자체사업</td>
                                 <td contenteditable="true">교육 프로그램 수익</td>
+                                <td><button class="btn-delete" onclick="deleteRow(this)"><i class="fas fa-trash"></i></button></td>
                             </tr>
                             <tr>
                                 <td contenteditable="true">컨설팅</td>
                                 <td contenteditable="true">250</td>
                                 <td contenteditable="true">자체사업</td>
                                 <td contenteditable="true">기업 컨설팅 수익</td>
+                                <td><button class="btn-delete" onclick="deleteRow(this)"><i class="fas fa-trash"></i></button></td>
                             </tr>
                             <tr>
                                 <td contenteditable="true">기타 수입</td>
                                 <td contenteditable="true">150</td>
                                 <td contenteditable="true">기타</td>
                                 <td contenteditable="true">임대 수익 등</td>
+                                <td><button class="btn-delete" onclick="deleteRow(this)"><i class="fas fa-trash"></i></button></td>
                             </tr>
                         </tbody>
                     </table>
@@ -1022,6 +1061,7 @@
                                 <th>잔액 (백만원)</th>
                                 <th>종류</th>
                                 <th>비고</th>
+                                <th style="width: 80px;">삭제</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -1030,18 +1070,21 @@
                                 <td contenteditable="true">210</td>
                                 <td contenteditable="true">예금</td>
                                 <td contenteditable="true">일상 운영 자금</td>
+                                <td><button class="btn-delete" onclick="deleteRow(this)"><i class="fas fa-trash"></i></button></td>
                             </tr>
                             <tr>
                                 <td contenteditable="true">투자 펀드</td>
                                 <td contenteditable="true">150</td>
                                 <td contenteditable="true">투자</td>
                                 <td contenteditable="true">스타트업 투자금</td>
+                                <td><button class="btn-delete" onclick="deleteRow(this)"><i class="fas fa-trash"></i></button></td>
                             </tr>
                             <tr>
                                 <td contenteditable="true">적립금</td>
                                 <td contenteditable="true">60</td>
                                 <td contenteditable="true">예금</td>
                                 <td contenteditable="true">비상 준비금</td>
+                                <td><button class="btn-delete" onclick="deleteRow(this)"><i class="fas fa-trash"></i></button></td>
                             </tr>
                         </tbody>
                     </table>
@@ -1391,7 +1434,7 @@
     <script>
         // Chart.js 기본 설정
         Chart.defaults.color = '#64748b';
-        Chart.defaults.borderColor = 'rgba(59, 130, 246, 0.2)';
+        Chart.defaults.borderColor = 'rgba(239, 68, 68, 0.2)';
 
         // 스크롤 이동 함수
         function scrollToSection(sectionId) {
@@ -1667,6 +1710,7 @@
         function downloadDetailTemplate() {
             const templateData = [
                 {
+                    '년도': 2025,
                     '대분류': '일반관리비',
                     '중분류': '인건비',
                     '소분류': '급여',
@@ -1685,6 +1729,7 @@
                     '비고': '4월부터 인상'
                 },
                 {
+                    '년도': 2025,
                     '대분류': '일반관리비',
                     '중분류': '인건비',
                     '소분류': '상여금',
@@ -1703,6 +1748,7 @@
                     '비고': '6월/12월 지급'
                 },
                 {
+                    '년도': 2025,
                     '대분류': '지원',
                     '중분류': '멘토링비',
                     '소분류': '전문가 멘토링',
@@ -1719,16 +1765,51 @@
                     '11월': 15,
                     '12월': 15,
                     '비고': '외부 전문가 초청'
+                },
+                {
+                    '년도': 2024,
+                    '대분류': '지원',
+                    '중분류': '멘토링비',
+                    '소분류': '전문가 멘토링',
+                    '1월': 15,
+                    '2월': 15,
+                    '3월': 15,
+                    '4월': 15,
+                    '5월': 15,
+                    '6월': 15,
+                    '7월': 15,
+                    '8월': 15,
+                    '9월': 15,
+                    '10월': 15,
+                    '11월': 15,
+                    '12월': 15,
+                    '비고': '2024년 데이터'
                 }
             ];
 
+            // 사용 안내 시트
+            const notesData = [
+                { '항목': '년도', '설명': '데이터가 속한 년도 (예: 2025, 2024)', '필수': 'O' },
+                { '항목': '대분류', '설명': '지원, 발굴, 일반관리비 중 선택', '필수': 'O' },
+                { '항목': '중분류', '설명': '상세분류/항목 이름 (예: 인건비, 멘토링비)', '필수': 'O' },
+                { '항목': '소분류', '설명': '더 세부적인 항목 (예: 급여, 상여금)', '필수': 'O' },
+                { '항목': '1월~12월', '설명': '월별 금액 (백만원). 자동으로 합산됩니다.', '필수': 'O' },
+                { '항목': '비고', '설명': '추가 설명', '필수': 'X' },
+                { '항목': '', '설명': '', '필수': '' },
+                { '항목': '💡 TIP', '설명': '년도별로 자동 분류되어 저장됩니다. 한 파일에 여러 년도 데이터 입력 가능!', '필수': '' }
+            ];
+
             const worksheet = XLSX.utils.json_to_sheet(templateData);
+            const notesSheet = XLSX.utils.json_to_sheet(notesData);
+
             const workbook = XLSX.utils.book_new();
             XLSX.utils.book_append_sheet(workbook, worksheet, '상세내역 양식');
+            XLSX.utils.book_append_sheet(workbook, notesSheet, '사용 안내');
+
             XLSX.writeFile(workbook, '상세내역_업로드_양식.xlsx');
         }
 
-        // 상세 엑셀 업로드
+        // 상세 엑셀 업로드 (년도별 자동 분류)
         function uploadDetailExcel(event) {
             const file = event.target.files[0];
             if (!file) return;
@@ -1740,21 +1821,21 @@
                 const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
                 const rows = XLSX.utils.sheet_to_json(firstSheet);
 
-                const key = `detailData_${currentDetailYear}`;
-                const savedData = localStorage.getItem(key);
-                let allData = savedData ? JSON.parse(savedData) : [];
-
-                // 기존 데이터에서 현재 카테고리/아이템 제거
-                allData = allData.filter(row =>
-                    !(row.category === currentDetailCategory && row.item === currentDetailItem)
-                );
-
                 const months = ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'];
 
-                // 새 데이터 추가
+                // 년도별로 데이터 그룹핑
+                const dataByYear = {};
+
+                // 새 데이터 처리
                 rows.forEach(row => {
+                    const year = (row['년도'] || row['year'] || currentDetailYear).toString();
                     const category = row['대분류'] || row['category'] || currentDetailCategory;
                     const item = row['중분류'] || row['item'] || currentDetailItem;
+
+                    // 년도별 그룹 초기화
+                    if (!dataByYear[year]) {
+                        dataByYear[year] = [];
+                    }
 
                     // 현재 모달의 카테고리/아이템과 일치하는 것만 추가
                     if (category === currentDetailCategory && item === currentDetailItem) {
@@ -1777,7 +1858,7 @@
                             amount = parseNumber(row['금액 (백만원)'] || row['amount'] || 0);
                         }
 
-                        allData.push({
+                        dataByYear[year].push({
                             category: category,
                             item: item,
                             subitem: row['소분류'] || row['subitem'] || '',
@@ -1788,9 +1869,33 @@
                     }
                 });
 
-                localStorage.setItem(key, JSON.stringify(allData));
-                loadDetailData(currentDetailCategory, currentDetailItem, currentDetailYear);
-                alert('업로드 완료!');
+                // 모든 년도의 데이터 저장
+                const importedYears = [];
+                Object.keys(dataByYear).forEach(year => {
+                    const key = `detailData_${year}`;
+                    const savedData = localStorage.getItem(key);
+                    let allData = savedData ? JSON.parse(savedData) : [];
+
+                    // 기존 데이터에서 현재 카테고리/아이템 제거
+                    allData = allData.filter(row =>
+                        !(row.category === currentDetailCategory && row.item === currentDetailItem)
+                    );
+
+                    // 새 데이터 추가
+                    allData.push(...dataByYear[year]);
+
+                    localStorage.setItem(key, JSON.stringify(allData));
+                    importedYears.push(year);
+                });
+
+                // 현재 년도의 데이터가 업로드되었으면 테이블 새로고침
+                if (dataByYear[currentDetailYear]) {
+                    loadDetailData(currentDetailCategory, currentDetailItem, currentDetailYear);
+                }
+
+                // 업로드 완료 메시지
+                const totalItems = Object.values(dataByYear).reduce((sum, arr) => sum + arr.length, 0);
+                alert(`업로드 완료!\n업로드된 년도: ${importedYears.sort().join(', ')}년\n총 ${totalItems}개 항목`);
             };
 
             reader.readAsArrayBuffer(file);
@@ -1807,6 +1912,7 @@
             rows.forEach(row => {
                 const cells = row.querySelectorAll('td');
                 const rowData = {
+                    '년도': currentDetailYear,
                     '대분류': currentDetailCategory,
                     '중분류': currentDetailItem,
                     '소분류': cells[0].textContent.trim()
@@ -1854,6 +1960,7 @@
                 <td contenteditable="true">새 상세분류</td>
                 <td contenteditable="true">0</td>
                 <td contenteditable="true">비고</td>
+                <td><button class="btn-delete" onclick="deleteRow(this)"><i class="fas fa-trash"></i></button></td>
             `;
         }
 
@@ -1865,6 +1972,7 @@
                 <td contenteditable="true">0</td>
                 <td contenteditable="true">수입원</td>
                 <td contenteditable="true">비고</td>
+                <td><button class="btn-delete" onclick="deleteRow(this)"><i class="fas fa-trash"></i></button></td>
             `;
         }
 
@@ -1876,7 +1984,16 @@
                 <td contenteditable="true">0</td>
                 <td contenteditable="true">종류</td>
                 <td contenteditable="true">비고</td>
+                <td><button class="btn-delete" onclick="deleteRow(this)"><i class="fas fa-trash"></i></button></td>
             `;
+        }
+
+        // 행 삭제 함수
+        function deleteRow(button) {
+            const row = button.closest('tr');
+            if (confirm('이 항목을 삭제하시겠습니까?')) {
+                row.remove();
+            }
         }
 
         // 연도 전환 기능
@@ -1945,6 +2062,7 @@
                         <td contenteditable="true">${row.item}</td>
                         <td contenteditable="true">${formatNumber(row.amount)}</td>
                         <td contenteditable="true">${row.note}</td>
+                        <td><button class="btn-delete" onclick="deleteRow(this)"><i class="fas fa-trash"></i></button></td>
                     `;
                 });
             } else {
@@ -1961,6 +2079,7 @@
                         <td contenteditable="true">새 상세분류</td>
                         <td contenteditable="true">0</td>
                         <td contenteditable="true">비고</td>
+                        <td><button class="btn-delete" onclick="deleteRow(this)"><i class="fas fa-trash"></i></button></td>
                     </tr>
                 `;
             }
@@ -2034,6 +2153,7 @@
                         <td contenteditable="true">${formatNumber(row.amount)}</td>
                         <td contenteditable="true">${row.source}</td>
                         <td contenteditable="true">${row.note}</td>
+                        <td><button class="btn-delete" onclick="deleteRow(this)"><i class="fas fa-trash"></i></button></td>
                     `;
                 });
             } else {
@@ -2043,6 +2163,7 @@
                         <td contenteditable="true">0</td>
                         <td contenteditable="true">수입원</td>
                         <td contenteditable="true">비고</td>
+                        <td><button class="btn-delete" onclick="deleteRow(this)"><i class="fas fa-trash"></i></button></td>
                     </tr>
                 `;
             }
@@ -2099,7 +2220,7 @@
 
         // ========== 엑셀 업로드 기능 ==========
 
-        // 총 지출 엑셀 업로드 (3단계 구조 지원)
+        // 총 지출 엑셀 업로드 (년도별 자동 분류)
         function uploadExpenseExcel(event) {
             const file = event.target.files[0];
             if (!file) return;
@@ -2111,25 +2232,24 @@
                 const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
                 const jsonData = XLSX.utils.sheet_to_json(firstSheet);
 
-                const tbody = document.querySelector('#expense-table tbody');
-                tbody.innerHTML = '';
-
-                // 상세 데이터 저장용
-                const detailDataKey = `detailData_${currentExpenseYear}`;
-                let detailData = [];
-
-                // 중복 제거를 위한 Set
-                const addedItems = new Set();
-
-                // 월별 금액 합산을 위한 맵 (중복 방지용)
-                const itemAmountMap = new Map();
                 const months = ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'];
 
+                // 년도별로 데이터 그룹핑
+                const dataByYear = {};
+                const detailDataByYear = {};
+
                 jsonData.forEach(row => {
+                    const year = (row['년도'] || row['year'] || currentExpenseYear).toString();
                     const category = row['분류'] || row['대분류'] || row['category'] || '지원';
                     const item = row['상세분류'] || row['중분류'] || row['항목'] || row['item'] || '';
                     const subitem = row['소분류'] || row['subitem'] || '';
                     const note = row['비고'] || row['note'] || '';
+
+                    // 년도별 그룹 초기화
+                    if (!dataByYear[year]) {
+                        dataByYear[year] = new Map();
+                        detailDataByYear[year] = [];
+                    }
 
                     // 월별 금액 합산
                     let amount = 0;
@@ -2152,7 +2272,7 @@
 
                     // 소분류가 있는 경우 상세 데이터에 추가
                     if (subitem) {
-                        detailData.push({
+                        detailDataByYear[year].push({
                             category: category,
                             item: item,
                             subitem: subitem,
@@ -2164,8 +2284,8 @@
 
                     // 중분류(상세분류) 금액 누적 (같은 항목의 금액 합산)
                     const itemKey = `${category}|${item}`;
-                    if (!itemAmountMap.has(itemKey)) {
-                        itemAmountMap.set(itemKey, {
+                    if (!dataByYear[year].has(itemKey)) {
+                        dataByYear[year].set(itemKey, {
                             category: category,
                             item: item,
                             amount: 0,
@@ -2173,7 +2293,7 @@
                             note: note
                         });
                     }
-                    const itemData = itemAmountMap.get(itemKey);
+                    const itemData = dataByYear[year].get(itemKey);
                     itemData.amount += amount;
 
                     // 월별 데이터 누적
@@ -2186,46 +2306,36 @@
                     }
                 });
 
-                // 메인 테이블에 추가
-                itemAmountMap.forEach((data, key) => {
-                    if (data.item) {
-                        let categoryClass = 'support';
-                        if (data.category === '발굴') categoryClass = 'discovery';
-                        else if (data.category === '일반관리비') categoryClass = 'general';
+                // 모든 년도의 데이터를 localStorage에 저장
+                const importedYears = [];
+                Object.keys(dataByYear).forEach(year => {
+                    const mainData = Array.from(dataByYear[year].values());
+                    localStorage.setItem(`expenseData_${year}`, JSON.stringify(mainData));
 
-                        const tr = tbody.insertRow();
-                        tr.innerHTML = `
-                            <td>
-                                <select class="category-select ${categoryClass}" onchange="updateCategoryClass(this)">
-                                    <option value="지원" ${data.category === '지원' ? 'selected' : ''}>지원</option>
-                                    <option value="발굴" ${data.category === '발굴' ? 'selected' : ''}>발굴</option>
-                                    <option value="일반관리비" ${data.category === '일반관리비' ? 'selected' : ''}>일반관리비</option>
-                                </select>
-                            </td>
-                            <td contenteditable="true">${data.item}</td>
-                            <td contenteditable="true">${formatNumber(data.amount)}</td>
-                            <td contenteditable="true">${data.note}</td>
-                        `;
+                    // 상세 데이터가 있으면 저장
+                    if (detailDataByYear[year] && detailDataByYear[year].length > 0) {
+                        localStorage.setItem(`detailData_${year}`, JSON.stringify(detailDataByYear[year]));
                     }
+
+                    importedYears.push(year);
                 });
 
-                // 상세 데이터가 있으면 저장
-                if (detailData.length > 0) {
-                    localStorage.setItem(detailDataKey, JSON.stringify(detailData));
+                // 현재 년도의 데이터가 업로드되었으면 테이블 새로고침
+                if (dataByYear[currentExpenseYear]) {
+                    loadExpenseYear(currentExpenseYear);
                 }
 
-                // 월별 데이터를 포함한 메인 데이터 저장
-                const mainData = Array.from(itemAmountMap.values());
-                localStorage.setItem(`expenseData_${currentExpenseYear}`, JSON.stringify(mainData));
-
-                alert('엑셀 파일이 성공적으로 업로드되었습니다!' +
-                      (detailData.length > 0 ? `\n상세 항목 ${detailData.length}개가 포함되어 있습니다.` : ''));
+                // 업로드 완료 메시지
+                const totalDetailItems = Object.values(detailDataByYear).reduce((sum, arr) => sum + arr.length, 0);
+                alert(`엑셀 파일이 성공적으로 업로드되었습니다!\n` +
+                      `업로드된 년도: ${importedYears.sort().join(', ')}년` +
+                      (totalDetailItems > 0 ? `\n상세 항목 ${totalDetailItems}개가 포함되어 있습니다.` : ''));
             };
             reader.readAsArrayBuffer(file);
             event.target.value = ''; // 같은 파일 재선택 가능하도록
         }
 
-        // 총 수입 엑셀 업로드
+        // 총 수입 엑셀 업로드 (년도별 자동 분류)
         function uploadIncomeExcel(event) {
             const file = event.target.files[0];
             if (!file) return;
@@ -2237,20 +2347,67 @@
                 const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
                 const jsonData = XLSX.utils.sheet_to_json(firstSheet);
 
-                const tbody = document.querySelector('#income-table tbody');
-                tbody.innerHTML = '';
+                const months = ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'];
+
+                // 년도별로 데이터 그룹핑
+                const dataByYear = {};
 
                 jsonData.forEach(row => {
-                    const tr = tbody.insertRow();
-                    tr.innerHTML = `
-                        <td contenteditable="true">${row['상세분류'] || row['항목'] || row['item'] || ''}</td>
-                        <td contenteditable="true">${row['금액'] || row['금액 (백만원)'] || row['금액 (억원)'] || row['amount'] || 0}</td>
-                        <td contenteditable="true">${row['수입원'] || row['source'] || ''}</td>
-                        <td contenteditable="true">${row['비고'] || row['note'] || ''}</td>
-                    `;
+                    const year = (row['년도'] || row['year'] || currentIncomeYear).toString();
+                    const item = row['상세분류'] || row['항목'] || row['item'] || '';
+                    const source = row['수입원'] || row['source'] || '';
+                    const note = row['비고'] || row['note'] || '';
+
+                    // 년도별 그룹 초기화
+                    if (!dataByYear[year]) {
+                        dataByYear[year] = [];
+                    }
+
+                    // 월별 금액 합산
+                    let amount = 0;
+                    let hasMonthlyData = false;
+                    const monthlyData = {};
+
+                    months.forEach(month => {
+                        if (row[month] !== undefined && row[month] !== '' && row[month] !== null) {
+                            const monthAmount = parseNumber(row[month]);
+                            amount += monthAmount;
+                            monthlyData[month] = monthAmount;
+                            hasMonthlyData = true;
+                        }
+                    });
+
+                    // 월별 데이터가 없으면 기존 방식 사용 (하위호환성)
+                    if (!hasMonthlyData) {
+                        amount = parseNumber(row['금액'] || row['금액 (백만원)'] || row['금액 (억원)'] || row['amount'] || 0);
+                    }
+
+                    dataByYear[year].push({
+                        item: item,
+                        amount: amount,
+                        monthly: hasMonthlyData ? monthlyData : null,
+                        source: source,
+                        note: note
+                    });
                 });
 
-                alert('엑셀 파일이 성공적으로 업로드되었습니다!');
+                // 모든 년도의 데이터를 localStorage에 저장
+                const importedYears = [];
+                Object.keys(dataByYear).forEach(year => {
+                    localStorage.setItem(`incomeData_${year}`, JSON.stringify(dataByYear[year]));
+                    importedYears.push(year);
+                });
+
+                // 현재 년도의 데이터가 업로드되었으면 테이블 새로고침
+                if (dataByYear[currentIncomeYear]) {
+                    loadIncomeYear(currentIncomeYear);
+                }
+
+                // 업로드 완료 메시지
+                const totalItems = Object.values(dataByYear).reduce((sum, arr) => sum + arr.length, 0);
+                alert(`엑셀 파일이 성공적으로 업로드되었습니다!\n` +
+                      `업로드된 년도: ${importedYears.sort().join(', ')}년\n` +
+                      `총 ${totalItems}개 항목`);
             };
             reader.readAsArrayBuffer(file);
             event.target.value = '';
@@ -2278,6 +2435,7 @@
                         <td contenteditable="true">${row['잔액'] || row['잔액 (백만원)'] || row['잔액 (억원)'] || row['amount'] || 0}</td>
                         <td contenteditable="true">${row['종류'] || row['type'] || ''}</td>
                         <td contenteditable="true">${row['비고'] || row['note'] || ''}</td>
+                        <td><button class="btn-delete" onclick="deleteRow(this)"><i class="fas fa-trash"></i></button></td>
                     `;
                 });
 
@@ -2293,6 +2451,7 @@
         function downloadExpenseTemplate() {
             const templateData = [
                 {
+                    '년도': 2025,
                     '분류': '지원',
                     '상세분류': '멘토링비',
                     '소분류': '',
@@ -2311,24 +2470,7 @@
                     '비고': '스타트업 멘토링 프로그램'
                 },
                 {
-                    '분류': '발굴',
-                    '상세분류': '네트워킹 행사',
-                    '소분류': '',
-                    '1월': 20,
-                    '2월': 0,
-                    '3월': 20,
-                    '4월': 0,
-                    '5월': 20,
-                    '6월': 0,
-                    '7월': 20,
-                    '8월': 0,
-                    '9월': 20,
-                    '10월': 0,
-                    '11월': 20,
-                    '12월': 0,
-                    '비고': '격월 네트워킹 이벤트'
-                },
-                {
+                    '년도': 2025,
                     '분류': '일반관리비',
                     '상세분류': '인건비',
                     '소분류': '급여',
@@ -2347,6 +2489,26 @@
                     '비고': '직원 월급여'
                 },
                 {
+                    '년도': 2024,
+                    '분류': '발굴',
+                    '상세분류': '네트워킹 행사',
+                    '소분류': '',
+                    '1월': 20,
+                    '2월': 0,
+                    '3월': 20,
+                    '4월': 0,
+                    '5월': 20,
+                    '6월': 0,
+                    '7월': 20,
+                    '8월': 0,
+                    '9월': 20,
+                    '10월': 0,
+                    '11월': 20,
+                    '12월': 0,
+                    '비고': '격월 네트워킹 이벤트'
+                },
+                {
+                    '년도': 2024,
                     '분류': '일반관리비',
                     '상세분류': '인건비',
                     '소분류': '상여금',
@@ -2372,13 +2534,14 @@
 
             // 참고사항 시트 추가
             const notesData = [
+                { '항목': '년도', '설명': '데이터가 속한 년도 (예: 2025, 2024)', '필수': 'O' },
                 { '항목': '분류', '설명': '지원, 발굴, 일반관리비 중 선택', '필수': 'O' },
                 { '항목': '상세분류', '설명': '중분류 항목명 (예: 인건비, 멘토링비)', '필수': 'O' },
                 { '항목': '소분류', '설명': '상세 항목명 (선택사항, 입력 시 차트 클릭으로 조회 가능)', '필수': 'X' },
                 { '항목': '1월~12월', '설명': '각 월별 금액 입력 (백만원 단위)', '필수': 'O' },
                 { '항목': '비고', '설명': '추가 설명', '필수': 'X' },
                 { '항목': '', '설명': '', '필수': '' },
-                { '항목': '💡 TIP', '설명': '월별 금액을 입력하면 자동으로 연간 총액이 계산됩니다', '필수': '' }
+                { '항목': '💡 TIP', '설명': '년도별로 자동 분류되어 저장됩니다. 한 파일에 여러 년도 데이터 입력 가능!', '필수': '' }
             ];
             const notesSheet = XLSX.utils.json_to_sheet(notesData);
             XLSX.utils.book_append_sheet(workbook, notesSheet, '작성 가이드');
@@ -2390,22 +2553,48 @@
         function downloadIncomeTemplate() {
             const templateData = [
                 {
+                    '년도': 2025,
                     '상세분류': '정부 지원금',
-                    '금액 (백만원)': 850,
+                    '1월': 100, '2월': 50, '3월': 80, '4월': 70, '5월': 60, '6월': 70,
+                    '7월': 80, '8월': 90, '9월': 70, '10월': 60, '11월': 80, '12월': 40,
                     '수입원': '정부사업',
                     '비고': '중소기업청 지원'
                 },
                 {
+                    '년도': 2025,
                     '상세분류': '투자 수익',
-                    '금액 (백만원)': 620,
+                    '1월': 0, '2월': 0, '3월': 200, '4월': 0, '5월': 0, '6월': 150,
+                    '7월': 0, '8월': 0, '9월': 120, '10월': 0, '11월': 0, '12월': 150,
                     '수입원': '투자',
                     '비고': '포트폴리오 기업 EXIT'
+                },
+                {
+                    '년도': 2024,
+                    '상세분류': '교육 프로그램 수익',
+                    '1월': 30, '2월': 30, '3월': 40, '4월': 30, '5월': 50, '6월': 40,
+                    '7월': 30, '8월': 20, '9월': 30, '10월': 40, '11월': 30, '12월': 30,
+                    '수입원': '자체사업',
+                    '비고': '스타트업 교육 프로그램'
                 }
             ];
 
+            // 사용 안내 시트
+            const notesData = [
+                { '항목': '년도', '설명': '데이터가 속한 년도 (예: 2025, 2024)', '필수': 'O' },
+                { '항목': '상세분류', '설명': '수입 항목 이름', '필수': 'O' },
+                { '항목': '1월~12월', '설명': '월별 수입 금액 (백만원). 자동으로 합산됩니다.', '필수': 'O' },
+                { '항목': '수입원', '설명': '수입의 출처', '필수': 'X' },
+                { '항목': '비고', '설명': '추가 설명', '필수': 'X' },
+                { '항목': '', '설명': '', '필수': '' },
+                { '항목': '💡 TIP', '설명': '년도별로 자동 분류되어 저장됩니다. 한 파일에 여러 년도 데이터 입력 가능!', '필수': '' }
+            ];
+
             const worksheet = XLSX.utils.json_to_sheet(templateData);
+            const notesSheet = XLSX.utils.json_to_sheet(notesData);
+
             const workbook = XLSX.utils.book_new();
             XLSX.utils.book_append_sheet(workbook, worksheet, '총 수입 양식');
+            XLSX.utils.book_append_sheet(workbook, notesSheet, '사용 안내');
 
             XLSX.writeFile(workbook, '총_수입_업로드_양식.xlsx');
         }
@@ -2595,6 +2784,7 @@
                         <td contenteditable="true">${formatNumber(row.amount)}</td>
                         <td contenteditable="true">${row.type}</td>
                         <td contenteditable="true">${row.note}</td>
+                        <td><button class="btn-delete" onclick="deleteRow(this)"><i class="fas fa-trash"></i></button></td>
                     `;
                     total += row.amount;
                 });
