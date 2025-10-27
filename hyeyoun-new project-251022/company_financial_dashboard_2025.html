@@ -1094,18 +1094,32 @@
                             </button>
                         </div>
                     </div>
-                    <table class="modal-table" id="detail-table">
-                        <thead>
-                            <tr>
-                                <th>소분류</th>
-                                <th>금액 (백만원)</th>
-                                <th>비고</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <!-- 데이터가 동적으로 로드됩니다 -->
-                        </tbody>
-                    </table>
+                    <div style="overflow-x: auto;">
+                        <table class="modal-table" id="detail-table" style="min-width: 1400px;">
+                            <thead>
+                                <tr>
+                                    <th style="min-width: 120px; position: sticky; left: 0; background: white; z-index: 10;">소분류</th>
+                                    <th style="min-width: 70px;">1월</th>
+                                    <th style="min-width: 70px;">2월</th>
+                                    <th style="min-width: 70px;">3월</th>
+                                    <th style="min-width: 70px;">4월</th>
+                                    <th style="min-width: 70px;">5월</th>
+                                    <th style="min-width: 70px;">6월</th>
+                                    <th style="min-width: 70px;">7월</th>
+                                    <th style="min-width: 70px;">8월</th>
+                                    <th style="min-width: 70px;">9월</th>
+                                    <th style="min-width: 70px;">10월</th>
+                                    <th style="min-width: 70px;">11월</th>
+                                    <th style="min-width: 70px;">12월</th>
+                                    <th style="min-width: 90px; background: rgba(59, 130, 246, 0.1); font-weight: 700;">총액</th>
+                                    <th style="min-width: 150px;">비고</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- 데이터가 동적으로 로드됩니다 -->
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
                 <div class="modal-actions">
                     <button class="btn btn-secondary" onclick="closeModal('detail-modal')">취소</button>
@@ -1482,6 +1496,7 @@
             const key = `detailData_${year}`;
             const savedData = localStorage.getItem(key);
             const tbody = document.querySelector('#detail-table tbody');
+            const months = ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'];
             tbody.innerHTML = '';
 
             if (savedData) {
@@ -1494,31 +1509,45 @@
                 if (filteredData.length > 0) {
                     filteredData.forEach(row => {
                         const tr = tbody.insertRow();
-                        tr.innerHTML = `
-                            <td contenteditable="true">${row.subitem || ''}</td>
-                            <td contenteditable="true">${formatNumber(row.amount || 0)}</td>
-                            <td contenteditable="true">${row.note || ''}</td>
-                        `;
+
+                        // 소분류 (sticky)
+                        let html = `<td contenteditable="true" style="position: sticky; left: 0; background: white; z-index: 5;">${row.subitem || ''}</td>`;
+
+                        // 월별 금액
+                        let total = 0;
+                        months.forEach(month => {
+                            const monthValue = (row.monthly && row.monthly[month]) ? row.monthly[month] : 0;
+                            total += monthValue;
+                            html += `<td contenteditable="true">${monthValue || 0}</td>`;
+                        });
+
+                        // 총액 (읽기 전용, 자동 계산)
+                        html += `<td style="background: rgba(59, 130, 246, 0.1); font-weight: 700; text-align: right;">${formatNumber(total)}</td>`;
+
+                        // 비고
+                        html += `<td contenteditable="true">${row.note || ''}</td>`;
+
+                        tr.innerHTML = html;
                     });
                 } else {
                     // 데이터가 없으면 빈 행 1개
-                    tbody.innerHTML = `
-                        <tr>
-                            <td contenteditable="true">새 항목</td>
-                            <td contenteditable="true">0</td>
-                            <td contenteditable="true">비고</td>
-                        </tr>
-                    `;
+                    let html = `<td contenteditable="true" style="position: sticky; left: 0; background: white; z-index: 5;">새 항목</td>`;
+                    months.forEach(() => {
+                        html += `<td contenteditable="true">0</td>`;
+                    });
+                    html += `<td style="background: rgba(59, 130, 246, 0.1); font-weight: 700; text-align: right;">0</td>`;
+                    html += `<td contenteditable="true">비고</td>`;
+                    tbody.innerHTML = `<tr>${html}</tr>`;
                 }
             } else {
                 // 저장된 데이터가 없으면 빈 행 1개
-                tbody.innerHTML = `
-                    <tr>
-                        <td contenteditable="true">새 항목</td>
-                        <td contenteditable="true">0</td>
-                        <td contenteditable="true">비고</td>
-                    </tr>
-                `;
+                let html = `<td contenteditable="true" style="position: sticky; left: 0; background: white; z-index: 5;">새 항목</td>`;
+                months.forEach(() => {
+                    html += `<td contenteditable="true">0</td>`;
+                });
+                html += `<td style="background: rgba(59, 130, 246, 0.1); font-weight: 700; text-align: right;">0</td>`;
+                html += `<td contenteditable="true">비고</td>`;
+                tbody.innerHTML = `<tr>${html}</tr>`;
             }
         }
 
@@ -1526,6 +1555,7 @@
         function saveDetailData() {
             const table = document.getElementById('detail-table');
             const rows = table.querySelectorAll('tbody tr');
+            const months = ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'];
 
             const key = `detailData_${currentDetailYear}`;
             const savedData = localStorage.getItem(key);
@@ -1539,13 +1569,28 @@
             // 새 데이터 추가
             rows.forEach(row => {
                 const cells = row.querySelectorAll('td');
+                const subitem = cells[0].textContent.trim();
+
+                // 월별 데이터 수집
+                const monthly = {};
+                let totalAmount = 0;
+                months.forEach((month, index) => {
+                    const monthValue = parseNumber(cells[index + 1].textContent);
+                    monthly[month] = monthValue;
+                    totalAmount += monthValue;
+                });
+
+                const note = cells[14].textContent.trim(); // 마지막 컬럼
+
                 const rowData = {
                     category: currentDetailCategory,
                     item: currentDetailItem,
-                    subitem: cells[0].textContent.trim(),
-                    amount: parseNumber(cells[1].textContent),
-                    note: cells[2].textContent.trim()
+                    subitem: subitem,
+                    amount: totalAmount,
+                    monthly: monthly,
+                    note: note
                 };
+
                 if (rowData.subitem && rowData.amount > 0) {
                     allData.push(rowData);
                 }
@@ -1564,12 +1609,17 @@
         // 상세 항목 추가
         function addDetailRow() {
             const tbody = document.querySelector('#detail-table tbody');
+            const months = ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'];
             const newRow = tbody.insertRow();
-            newRow.innerHTML = `
-                <td contenteditable="true">새 항목</td>
-                <td contenteditable="true">0</td>
-                <td contenteditable="true">비고</td>
-            `;
+
+            let html = `<td contenteditable="true" style="position: sticky; left: 0; background: white; z-index: 5;">새 항목</td>`;
+            months.forEach(() => {
+                html += `<td contenteditable="true">0</td>`;
+            });
+            html += `<td style="background: rgba(59, 130, 246, 0.1); font-weight: 700; text-align: right;">0</td>`;
+            html += `<td contenteditable="true">비고</td>`;
+
+            newRow.innerHTML = html;
         }
 
         // 상세 연도 전환
@@ -1595,21 +1645,54 @@
                     '대분류': '일반관리비',
                     '중분류': '인건비',
                     '소분류': '급여',
-                    '금액 (백만원)': 500,
-                    '비고': '직원 월급여'
+                    '1월': 40,
+                    '2월': 40,
+                    '3월': 40,
+                    '4월': 45,
+                    '5월': 45,
+                    '6월': 45,
+                    '7월': 45,
+                    '8월': 45,
+                    '9월': 45,
+                    '10월': 45,
+                    '11월': 45,
+                    '12월': 45,
+                    '비고': '4월부터 인상'
                 },
                 {
                     '대분류': '일반관리비',
                     '중분류': '인건비',
                     '소분류': '상여금',
-                    '금액 (백만원)': 300,
-                    '비고': '성과급'
+                    '1월': 0,
+                    '2월': 0,
+                    '3월': 0,
+                    '4월': 0,
+                    '5월': 0,
+                    '6월': 100,
+                    '7월': 0,
+                    '8월': 0,
+                    '9월': 0,
+                    '10월': 0,
+                    '11월': 0,
+                    '12월': 100,
+                    '비고': '6월/12월 지급'
                 },
                 {
                     '대분류': '지원',
                     '중분류': '멘토링비',
                     '소분류': '전문가 멘토링',
-                    '금액 (백만원)': 200,
+                    '1월': 20,
+                    '2월': 20,
+                    '3월': 20,
+                    '4월': 20,
+                    '5월': 20,
+                    '6월': 20,
+                    '7월': 15,
+                    '8월': 15,
+                    '9월': 15,
+                    '10월': 15,
+                    '11월': 15,
+                    '12월': 15,
                     '비고': '외부 전문가 초청'
                 }
             ];
@@ -1641,6 +1724,8 @@
                     !(row.category === currentDetailCategory && row.item === currentDetailItem)
                 );
 
+                const months = ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'];
+
                 // 새 데이터 추가
                 rows.forEach(row => {
                     const category = row['대분류'] || row['category'] || currentDetailCategory;
@@ -1648,11 +1733,31 @@
 
                     // 현재 모달의 카테고리/아이템과 일치하는 것만 추가
                     if (category === currentDetailCategory && item === currentDetailItem) {
+                        // 월별 데이터 수집
+                        const monthly = {};
+                        let amount = 0;
+                        let hasMonthlyData = false;
+
+                        months.forEach(month => {
+                            if (row[month] !== undefined && row[month] !== '' && row[month] !== null) {
+                                const monthValue = parseNumber(row[month]);
+                                monthly[month] = monthValue;
+                                amount += monthValue;
+                                hasMonthlyData = true;
+                            }
+                        });
+
+                        // 월별 데이터가 없으면 총액 사용
+                        if (!hasMonthlyData) {
+                            amount = parseNumber(row['금액 (백만원)'] || row['amount'] || 0);
+                        }
+
                         allData.push({
                             category: category,
                             item: item,
                             subitem: row['소분류'] || row['subitem'] || '',
-                            amount: parseNumber(row['금액 (백만원)'] || row['amount'] || 0),
+                            amount: amount,
+                            monthly: hasMonthlyData ? monthly : null,
                             note: row['비고'] || row['note'] || ''
                         });
                     }
@@ -1671,17 +1776,26 @@
         function downloadDetailExcel() {
             const table = document.getElementById('detail-table');
             const rows = table.querySelectorAll('tbody tr');
+            const months = ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'];
 
             const data = [];
             rows.forEach(row => {
                 const cells = row.querySelectorAll('td');
-                data.push({
+                const rowData = {
                     '대분류': currentDetailCategory,
                     '중분류': currentDetailItem,
-                    '소분류': cells[0].textContent.trim(),
-                    '금액 (백만원)': parseNumber(cells[1].textContent),
-                    '비고': cells[2].textContent.trim()
+                    '소분류': cells[0].textContent.trim()
+                };
+
+                // 월별 데이터 추가 (cells[1~12])
+                months.forEach((month, index) => {
+                    rowData[month] = parseNumber(cells[index + 1].textContent);
                 });
+
+                // 비고 (cells[14])
+                rowData['비고'] = cells[14].textContent.trim();
+
+                data.push(rowData);
             });
 
             const worksheet = XLSX.utils.json_to_sheet(data);
