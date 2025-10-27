@@ -1094,31 +1094,50 @@
                             </button>
                         </div>
                     </div>
-                    <div style="overflow-x: auto;">
-                        <table class="modal-table" id="detail-table" style="min-width: 1400px;">
-                            <thead>
-                                <tr>
-                                    <th style="min-width: 120px; position: sticky; left: 0; background: white; z-index: 10;">소분류</th>
-                                    <th style="min-width: 70px;">1월</th>
-                                    <th style="min-width: 70px;">2월</th>
-                                    <th style="min-width: 70px;">3월</th>
-                                    <th style="min-width: 70px;">4월</th>
-                                    <th style="min-width: 70px;">5월</th>
-                                    <th style="min-width: 70px;">6월</th>
-                                    <th style="min-width: 70px;">7월</th>
-                                    <th style="min-width: 70px;">8월</th>
-                                    <th style="min-width: 70px;">9월</th>
-                                    <th style="min-width: 70px;">10월</th>
-                                    <th style="min-width: 70px;">11월</th>
-                                    <th style="min-width: 70px;">12월</th>
-                                    <th style="min-width: 90px; background: rgba(59, 130, 246, 0.1); font-weight: 700;">총액</th>
-                                    <th style="min-width: 150px;">비고</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <!-- 데이터가 동적으로 로드됩니다 -->
-                            </tbody>
-                        </table>
+                    <div style="overflow-x: auto; overflow-y: hidden; max-height: 500px;">
+                        <style>
+                            /* 스크롤바 항상 표시 */
+                            .modal-table-container::-webkit-scrollbar {
+                                height: 12px;
+                            }
+                            .modal-table-container::-webkit-scrollbar-track {
+                                background: #f1f1f1;
+                                border-radius: 6px;
+                            }
+                            .modal-table-container::-webkit-scrollbar-thumb {
+                                background: #3B82F6;
+                                border-radius: 6px;
+                            }
+                            .modal-table-container::-webkit-scrollbar-thumb:hover {
+                                background: #2563EB;
+                            }
+                        </style>
+                        <div class="modal-table-container" style="overflow-x: scroll; overflow-y: hidden; padding-bottom: 10px;">
+                            <table class="modal-table" id="detail-table" style="min-width: 1500px;">
+                                <thead>
+                                    <tr>
+                                        <th style="min-width: 120px; position: sticky; left: 0; background: white; z-index: 10; box-shadow: 2px 0 5px rgba(0,0,0,0.05);">소분류</th>
+                                        <th style="min-width: 100px; background: rgba(59, 130, 246, 0.1); font-weight: 700;">총액</th>
+                                        <th style="min-width: 70px;">1월</th>
+                                        <th style="min-width: 70px;">2월</th>
+                                        <th style="min-width: 70px;">3월</th>
+                                        <th style="min-width: 70px;">4월</th>
+                                        <th style="min-width: 70px;">5월</th>
+                                        <th style="min-width: 70px;">6월</th>
+                                        <th style="min-width: 70px;">7월</th>
+                                        <th style="min-width: 70px;">8월</th>
+                                        <th style="min-width: 70px;">9월</th>
+                                        <th style="min-width: 70px;">10월</th>
+                                        <th style="min-width: 70px;">11월</th>
+                                        <th style="min-width: 70px;">12월</th>
+                                        <th style="min-width: 150px;">비고</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- 데이터가 동적으로 로드됩니다 -->
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
                 <div class="modal-actions">
@@ -1511,18 +1530,23 @@
                         const tr = tbody.insertRow();
 
                         // 소분류 (sticky)
-                        let html = `<td contenteditable="true" style="position: sticky; left: 0; background: white; z-index: 5;">${row.subitem || ''}</td>`;
+                        let html = `<td contenteditable="true" style="position: sticky; left: 0; background: white; z-index: 5; box-shadow: 2px 0 5px rgba(0,0,0,0.05);">${row.subitem || ''}</td>`;
 
-                        // 월별 금액
+                        // 월별 금액 합산
                         let total = 0;
                         months.forEach(month => {
                             const monthValue = (row.monthly && row.monthly[month]) ? row.monthly[month] : 0;
                             total += monthValue;
-                            html += `<td contenteditable="true">${monthValue || 0}</td>`;
                         });
 
                         // 총액 (읽기 전용, 자동 계산)
                         html += `<td style="background: rgba(59, 130, 246, 0.1); font-weight: 700; text-align: right;">${formatNumber(total)}</td>`;
+
+                        // 월별 금액 (1월~12월)
+                        months.forEach(month => {
+                            const monthValue = (row.monthly && row.monthly[month]) ? row.monthly[month] : 0;
+                            html += `<td contenteditable="true">${monthValue || 0}</td>`;
+                        });
 
                         // 비고
                         html += `<td contenteditable="true">${row.note || ''}</td>`;
@@ -1531,21 +1555,21 @@
                     });
                 } else {
                     // 데이터가 없으면 빈 행 1개
-                    let html = `<td contenteditable="true" style="position: sticky; left: 0; background: white; z-index: 5;">새 항목</td>`;
+                    let html = `<td contenteditable="true" style="position: sticky; left: 0; background: white; z-index: 5; box-shadow: 2px 0 5px rgba(0,0,0,0.05);">새 항목</td>`;
+                    html += `<td style="background: rgba(59, 130, 246, 0.1); font-weight: 700; text-align: right;">0</td>`;
                     months.forEach(() => {
                         html += `<td contenteditable="true">0</td>`;
                     });
-                    html += `<td style="background: rgba(59, 130, 246, 0.1); font-weight: 700; text-align: right;">0</td>`;
                     html += `<td contenteditable="true">비고</td>`;
                     tbody.innerHTML = `<tr>${html}</tr>`;
                 }
             } else {
                 // 저장된 데이터가 없으면 빈 행 1개
-                let html = `<td contenteditable="true" style="position: sticky; left: 0; background: white; z-index: 5;">새 항목</td>`;
+                let html = `<td contenteditable="true" style="position: sticky; left: 0; background: white; z-index: 5; box-shadow: 2px 0 5px rgba(0,0,0,0.05);">새 항목</td>`;
+                html += `<td style="background: rgba(59, 130, 246, 0.1); font-weight: 700; text-align: right;">0</td>`;
                 months.forEach(() => {
                     html += `<td contenteditable="true">0</td>`;
                 });
-                html += `<td style="background: rgba(59, 130, 246, 0.1); font-weight: 700; text-align: right;">0</td>`;
                 html += `<td contenteditable="true">비고</td>`;
                 tbody.innerHTML = `<tr>${html}</tr>`;
             }
@@ -1570,17 +1594,18 @@
             rows.forEach(row => {
                 const cells = row.querySelectorAll('td');
                 const subitem = cells[0].textContent.trim();
+                // cells[1]은 총액 (읽기 전용, 건너뜀)
 
-                // 월별 데이터 수집
+                // 월별 데이터 수집 (cells[2-13])
                 const monthly = {};
                 let totalAmount = 0;
                 months.forEach((month, index) => {
-                    const monthValue = parseNumber(cells[index + 1].textContent);
+                    const monthValue = parseNumber(cells[index + 2].textContent);
                     monthly[month] = monthValue;
                     totalAmount += monthValue;
                 });
 
-                const note = cells[14].textContent.trim(); // 마지막 컬럼
+                const note = cells[14].textContent.trim(); // 비고
 
                 const rowData = {
                     category: currentDetailCategory,
@@ -1612,11 +1637,11 @@
             const months = ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'];
             const newRow = tbody.insertRow();
 
-            let html = `<td contenteditable="true" style="position: sticky; left: 0; background: white; z-index: 5;">새 항목</td>`;
+            let html = `<td contenteditable="true" style="position: sticky; left: 0; background: white; z-index: 5; box-shadow: 2px 0 5px rgba(0,0,0,0.05);">새 항목</td>`;
+            html += `<td style="background: rgba(59, 130, 246, 0.1); font-weight: 700; text-align: right;">0</td>`;
             months.forEach(() => {
                 html += `<td contenteditable="true">0</td>`;
             });
-            html += `<td style="background: rgba(59, 130, 246, 0.1); font-weight: 700; text-align: right;">0</td>`;
             html += `<td contenteditable="true">비고</td>`;
 
             newRow.innerHTML = html;
@@ -1786,10 +1811,11 @@
                     '중분류': currentDetailItem,
                     '소분류': cells[0].textContent.trim()
                 };
+                // cells[1]은 총액 (건너뜀)
 
-                // 월별 데이터 추가 (cells[1~12])
+                // 월별 데이터 추가 (cells[2-13])
                 months.forEach((month, index) => {
-                    rowData[month] = parseNumber(cells[index + 1].textContent);
+                    rowData[month] = parseNumber(cells[index + 2].textContent);
                 });
 
                 // 비고 (cells[14])
