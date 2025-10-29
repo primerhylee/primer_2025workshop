@@ -2814,6 +2814,16 @@
                         <td contenteditable="true">${row.item}</td>
                         <td contenteditable="true">${formatNumber(row.amount)}</td>
                         <td contenteditable="true">${row.note}</td>
+                        <td>
+                            <div class="move-buttons">
+                                <button class="btn-move" onclick="moveRowUp(this)" title="위로 이동">
+                                    <i class="fas fa-chevron-up"></i>
+                                </button>
+                                <button class="btn-move" onclick="moveRowDown(this)" title="아래로 이동">
+                                    <i class="fas fa-chevron-down"></i>
+                                </button>
+                            </div>
+                        </td>
                         <td><button class="btn-delete" onclick="deleteRow(this)"><i class="fas fa-trash"></i></button></td>
                     `;
                 });
@@ -2907,6 +2917,16 @@
                         <td contenteditable="true">${formatNumber(row.amount)}</td>
                         <td contenteditable="true">${row.source}</td>
                         <td contenteditable="true">${row.note}</td>
+                        <td>
+                            <div class="move-buttons">
+                                <button class="btn-move" onclick="moveRowUp(this)" title="위로 이동">
+                                    <i class="fas fa-chevron-up"></i>
+                                </button>
+                                <button class="btn-move" onclick="moveRowDown(this)" title="아래로 이동">
+                                    <i class="fas fa-chevron-down"></i>
+                                </button>
+                            </div>
+                        </td>
                         <td><button class="btn-delete" onclick="deleteRow(this)"><i class="fas fa-trash"></i></button></td>
                     `;
                 });
@@ -3203,6 +3223,16 @@
                         <td contenteditable="true">${row['잔액'] || row['잔액 (백만원)'] || row['잔액 (억원)'] || row['amount'] || 0}</td>
                         <td contenteditable="true">${row['종류'] || row['type'] || ''}</td>
                         <td contenteditable="true">${row['비고'] || row['note'] || ''}</td>
+                        <td>
+                            <div class="move-buttons">
+                                <button class="btn-move" onclick="moveRowUp(this)" title="위로 이동">
+                                    <i class="fas fa-chevron-up"></i>
+                                </button>
+                                <button class="btn-move" onclick="moveRowDown(this)" title="아래로 이동">
+                                    <i class="fas fa-chevron-down"></i>
+                                </button>
+                            </div>
+                        </td>
                         <td><button class="btn-delete" onclick="deleteRow(this)"><i class="fas fa-trash"></i></button></td>
                     `;
                 });
@@ -3553,6 +3583,16 @@
                         <td contenteditable="true">${formatNumber(row.amount)}</td>
                         <td contenteditable="true">${row.type}</td>
                         <td contenteditable="true">${row.note}</td>
+                        <td>
+                            <div class="move-buttons">
+                                <button class="btn-move" onclick="moveRowUp(this)" title="위로 이동">
+                                    <i class="fas fa-chevron-up"></i>
+                                </button>
+                                <button class="btn-move" onclick="moveRowDown(this)" title="아래로 이동">
+                                    <i class="fas fa-chevron-down"></i>
+                                </button>
+                            </div>
+                        </td>
                         <td><button class="btn-delete" onclick="deleteRow(this)"><i class="fas fa-trash"></i></button></td>
                     `;
                     total += row.amount;
