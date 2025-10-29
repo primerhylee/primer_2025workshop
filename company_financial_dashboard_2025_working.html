@@ -476,6 +476,59 @@
             margin-bottom: 20px;
         }
 
+        /* 모달 테이블 셀 스타일 개선 */
+        .modal-table td[contenteditable="true"] {
+            white-space: pre-wrap; /* 줄바꿈 허용 */
+            word-wrap: break-word;
+            min-height: 20px;
+            vertical-align: top;
+        }
+
+        /* 금액 입력 필드 스타일 */
+        .amount-input {
+            text-align: right !important;
+            font-family: inherit; /* 부모 요소의 폰트 상속 */
+            font-weight: 500;
+        }
+
+        /* 순서 이동 버튼 스타일 */
+        .move-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            align-items: center;
+        }
+
+        .btn-move {
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            color: #3B82F6;
+            padding: 4px 6px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.7rem;
+            transition: all 0.2s ease;
+            min-width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-move:hover {
+            background: rgba(59, 130, 246, 0.2);
+            border-color: rgba(59, 130, 246, 0.5);
+            transform: translateY(-1px);
+        }
+
+        .btn-move:active {
+            transform: translateY(0);
+        }
+
+        .btn-move i {
+            font-size: 0.6rem;
+        }
+
         .modal-table thead {
             background: rgba(239, 68, 68, 0.15);
             position: sticky;
@@ -918,8 +971,9 @@
                             <tr>
                                 <th>분류</th>
                                 <th>상세분류</th>
-                                <th>금액 (백만원)</th>
+                                <th>금액 (원)</th>
                                 <th>비고</th>
+                                <th style="width: 80px;">순서</th>
                                 <th style="width: 80px;">삭제</th>
                             </tr>
                         </thead>
@@ -946,8 +1000,18 @@
                                     </select>
                                 </td>
                                 <td contenteditable="true">교육지원비</td>
-                                <td contenteditable="true">280</td>
+                                <td contenteditable="true" class="amount-input">280,000,000</td>
                                 <td contenteditable="true">교육 프로그램 운영</td>
+                                <td>
+                                    <div class="move-buttons">
+                                        <button class="btn-move" onclick="moveRowUp(this)" title="위로 이동">
+                                            <i class="fas fa-chevron-up"></i>
+                                        </button>
+                                        <button class="btn-move" onclick="moveRowDown(this)" title="아래로 이동">
+                                            <i class="fas fa-chevron-down"></i>
+                                        </button>
+                                    </div>
+                                </td>
                                 <td><button class="btn-delete" onclick="deleteRow(this)"><i class="fas fa-trash"></i></button></td>
                             </tr>
                             <tr>
@@ -1062,39 +1126,80 @@
                         <thead>
                             <tr>
                                 <th>상세분류</th>
-                                <th>금액 (백만원)</th>
+                                <th>금액 (원)</th>
                                 <th>수입원</th>
                                 <th>비고</th>
+                                <th style="width: 80px;">순서</th>
                                 <th style="width: 80px;">삭제</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
                                 <td contenteditable="true">정부 지원금</td>
-                                <td contenteditable="true">850</td>
+                                <td contenteditable="true" class="amount-input">850,000,000</td>
                                 <td contenteditable="true">정부사업</td>
                                 <td contenteditable="true">중소기업청 지원</td>
+                                <td>
+                                    <div class="move-buttons">
+                                        <button class="btn-move" onclick="moveRowUp(this)" title="위로 이동">
+                                            <i class="fas fa-chevron-up"></i>
+                                        </button>
+                                        <button class="btn-move" onclick="moveRowDown(this)" title="아래로 이동">
+                                            <i class="fas fa-chevron-down"></i>
+                                        </button>
+                                    </div>
+                                </td>
                                 <td><button class="btn-delete" onclick="deleteRow(this)"><i class="fas fa-trash"></i></button></td>
                             </tr>
                             <tr>
                                 <td contenteditable="true">투자 수익</td>
-                                <td contenteditable="true">620</td>
+                                <td contenteditable="true" class="amount-input">620,000,000</td>
                                 <td contenteditable="true">투자</td>
                                 <td contenteditable="true">포트폴리오 기업 EXIT</td>
+                                <td>
+                                    <div class="move-buttons">
+                                        <button class="btn-move" onclick="moveRowUp(this)" title="위로 이동">
+                                            <i class="fas fa-chevron-up"></i>
+                                        </button>
+                                        <button class="btn-move" onclick="moveRowDown(this)" title="아래로 이동">
+                                            <i class="fas fa-chevron-down"></i>
+                                        </button>
+                                    </div>
+                                </td>
                                 <td><button class="btn-delete" onclick="deleteRow(this)"><i class="fas fa-trash"></i></button></td>
                             </tr>
                             <tr>
                                 <td contenteditable="true">교육 사업</td>
-                                <td contenteditable="true">380</td>
+                                <td contenteditable="true" class="amount-input">380,000,000</td>
                                 <td contenteditable="true">자체사업</td>
                                 <td contenteditable="true">교육 프로그램 수익</td>
+                                <td>
+                                    <div class="move-buttons">
+                                        <button class="btn-move" onclick="moveRowUp(this)" title="위로 이동">
+                                            <i class="fas fa-chevron-up"></i>
+                                        </button>
+                                        <button class="btn-move" onclick="moveRowDown(this)" title="아래로 이동">
+                                            <i class="fas fa-chevron-down"></i>
+                                        </button>
+                                    </div>
+                                </td>
                                 <td><button class="btn-delete" onclick="deleteRow(this)"><i class="fas fa-trash"></i></button></td>
                             </tr>
                             <tr>
                                 <td contenteditable="true">컨설팅</td>
-                                <td contenteditable="true">250</td>
+                                <td contenteditable="true" class="amount-input">250,000,000</td>
                                 <td contenteditable="true">자체사업</td>
                                 <td contenteditable="true">기업 컨설팅 수익</td>
+                                <td>
+                                    <div class="move-buttons">
+                                        <button class="btn-move" onclick="moveRowUp(this)" title="위로 이동">
+                                            <i class="fas fa-chevron-up"></i>
+                                        </button>
+                                        <button class="btn-move" onclick="moveRowDown(this)" title="아래로 이동">
+                                            <i class="fas fa-chevron-down"></i>
+                                        </button>
+                                    </div>
+                                </td>
                                 <td><button class="btn-delete" onclick="deleteRow(this)"><i class="fas fa-trash"></i></button></td>
                             </tr>
                             <tr>
@@ -1146,7 +1251,7 @@
                         </div>
                         <p style="margin: 0; color: #1e293b; font-size: 0.9rem;">
                             • <strong id="current-forecast-year">2026년</strong>의 예상 수입을 항목별로 세분화하여 입력하세요<br>
-                            • 각 항목별 금액을 백만원 단위로 입력하면 자동으로 합계가 계산됩니다<br>
+                            • 각 항목별 금액을 원 단위로 입력하면 자동으로 합계가 계산됩니다<br>
                             • 상단 년도 선택기로 다른 년도로 전환하여 입력할 수 있습니다<br>
                             • 모든 항목의 합계가 차트에 해당 년도 예측 수입으로 표시됩니다
                         </p>
@@ -1171,7 +1276,7 @@
                         <thead>
                             <tr>
                                 <th style="width: 25%;">수입 항목</th>
-                                <th style="width: 20%;">예상 금액 (백만원)</th>
+                                <th style="width: 20%;">예상 금액 (원)</th>
                                 <th style="width: 15%;">수입원</th>
                                 <th style="width: 30%;">비고</th>
                                 <th style="width: 10%;">삭제</th>
@@ -1190,7 +1295,7 @@
                                 <span id="forecast-total-year">2026년</span> 예측 수입 합계
                             </h3>
                             <div style="font-size: 1.5rem; font-weight: bold;">
-                                <span id="forecast-total-amount">0</span>백만원
+                                <span id="forecast-total-amount">0</span>원
                             </div>
                         </div>
                         <div style="margin-top: 10px; font-size: 0.9rem; opacity: 0.9;">
@@ -1249,32 +1354,63 @@
                         <thead>
                             <tr>
                                 <th>계좌/항목</th>
-                                <th>잔액 (백만원)</th>
+                                <th>잔액 (원)</th>
                                 <th>종류</th>
                                 <th>비고</th>
+                                <th style="width: 80px;">순서</th>
                                 <th style="width: 80px;">삭제</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
                                 <td contenteditable="true">운영자금 계좌</td>
-                                <td contenteditable="true">210</td>
+                                <td contenteditable="true" class="amount-input">210,000,000</td>
                                 <td contenteditable="true">예금</td>
                                 <td contenteditable="true">일상 운영 자금</td>
+                                <td>
+                                    <div class="move-buttons">
+                                        <button class="btn-move" onclick="moveRowUp(this)" title="위로 이동">
+                                            <i class="fas fa-chevron-up"></i>
+                                        </button>
+                                        <button class="btn-move" onclick="moveRowDown(this)" title="아래로 이동">
+                                            <i class="fas fa-chevron-down"></i>
+                                        </button>
+                                    </div>
+                                </td>
                                 <td><button class="btn-delete" onclick="deleteRow(this)"><i class="fas fa-trash"></i></button></td>
                             </tr>
                             <tr>
                                 <td contenteditable="true">투자 펀드</td>
-                                <td contenteditable="true">150</td>
+                                <td contenteditable="true" class="amount-input">150,000,000</td>
                                 <td contenteditable="true">투자</td>
                                 <td contenteditable="true">스타트업 투자금</td>
+                                <td>
+                                    <div class="move-buttons">
+                                        <button class="btn-move" onclick="moveRowUp(this)" title="위로 이동">
+                                            <i class="fas fa-chevron-up"></i>
+                                        </button>
+                                        <button class="btn-move" onclick="moveRowDown(this)" title="아래로 이동">
+                                            <i class="fas fa-chevron-down"></i>
+                                        </button>
+                                    </div>
+                                </td>
                                 <td><button class="btn-delete" onclick="deleteRow(this)"><i class="fas fa-trash"></i></button></td>
                             </tr>
                             <tr>
                                 <td contenteditable="true">적립금</td>
-                                <td contenteditable="true">60</td>
+                                <td contenteditable="true" class="amount-input">60,000,000</td>
                                 <td contenteditable="true">예금</td>
                                 <td contenteditable="true">비상 준비금</td>
+                                <td>
+                                    <div class="move-buttons">
+                                        <button class="btn-move" onclick="moveRowUp(this)" title="위로 이동">
+                                            <i class="fas fa-chevron-up"></i>
+                                        </button>
+                                        <button class="btn-move" onclick="moveRowDown(this)" title="아래로 이동">
+                                            <i class="fas fa-chevron-down"></i>
+                                        </button>
+                                    </div>
+                                </td>
                                 <td><button class="btn-delete" onclick="deleteRow(this)"><i class="fas fa-trash"></i></button></td>
                             </tr>
                         </tbody>
@@ -1668,6 +1804,72 @@
         // 천단위 콤마 추가 함수
         function formatNumber(num) {
             return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
+
+        // 실시간 금액 포맷팅 함수
+        function formatAmountInput(element) {
+            let value = element.textContent.replace(/[^\d]/g, ''); // 숫자만 추출
+            if (value && value !== '0') {
+                element.textContent = formatNumber(value);
+            } else if (value === '0') {
+                element.textContent = '0';
+            }
+        }
+
+        // 금액 입력 필드에 이벤트 리스너 추가
+        function addAmountFormatting(element) {
+            element.classList.add('amount-input');
+            
+            // 키보드 입력 이벤트
+            element.addEventListener('keydown', function(e) {
+                // 숫자, 백스페이스, 삭제, 화살표 키만 허용
+                const allowedKeys = ['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Tab', 'Enter'];
+                const isNumber = (e.key >= '0' && e.key <= '9');
+                const isAllowed = allowedKeys.includes(e.key);
+                
+                if (!isNumber && !isAllowed) {
+                    e.preventDefault();
+                }
+            });
+            
+            element.addEventListener('input', function() {
+                const selection = window.getSelection();
+                const range = selection.rangeCount > 0 ? selection.getRangeAt(0) : null;
+                const offset = range ? range.startOffset : 0;
+                const oldLength = this.textContent.length;
+                
+                formatAmountInput(this);
+                
+                // 커서 위치 복원 (쉼표 추가로 인한 위치 조정)
+                if (range && this.firstChild) {
+                    try {
+                        const newLength = this.textContent.length;
+                        const lengthDiff = newLength - oldLength;
+                        const newOffset = Math.min(offset + lengthDiff, newLength);
+                        
+                        const newRange = document.createRange();
+                        newRange.setStart(this.firstChild, Math.max(0, newOffset));
+                        newRange.collapse(true);
+                        selection.removeAllRanges();
+                        selection.addRange(newRange);
+                    } catch (e) {
+                        // 커서 위치 복원 실패 시 무시
+                    }
+                }
+            });
+
+            element.addEventListener('blur', function() {
+                formatAmountInput(this);
+            });
+
+            element.addEventListener('paste', function(e) {
+                e.preventDefault();
+                const paste = (e.clipboardData || window.clipboardData).getData('text');
+                const numbers = paste.replace(/[^\d]/g, '');
+                if (numbers) {
+                    this.textContent = formatNumber(numbers);
+                }
+            });
         }
 
         // 📊 테이블에 합계 행 추가 함수
@@ -2428,10 +2630,26 @@
                     </select>
                 </td>
                 <td contenteditable="true">새 상세분류</td>
-                <td contenteditable="true">0</td>
+                <td contenteditable="true" class="amount-input">0</td>
                 <td contenteditable="true">비고</td>
+                <td>
+                    <div class="move-buttons">
+                        <button class="btn-move" onclick="moveRowUp(this)" title="위로 이동">
+                            <i class="fas fa-chevron-up"></i>
+                        </button>
+                        <button class="btn-move" onclick="moveRowDown(this)" title="아래로 이동">
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                    </div>
+                </td>
                 <td><button class="btn-delete" onclick="deleteRow(this)"><i class="fas fa-trash"></i></button></td>
             `;
+            
+            // 새로 추가된 금액 필드에 포맷팅 적용
+            const amountCell = newRow.querySelector('.amount-input');
+            if (amountCell) {
+                addAmountFormatting(amountCell);
+            }
         }
 
         function addIncomeRow() {
@@ -2439,11 +2657,27 @@
             const newRow = tbody.insertRow();
             newRow.innerHTML = `
                 <td contenteditable="true">새 상세분류</td>
-                <td contenteditable="true">0</td>
+                <td contenteditable="true" class="amount-input">0</td>
                 <td contenteditable="true">수입원</td>
                 <td contenteditable="true">비고</td>
+                <td>
+                    <div class="move-buttons">
+                        <button class="btn-move" onclick="moveRowUp(this)" title="위로 이동">
+                            <i class="fas fa-chevron-up"></i>
+                        </button>
+                        <button class="btn-move" onclick="moveRowDown(this)" title="아래로 이동">
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                    </div>
+                </td>
                 <td><button class="btn-delete" onclick="deleteRow(this)"><i class="fas fa-trash"></i></button></td>
             `;
+            
+            // 새로 추가된 금액 필드에 포맷팅 적용
+            const amountCell = newRow.querySelector('.amount-input');
+            if (amountCell) {
+                addAmountFormatting(amountCell);
+            }
         }
 
         function addBalanceRow() {
@@ -2451,11 +2685,27 @@
             const newRow = tbody.insertRow();
             newRow.innerHTML = `
                 <td contenteditable="true">새 계좌</td>
-                <td contenteditable="true">0</td>
+                <td contenteditable="true" class="amount-input">0</td>
                 <td contenteditable="true">종류</td>
                 <td contenteditable="true">비고</td>
+                <td>
+                    <div class="move-buttons">
+                        <button class="btn-move" onclick="moveRowUp(this)" title="위로 이동">
+                            <i class="fas fa-chevron-up"></i>
+                        </button>
+                        <button class="btn-move" onclick="moveRowDown(this)" title="아래로 이동">
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                    </div>
+                </td>
                 <td><button class="btn-delete" onclick="deleteRow(this)"><i class="fas fa-trash"></i></button></td>
             `;
+            
+            // 새로 추가된 금액 필드에 포맷팅 적용
+            const amountCell = newRow.querySelector('.amount-input');
+            if (amountCell) {
+                addAmountFormatting(amountCell);
+            }
         }
 
         // 행 삭제 함수
@@ -2463,6 +2713,38 @@
             const row = button.closest('tr');
             if (confirm('이 항목을 삭제하시겠습니까?')) {
                 row.remove();
+            }
+        }
+
+        // 행 위로 이동
+        function moveRowUp(button) {
+            const row = button.closest('tr');
+            const previousRow = row.previousElementSibling;
+            
+            if (previousRow && !previousRow.classList.contains('total-row')) {
+                row.parentNode.insertBefore(row, previousRow);
+                
+                // 이동 애니메이션 효과
+                row.style.backgroundColor = 'rgba(59, 130, 246, 0.1)';
+                setTimeout(() => {
+                    row.style.backgroundColor = '';
+                }, 300);
+            }
+        }
+
+        // 행 아래로 이동
+        function moveRowDown(button) {
+            const row = button.closest('tr');
+            const nextRow = row.nextElementSibling;
+            
+            if (nextRow && !nextRow.classList.contains('total-row')) {
+                row.parentNode.insertBefore(nextRow, row);
+                
+                // 이동 애니메이션 효과
+                row.style.backgroundColor = 'rgba(59, 130, 246, 0.1)';
+                setTimeout(() => {
+                    row.style.backgroundColor = '';
+                }, 300);
             }
         }
 
@@ -2569,7 +2851,7 @@
                 });
 
                 const expenseCard = document.querySelector('.stat-card[data-modal="expense"] .value');
-                expenseCard.textContent = (total / 100).toFixed(1) + '억원';
+                expenseCard.textContent = (total / 100000000).toFixed(1) + '억원';
             }
 
             // 성공 메시지
@@ -2695,9 +2977,9 @@
             // 로컬 스토리지에 저장
             localStorage.setItem('balanceData', JSON.stringify(data));
 
-            // 잔액 카드 업데이트 (백만원을 억원으로 변환)
+            // 잔액 카드 업데이트 (원을 억원으로 변환)
             const balanceCard = document.querySelector('.stat-card[data-modal="balance"] .value');
-            balanceCard.textContent = (totalBalance / 100).toFixed(1) + '억원';
+            balanceCard.textContent = (totalBalance / 100000000).toFixed(1) + '억원';
 
             // 성공 메시지
             alert('잔액 데이터가 저장되었습니다!');
@@ -3234,7 +3516,7 @@
                     total += row.amount;
                 });
                 const expenseCard = document.querySelector('.stat-card[data-modal="expense"] .value');
-                expenseCard.textContent = (total / 100).toFixed(1) + '억원';
+                expenseCard.textContent = (total / 100000000).toFixed(1) + '억원';
             }
 
             // 기존 incomeData를 incomeData_2025로 마이그레이션
@@ -3276,7 +3558,7 @@
                     total += row.amount;
                 });
                 const balanceCard = document.querySelector('.stat-card[data-modal="balance"] .value');
-                balanceCard.textContent = (total / 100).toFixed(1) + '억원';
+                balanceCard.textContent = (total / 100000000).toFixed(1) + '억원';
             }
         });
 
@@ -4052,6 +4334,44 @@
             });
         }
         
+        // 페이지 로드 시 기존 금액 필드에 포맷팅 적용
+        function initializeAmountFormatting() {
+            // 모든 기존 금액 입력 필드에 포맷팅 적용
+            const amountInputs = document.querySelectorAll('.amount-input');
+            amountInputs.forEach(input => {
+                addAmountFormatting(input);
+                formatAmountInput(input); // 초기 포맷팅 적용
+            });
+        }
+
+        // 메인 페이지 잔액 초기화
+        function initializeMainBalance() {
+            const balanceData = localStorage.getItem('balanceData');
+            if (balanceData) {
+                const data = JSON.parse(balanceData);
+                let total = 0;
+                data.forEach(item => {
+                    total += parseFloat(item.amount || 0);
+                });
+                const balanceCard = document.querySelector('.stat-card[data-modal="balance"] .value');
+                if (balanceCard) {
+                    balanceCard.textContent = (total / 100000000).toFixed(1) + '억원';
+                }
+            }
+        }
+
+        // 페이지 로드 완료 후 초기화
+        function initializePage() {
+            initializeAmountFormatting();
+            initializeMainBalance();
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initializePage);
+        } else {
+            initializePage();
+        }
+
         // 초기 차트 생성
         updateRevenueForecastChart();
 

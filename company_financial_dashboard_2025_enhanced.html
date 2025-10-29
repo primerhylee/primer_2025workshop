@@ -6,7 +6,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>프라이머 전략팀 워크샵 - Enhanced 발표용</title>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>프라이머 전략팀 워크샵 - Enhanced 발표용 (순서이동 기능 추가)</title>
 
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -520,6 +523,24 @@
             background: rgba(16, 185, 129, 0.12);
             color: #10b981;
             border-color: rgba(16, 185, 129, 0.4);
+        }
+
+        /* 순서 이동 버튼 스타일 */
+        .btn-move {
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            color: #3B82F6;
+            padding: 4px 6px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            margin: 0 2px;
+            transition: all 0.2s ease;
+        }
+
+        .btn-move:hover {
+            background: rgba(59, 130, 246, 0.2);
+            transform: translateY(-1px);
         }
 
         .modal-actions {
@@ -1295,6 +1316,7 @@
                                 <th>상세분류</th>
                                 <th>금액 (원)</th>
                                 <th>비고</th>
+                                <th style="width: 80px;">순서</th>
                                 <th style="width: 80px;">삭제</th>
                             </tr>
                         </thead>
@@ -1310,6 +1332,14 @@
                                 <td contenteditable="true">멘토링비</td>
                                 <td contenteditable="true">350</td>
                                 <td contenteditable="true">스타트업 멘토링 프로그램</td>
+                                <td>
+                                    <button class="btn-move" onclick="moveRowUp(this)" title="위로 이동">
+                                        <i class="fas fa-arrow-up"></i>
+                                    </button>
+                                    <button class="btn-move" onclick="moveRowDown(this)" title="아래로 이동">
+                                        <i class="fas fa-arrow-down"></i>
+                                    </button>
+                                </td>
                                 <td><button class="btn-delete" onclick="deleteRow(this)"><i class="fas fa-trash"></i></button></td>
                             </tr>
                             <tr>
@@ -1323,6 +1353,14 @@
                                 <td contenteditable="true">교육지원비</td>
                                 <td contenteditable="true">280</td>
                                 <td contenteditable="true">교육 프로그램 운영</td>
+                                <td>
+                                    <button class="btn-move" onclick="moveRowUp(this)" title="위로 이동">
+                                        <i class="fas fa-arrow-up"></i>
+                                    </button>
+                                    <button class="btn-move" onclick="moveRowDown(this)" title="아래로 이동">
+                                        <i class="fas fa-arrow-down"></i>
+                                    </button>
+                                </td>
                                 <td><button class="btn-delete" onclick="deleteRow(this)"><i class="fas fa-trash"></i></button></td>
                             </tr>
                             <tr>
@@ -1336,6 +1374,14 @@
                                 <td contenteditable="true">공간지원비</td>
                                 <td contenteditable="true">210</td>
                                 <td contenteditable="true">사무 공간 제공</td>
+                                <td>
+                                    <button class="btn-move" onclick="moveRowUp(this)" title="위로 이동">
+                                        <i class="fas fa-arrow-up"></i>
+                                    </button>
+                                    <button class="btn-move" onclick="moveRowDown(this)" title="아래로 이동">
+                                        <i class="fas fa-arrow-down"></i>
+                                    </button>
+                                </td>
                                 <td><button class="btn-delete" onclick="deleteRow(this)"><i class="fas fa-trash"></i></button></td>
                             </tr>
                             <tr>
@@ -1349,6 +1395,14 @@
                                 <td contenteditable="true">네트워킹 행사</td>
                                 <td contenteditable="true">220</td>
                                 <td contenteditable="true">창업자 네트워킹 이벤트</td>
+                                <td>
+                                    <button class="btn-move" onclick="moveRowUp(this)" title="위로 이동">
+                                        <i class="fas fa-arrow-up"></i>
+                                    </button>
+                                    <button class="btn-move" onclick="moveRowDown(this)" title="아래로 이동">
+                                        <i class="fas fa-arrow-down"></i>
+                                    </button>
+                                </td>
                                 <td><button class="btn-delete" onclick="deleteRow(this)"><i class="fas fa-trash"></i></button></td>
                             </tr>
                             <tr>
@@ -1362,6 +1416,14 @@
                                 <td contenteditable="true">인건비</td>
                                 <td contenteditable="true">450</td>
                                 <td contenteditable="true">직원 급여</td>
+                                <td>
+                                    <button class="btn-move" onclick="moveRowUp(this)" title="위로 이동">
+                                        <i class="fas fa-arrow-up"></i>
+                                    </button>
+                                    <button class="btn-move" onclick="moveRowDown(this)" title="아래로 이동">
+                                        <i class="fas fa-arrow-down"></i>
+                                    </button>
+                                </td>
                                 <td><button class="btn-delete" onclick="deleteRow(this)"><i class="fas fa-trash"></i></button></td>
                             </tr>
                             <tr>
@@ -1375,6 +1437,14 @@
                                 <td contenteditable="true">사무실 임차료</td>
                                 <td contenteditable="true">210</td>
                                 <td contenteditable="true">월세 및 관리비</td>
+                                <td>
+                                    <button class="btn-move" onclick="moveRowUp(this)" title="위로 이동">
+                                        <i class="fas fa-arrow-up"></i>
+                                    </button>
+                                    <button class="btn-move" onclick="moveRowDown(this)" title="아래로 이동">
+                                        <i class="fas fa-arrow-down"></i>
+                                    </button>
+                                </td>
                                 <td><button class="btn-delete" onclick="deleteRow(this)"><i class="fas fa-trash"></i></button></td>
                             </tr>
                         </tbody>
@@ -1451,6 +1521,7 @@
                                 <th>금액 (원)</th>
                                 <th>수입원</th>
                                 <th>비고</th>
+                                <th style="width: 80px;">순서</th>
                                 <th style="width: 80px;">삭제</th>
                             </tr>
                         </thead>
@@ -1460,6 +1531,14 @@
                                 <td contenteditable="true">850,000,000</td>
                                 <td contenteditable="true">정부지원사업</td>
                                 <td contenteditable="true"></td>
+                                <td>
+                                    <button class="btn-move" onclick="moveRowUp(this)" title="위로 이동">
+                                        <i class="fas fa-arrow-up"></i>
+                                    </button>
+                                    <button class="btn-move" onclick="moveRowDown(this)" title="아래로 이동">
+                                        <i class="fas fa-arrow-down"></i>
+                                    </button>
+                                </td>
                                 <td><button class="btn-delete" onclick="deleteRow(this)"><i class="fas fa-trash"></i></button></td>
                             </tr>
                             <tr>
@@ -1467,6 +1546,14 @@
                                 <td contenteditable="true">620,000,000</td>
                                 <td contenteditable="true">관리보수</td>
                                 <td contenteditable="true"></td>
+                                <td>
+                                    <button class="btn-move" onclick="moveRowUp(this)" title="위로 이동">
+                                        <i class="fas fa-arrow-up"></i>
+                                    </button>
+                                    <button class="btn-move" onclick="moveRowDown(this)" title="아래로 이동">
+                                        <i class="fas fa-arrow-down"></i>
+                                    </button>
+                                </td>
                                 <td><button class="btn-delete" onclick="deleteRow(this)"><i class="fas fa-trash"></i></button></td>
                             </tr>
                             <tr>
@@ -1474,6 +1561,14 @@
                                 <td contenteditable="true">380,000,000</td>
                                 <td contenteditable="true">관리보수</td>
                                 <td contenteditable="true"></td>
+                                <td>
+                                    <button class="btn-move" onclick="moveRowUp(this)" title="위로 이동">
+                                        <i class="fas fa-arrow-up"></i>
+                                    </button>
+                                    <button class="btn-move" onclick="moveRowDown(this)" title="아래로 이동">
+                                        <i class="fas fa-arrow-down"></i>
+                                    </button>
+                                </td>
                                 <td><button class="btn-delete" onclick="deleteRow(this)"><i class="fas fa-trash"></i></button></td>
                             </tr>
                             <tr>
@@ -1481,6 +1576,14 @@
                                 <td contenteditable="true">250,000,000</td>
                                 <td contenteditable="true">관리보수</td>
                                 <td contenteditable="true"></td>
+                                <td>
+                                    <button class="btn-move" onclick="moveRowUp(this)" title="위로 이동">
+                                        <i class="fas fa-arrow-up"></i>
+                                    </button>
+                                    <button class="btn-move" onclick="moveRowDown(this)" title="아래로 이동">
+                                        <i class="fas fa-arrow-down"></i>
+                                    </button>
+                                </td>
                                 <td><button class="btn-delete" onclick="deleteRow(this)"><i class="fas fa-trash"></i></button></td>
                             </tr>
                             <tr>
@@ -1488,6 +1591,14 @@
                                 <td contenteditable="true">150,000,000</td>
                                 <td contenteditable="true">관리보수</td>
                                 <td contenteditable="true"></td>
+                                <td>
+                                    <button class="btn-move" onclick="moveRowUp(this)" title="위로 이동">
+                                        <i class="fas fa-arrow-up"></i>
+                                    </button>
+                                    <button class="btn-move" onclick="moveRowDown(this)" title="아래로 이동">
+                                        <i class="fas fa-arrow-down"></i>
+                                    </button>
+                                </td>
                                 <td><button class="btn-delete" onclick="deleteRow(this)"><i class="fas fa-trash"></i></button></td>
                             </tr>
                         </tbody>
@@ -1547,6 +1658,7 @@
                                 <th>잔액 (백만원)</th>
                                 <th>종류</th>
                                 <th>비고</th>
+                                <th style="width: 80px;">순서</th>
                                 <th style="width: 80px;">삭제</th>
                             </tr>
                         </thead>
@@ -1556,6 +1668,14 @@
                                 <td contenteditable="true">210</td>
                                 <td contenteditable="true">예금</td>
                                 <td contenteditable="true">일상 운영 자금</td>
+                                <td>
+                                    <button class="btn-move" onclick="moveRowUp(this)" title="위로 이동">
+                                        <i class="fas fa-arrow-up"></i>
+                                    </button>
+                                    <button class="btn-move" onclick="moveRowDown(this)" title="아래로 이동">
+                                        <i class="fas fa-arrow-down"></i>
+                                    </button>
+                                </td>
                                 <td><button class="btn-delete" onclick="deleteRow(this)"><i class="fas fa-trash"></i></button></td>
                             </tr>
                             <tr>
@@ -1563,6 +1683,14 @@
                                 <td contenteditable="true">150</td>
                                 <td contenteditable="true">투자</td>
                                 <td contenteditable="true">스타트업 투자금</td>
+                                <td>
+                                    <button class="btn-move" onclick="moveRowUp(this)" title="위로 이동">
+                                        <i class="fas fa-arrow-up"></i>
+                                    </button>
+                                    <button class="btn-move" onclick="moveRowDown(this)" title="아래로 이동">
+                                        <i class="fas fa-arrow-down"></i>
+                                    </button>
+                                </td>
                                 <td><button class="btn-delete" onclick="deleteRow(this)"><i class="fas fa-trash"></i></button></td>
                             </tr>
                             <tr>
@@ -1570,6 +1698,14 @@
                                 <td contenteditable="true">60</td>
                                 <td contenteditable="true">예금</td>
                                 <td contenteditable="true">비상 준비금</td>
+                                <td>
+                                    <button class="btn-move" onclick="moveRowUp(this)" title="위로 이동">
+                                        <i class="fas fa-arrow-up"></i>
+                                    </button>
+                                    <button class="btn-move" onclick="moveRowDown(this)" title="아래로 이동">
+                                        <i class="fas fa-arrow-down"></i>
+                                    </button>
+                                </td>
                                 <td><button class="btn-delete" onclick="deleteRow(this)"><i class="fas fa-trash"></i></button></td>
                             </tr>
                         </tbody>
@@ -2760,6 +2896,14 @@
                 <td contenteditable="true">새 상세분류</td>
                 <td contenteditable="true">0</td>
                 <td contenteditable="true">비고</td>
+                <td>
+                    <button class="btn-move" onclick="moveRowUp(this)" title="위로 이동">
+                        <i class="fas fa-arrow-up"></i>
+                    </button>
+                    <button class="btn-move" onclick="moveRowDown(this)" title="아래로 이동">
+                        <i class="fas fa-arrow-down"></i>
+                    </button>
+                </td>
                 <td><button class="btn-delete" onclick="deleteRow(this)"><i class="fas fa-trash"></i></button></td>
             `;
         }
@@ -2777,6 +2921,14 @@
                 <td contenteditable="true">0</td>
                 <td contenteditable="true">관리보수</td>
                 <td contenteditable="true"></td>
+                <td>
+                    <button class="btn-move" onclick="moveRowUp(this)" title="위로 이동">
+                        <i class="fas fa-arrow-up"></i>
+                    </button>
+                    <button class="btn-move" onclick="moveRowDown(this)" title="아래로 이동">
+                        <i class="fas fa-arrow-down"></i>
+                    </button>
+                </td>
                 <td><button class="btn-delete" onclick="deleteRow(this)"><i class="fas fa-trash"></i></button></td>
             `;
             
@@ -2794,6 +2946,14 @@
                 <td contenteditable="true">0</td>
                 <td contenteditable="true">종류</td>
                 <td contenteditable="true">비고</td>
+                <td>
+                    <button class="btn-move" onclick="moveRowUp(this)" title="위로 이동">
+                        <i class="fas fa-arrow-up"></i>
+                    </button>
+                    <button class="btn-move" onclick="moveRowDown(this)" title="아래로 이동">
+                        <i class="fas fa-arrow-down"></i>
+                    </button>
+                </td>
                 <td><button class="btn-delete" onclick="deleteRow(this)"><i class="fas fa-trash"></i></button></td>
             `;
         }
@@ -2811,6 +2971,38 @@
                         updateIncomeTotal();
                     }, 100);
                 }
+            }
+        }
+
+        // 행 위로 이동
+        function moveRowUp(button) {
+            const row = button.closest('tr');
+            const previousRow = row.previousElementSibling;
+            
+            if (previousRow && !previousRow.classList.contains('total-row')) {
+                row.parentNode.insertBefore(row, previousRow);
+                
+                // 이동 애니메이션 효과
+                row.style.backgroundColor = 'rgba(59, 130, 246, 0.1)';
+                setTimeout(() => {
+                    row.style.backgroundColor = '';
+                }, 500);
+            }
+        }
+
+        // 행 아래로 이동
+        function moveRowDown(button) {
+            const row = button.closest('tr');
+            const nextRow = row.nextElementSibling;
+            
+            if (nextRow && !nextRow.classList.contains('total-row')) {
+                row.parentNode.insertBefore(nextRow, row);
+                
+                // 이동 애니메이션 효과
+                row.style.backgroundColor = 'rgba(59, 130, 246, 0.1)';
+                setTimeout(() => {
+                    row.style.backgroundColor = '';
+                }, 500);
             }
         }
 
