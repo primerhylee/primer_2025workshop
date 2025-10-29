@@ -412,6 +412,64 @@
             margin-bottom: 20px;
         }
 
+        /* 예측 년도 탭 스타일 */
+        .forecast-year-tabs {
+            display: flex;
+            gap: 4px;
+            background: #f1f5f9;
+            padding: 4px;
+            border-radius: 12px;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .forecast-year-tab {
+            padding: 8px 16px;
+            border: none;
+            background: transparent;
+            color: #64748b;
+            font-size: 0.875rem;
+            font-weight: 500;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+            min-width: 50px;
+        }
+
+        .forecast-year-tab:hover {
+            background: rgba(59, 130, 246, 0.1);
+            color: #3b82f6;
+            transform: translateY(-1px);
+        }
+
+        .forecast-year-tab.active {
+            background: linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%);
+            color: white;
+            box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+            transform: translateY(-1px);
+        }
+
+        .forecast-year-tab.active:hover {
+            background: linear-gradient(135deg, #2563eb 0%, #0891b2 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+        }
+
+        /* 반응형 디자인 */
+        @media (max-width: 768px) {
+            .forecast-year-tabs {
+                flex-wrap: wrap;
+                gap: 2px;
+                padding: 3px;
+            }
+            
+            .forecast-year-tab {
+                padding: 6px 12px;
+                font-size: 0.75rem;
+                min-width: 45px;
+            }
+        }
+
         .modal-table {
             width: 100%;
             border-collapse: collapse;
@@ -1058,105 +1116,96 @@
 
         <!-- 수입 예측 설정 모달 -->
         <div id="forecast-modal" class="modal">
-            <div class="modal-content">
+            <div class="modal-content" style="max-width: 1600px; max-height: 95vh;">
                 <div class="modal-header">
-                    <h2><i class="fas fa-crystal-ball"></i> 수입 예측 설정 (2026-2035)</h2>
-                    <button class="modal-close" onclick="closeModal('forecast-modal')">
-                        <i class="fas fa-times"></i>
-                    </button>
+                    <h2><i class="fas fa-crystal-ball"></i> 수입 예측 설정 (2026-2035) - 항목별 입력</h2>
+                    <div style="display: flex; gap: 10px; align-items: center;">
+                        <div class="forecast-year-tabs" style="display: flex; gap: 4px; background: #f1f5f9; padding: 4px; border-radius: 12px; box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);">
+                            <button class="forecast-year-tab active" data-year="2026" onclick="switchForecastYear('2026')">2026</button>
+                            <button class="forecast-year-tab" data-year="2027" onclick="switchForecastYear('2027')">2027</button>
+                            <button class="forecast-year-tab" data-year="2028" onclick="switchForecastYear('2028')">2028</button>
+                            <button class="forecast-year-tab" data-year="2029" onclick="switchForecastYear('2029')">2029</button>
+                            <button class="forecast-year-tab" data-year="2030" onclick="switchForecastYear('2030')">2030</button>
+                            <button class="forecast-year-tab" data-year="2031" onclick="switchForecastYear('2031')">2031</button>
+                            <button class="forecast-year-tab" data-year="2032" onclick="switchForecastYear('2032')">2032</button>
+                            <button class="forecast-year-tab" data-year="2033" onclick="switchForecastYear('2033')">2033</button>
+                            <button class="forecast-year-tab" data-year="2034" onclick="switchForecastYear('2034')">2034</button>
+                            <button class="forecast-year-tab" data-year="2035" onclick="switchForecastYear('2035')">2035</button>
+                        </div>
+                        <button class="modal-close" onclick="closeModal('forecast-modal')">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
                 </div>
 
                 <div class="modal-table-container">
                     <div style="margin-bottom: 20px; padding: 15px; background: #f0f9ff; border: 1px solid #0ea5e9; border-radius: 10px;">
                         <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
                             <i class="fas fa-info-circle" style="color: #0ea5e9;"></i>
-                            <strong style="color: #0ea5e9;">예측 수입 입력 안내</strong>
+                            <strong style="color: #0ea5e9;">항목별 예측 수입 입력 안내</strong>
                         </div>
                         <p style="margin: 0; color: #1e293b; font-size: 0.9rem;">
-                            • 2026년부터 2035년까지의 예상 수입을 백만원 단위로 입력하세요<br>
-                            • 입력한 값은 "수입 내역 및 향후 예측" 차트에 점선으로 표시됩니다<br>
-                            • 빈 칸으로 두면 이전 년도 대비 15% 증가율로 자동 계산됩니다
+                            • <strong id="current-forecast-year">2026년</strong>의 예상 수입을 항목별로 세분화하여 입력하세요<br>
+                            • 각 항목별 금액을 백만원 단위로 입력하면 자동으로 합계가 계산됩니다<br>
+                            • 상단 년도 선택기로 다른 년도로 전환하여 입력할 수 있습니다<br>
+                            • 모든 항목의 합계가 차트에 해당 년도 예측 수입으로 표시됩니다
                         </p>
                     </div>
 
-                    <table class="modal-table" id="forecast-table">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                        <h3 style="margin: 0; color: #1e293b;">
+                            <i class="fas fa-calendar-alt"></i> 
+                            <span id="forecast-year-title">2026년</span> 예측 수입 항목별 입력
+                        </h3>
+                        <div style="display: flex; gap: 10px;">
+                            <button class="btn btn-excel" onclick="addForecastItem()" style="background: rgba(16, 185, 129, 0.2); color: #10B981; border-color: rgba(16, 185, 129, 0.3); padding: 8px 12px;">
+                                <i class="fas fa-plus"></i> 항목 추가
+                            </button>
+                            <button class="btn btn-excel" onclick="copyFromPreviousYear()" style="background: rgba(139, 92, 246, 0.2); color: #8B5CF6; border-color: rgba(139, 92, 246, 0.3); padding: 8px 12px;" title="전년도 데이터를 복사해서 시작">
+                                <i class="fas fa-copy"></i> 전년도 복사
+                            </button>
+                        </div>
+                    </div>
+
+                    <table class="modal-table" id="forecast-items-table">
                         <thead>
                             <tr>
-                                <th>년도</th>
-                                <th>예상 수입 (백만원)</th>
-                                <th>전년 대비 증감률</th>
-                                <th>비고</th>
+                                <th style="width: 25%;">수입 항목</th>
+                                <th style="width: 20%;">예상 금액 (백만원)</th>
+                                <th style="width: 15%;">수입원</th>
+                                <th style="width: 30%;">비고</th>
+                                <th style="width: 10%;">삭제</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <tr>
-                                <td><strong>2026</strong></td>
-                                <td contenteditable="true" class="forecast-amount" data-year="2026">25800</td>
-                                <td class="growth-rate">+14.7%</td>
-                                <td contenteditable="true" class="forecast-note" data-year="2026">보수적 성장 예상</td>
-                            </tr>
-                            <tr>
-                                <td><strong>2027</strong></td>
-                                <td contenteditable="true" class="forecast-amount" data-year="2027">29200</td>
-                                <td class="growth-rate">+13.2%</td>
-                                <td contenteditable="true" class="forecast-note" data-year="2027">시장 확대 기대</td>
-                            </tr>
-                            <tr>
-                                <td><strong>2028</strong></td>
-                                <td contenteditable="true" class="forecast-amount" data-year="2028">32500</td>
-                                <td class="growth-rate">+11.3%</td>
-                                <td contenteditable="true" class="forecast-note" data-year="2028">안정적 성장</td>
-                            </tr>
-                            <tr>
-                                <td><strong>2029</strong></td>
-                                <td contenteditable="true" class="forecast-amount" data-year="2029">36000</td>
-                                <td class="growth-rate">+10.8%</td>
-                                <td contenteditable="true" class="forecast-note" data-year="2029">지속 성장</td>
-                            </tr>
-                            <tr>
-                                <td><strong>2030</strong></td>
-                                <td contenteditable="true" class="forecast-amount" data-year="2030">39800</td>
-                                <td class="growth-rate">+10.6%</td>
-                                <td contenteditable="true" class="forecast-note" data-year="2030">목표 달성</td>
-                            </tr>
-                            <tr>
-                                <td><strong>2031</strong></td>
-                                <td contenteditable="true" class="forecast-amount" data-year="2031">44000</td>
-                                <td class="growth-rate">+10.6%</td>
-                                <td contenteditable="true" class="forecast-note" data-year="2031">신규 사업 확장</td>
-                            </tr>
-                            <tr>
-                                <td><strong>2032</strong></td>
-                                <td contenteditable="true" class="forecast-amount" data-year="2032">48500</td>
-                                <td class="growth-rate">+10.2%</td>
-                                <td contenteditable="true" class="forecast-note" data-year="2032">기술 혁신 반영</td>
-                            </tr>
-                            <tr>
-                                <td><strong>2033</strong></td>
-                                <td contenteditable="true" class="forecast-amount" data-year="2033">53200</td>
-                                <td class="growth-rate">+9.7%</td>
-                                <td contenteditable="true" class="forecast-note" data-year="2033">글로벌 확장</td>
-                            </tr>
-                            <tr>
-                                <td><strong>2034</strong></td>
-                                <td contenteditable="true" class="forecast-amount" data-year="2034">58000</td>
-                                <td class="growth-rate">+9.0%</td>
-                                <td contenteditable="true" class="forecast-note" data-year="2034">시장 포화 고려</td>
-                            </tr>
-                            <tr>
-                                <td><strong>2035</strong></td>
-                                <td contenteditable="true" class="forecast-amount" data-year="2035">63000</td>
-                                <td class="growth-rate">+8.6%</td>
-                                <td contenteditable="true" class="forecast-note" data-year="2035">장기 목표</td>
-                            </tr>
+                        <tbody id="forecast-items-tbody">
+                            <!-- 동적으로 생성되는 항목들 -->
                         </tbody>
                     </table>
+
+                    <!-- 합계 표시 -->
+                    <div style="margin-top: 20px; padding: 15px; background: linear-gradient(135deg, #DC2626 0%, #F97316 100%); border-radius: 10px; color: white;">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <h3 style="margin: 0;">
+                                <i class="fas fa-calculator"></i> 
+                                <span id="forecast-total-year">2026년</span> 예측 수입 합계
+                            </h3>
+                            <div style="font-size: 1.5rem; font-weight: bold;">
+                                <span id="forecast-total-amount">0</span>백만원
+                            </div>
+                        </div>
+                        <div style="margin-top: 10px; font-size: 0.9rem; opacity: 0.9;">
+                            전년 대비: <span id="forecast-growth-rate">+0.0%</span>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="modal-actions">
                     <div class="modal-actions-left">
-                        <button class="btn btn-excel" onclick="resetForecastData()" style="background: rgba(239, 68, 68, 0.2); color: #EF4444; border-color: rgba(239, 68, 68, 0.3);" title="예측 데이터를 기본값으로 초기화">
-                            <i class="fas fa-undo"></i> 초기화
+                        <button class="btn btn-excel" onclick="resetCurrentYearForecast()" style="background: rgba(239, 68, 68, 0.2); color: #EF4444; border-color: rgba(239, 68, 68, 0.3);" title="현재 년도 예측 데이터 초기화">
+                            <i class="fas fa-undo"></i> 현재 년도 초기화
+                        </button>
+                        <button class="btn btn-excel" onclick="resetAllForecastData()" style="background: rgba(239, 68, 68, 0.2); color: #EF4444; border-color: rgba(239, 68, 68, 0.3);" title="모든 예측 데이터 초기화">
+                            <i class="fas fa-trash-alt"></i> 전체 초기화
                         </button>
                     </div>
                     <div class="modal-actions-right">
@@ -1716,74 +1765,211 @@
             }, 300);
         }
 
+        // 예측 모달 관련 변수
+        let currentForecastYear = '2026';
+
         // 예측 모달 열기
         function openForecastModal() {
-            loadForecastData();
+            currentForecastYear = '2026';
+            loadForecastYear('2026');
+            updateForecastYearTabs('2026');
             document.getElementById('forecast-modal').classList.add('active');
         }
 
-        // 예측 데이터 로드
-        function loadForecastData() {
-            const savedData = localStorage.getItem('forecastData');
-            if (savedData) {
-                const data = JSON.parse(savedData);
-                Object.keys(data).forEach(year => {
-                    const amountCell = document.querySelector(`.forecast-amount[data-year="${year}"]`);
-                    const noteCell = document.querySelector(`.forecast-note[data-year="${year}"]`);
-                    if (amountCell) amountCell.textContent = data[year].amount || '';
-                    if (noteCell) noteCell.textContent = data[year].note || '';
-                });
-                updateGrowthRates();
-            }
+        // 예측 년도 전환
+        function switchForecastYear(year) {
+            saveForecastYear(currentForecastYear); // 현재 년도 데이터 저장
+            currentForecastYear = year;
+            loadForecastYear(year);
+            updateForecastYearLabels(year);
+            updateForecastYearTabs(year);
         }
 
-        // 증감률 업데이트
-        function updateGrowthRates() {
-            const amounts = [];
-            for (let year = 2025; year <= 2035; year++) {
-                if (year === 2025) {
-                    // 2025년 실제 수입 가져오기
-                    const incomeData = localStorage.getItem('incomeData_2025');
-                    if (incomeData) {
-                        const data = JSON.parse(incomeData);
-                        const total = data.reduce((sum, item) => sum + parseFloat(item.amount || 0), 0);
-                        amounts.push(total / 1000000); // 백만원 단위로 변환
-                    } else {
-                        amounts.push(22500); // 기본값
-                    }
+        // 예측 년도 탭 활성화 업데이트
+        function updateForecastYearTabs(activeYear) {
+            const tabs = document.querySelectorAll('.forecast-year-tab');
+            tabs.forEach(tab => {
+                if (tab.dataset.year === activeYear) {
+                    tab.classList.add('active');
                 } else {
-                    const amountCell = document.querySelector(`.forecast-amount[data-year="${year}"]`);
-                    if (amountCell) {
-                        const amount = parseFloat(amountCell.textContent) || 0;
-                        amounts.push(amount);
-                    }
+                    tab.classList.remove('active');
                 }
-            }
+            });
+        }
 
-            // 증감률 계산 및 표시
-            for (let i = 1; i < amounts.length; i++) {
-                const year = 2025 + i;
-                const growthRate = ((amounts[i] - amounts[i-1]) / amounts[i-1] * 100).toFixed(1);
-                const rateCell = document.querySelector(`tr:has(.forecast-amount[data-year="${year}"]) .growth-rate`);
-                if (rateCell) {
-                    rateCell.textContent = `${growthRate >= 0 ? '+' : ''}${growthRate}%`;
-                    rateCell.style.color = growthRate >= 0 ? '#10b981' : '#ef4444';
-                }
+        // 예측 년도 라벨 업데이트
+        function updateForecastYearLabels(year) {
+            document.getElementById('current-forecast-year').textContent = year + '년';
+            document.getElementById('forecast-year-title').textContent = year + '년';
+            document.getElementById('forecast-total-year').textContent = year + '년';
+        }
+
+        // 특정 년도 예측 데이터 로드
+        function loadForecastYear(year) {
+            const savedData = localStorage.getItem(`forecastItems_${year}`);
+            const tbody = document.getElementById('forecast-items-tbody');
+            tbody.innerHTML = '';
+
+            if (savedData) {
+                const items = JSON.parse(savedData);
+                items.forEach(item => {
+                    addForecastItemRow(item.item, item.amount, item.source, item.note);
+                });
+            } else {
+                // 기본 항목 추가
+                addForecastItemRow('정부 지원금', 8500, '정부지원사업', '정부 지원 프로그램');
+                addForecastItemRow('투자 수익', 6200, '투자수익', '포트폴리오 투자 수익');
+                addForecastItemRow('교육 프로그램 수익', 4300, '자체사업', '스타트업 교육 프로그램');
+                addForecastItemRow('컨설팅 수익', 3500, '자체사업', '기업 컨설팅 서비스');
+            }
+            
+            updateForecastTotal();
+        }
+
+        // 예측 항목 행 추가
+        function addForecastItemRow(item = '', amount = 0, source = '자체사업', note = '') {
+            const tbody = document.getElementById('forecast-items-tbody');
+            const row = tbody.insertRow();
+            row.innerHTML = `
+                <td contenteditable="true" class="forecast-item">${item}</td>
+                <td contenteditable="true" class="forecast-amount" style="text-align: right;" oninput="updateForecastTotal()">${amount}</td>
+                <td contenteditable="true" class="forecast-source">${source}</td>
+                <td contenteditable="true" class="forecast-note">${note}</td>
+                <td><button class="btn-delete" onclick="deleteForecastRow(this)" title="항목 삭제"><i class="fas fa-trash"></i></button></td>
+            `;
+            updateForecastTotal();
+        }
+
+        // 예측 항목 추가
+        function addForecastItem() {
+            addForecastItemRow();
+        }
+
+        // 예측 항목 행 삭제
+        function deleteForecastRow(button) {
+            if (confirm('이 항목을 삭제하시겠습니까?')) {
+                button.closest('tr').remove();
+                updateForecastTotal();
             }
         }
 
-        // 예측 데이터 저장
-        function saveForecastData() {
-            const data = {};
-            for (let year = 2026; year <= 2035; year++) {
-                const amountCell = document.querySelector(`.forecast-amount[data-year="${year}"]`);
-                const noteCell = document.querySelector(`.forecast-note[data-year="${year}"]`);
-                data[year] = {
-                    amount: parseFloat(amountCell.textContent) || 0,
-                    note: noteCell.textContent || ''
-                };
+        // 전년도 데이터 복사
+        function copyFromPreviousYear() {
+            const currentYear = parseInt(currentForecastYear);
+            const previousYear = currentYear - 1;
+            
+            let sourceData = null;
+            
+            // 전년도가 2025년이면 실제 수입 데이터에서 복사
+            if (previousYear === 2025) {
+                const incomeData = localStorage.getItem('incomeData_2025');
+                if (incomeData) {
+                    sourceData = JSON.parse(incomeData).map(item => ({
+                        item: item.item,
+                        amount: Math.round(item.amount / 1000000), // 원을 백만원으로 변환
+                        source: item.source,
+                        note: `${previousYear}년 기준 +15% 예상`
+                    }));
+                }
+            } else {
+                // 전년도 예측 데이터에서 복사
+                const forecastData = localStorage.getItem(`forecastItems_${previousYear}`);
+                if (forecastData) {
+                    sourceData = JSON.parse(forecastData).map(item => ({
+                        item: item.item,
+                        amount: Math.round(item.amount * 1.15), // 15% 증가
+                        source: item.source,
+                        note: `${previousYear}년 기준 +15% 예상`
+                    }));
+                }
             }
-            localStorage.setItem('forecastData', JSON.stringify(data));
+            
+            if (sourceData && sourceData.length > 0) {
+                if (confirm(`${previousYear}년 데이터를 복사하여 현재 항목들을 대체하시겠습니까?`)) {
+                    const tbody = document.getElementById('forecast-items-tbody');
+                    tbody.innerHTML = '';
+                    
+                    sourceData.forEach(item => {
+                        addForecastItemRow(item.item, item.amount, item.source, item.note);
+                    });
+                    
+                    updateForecastTotal();
+                }
+            } else {
+                alert(`${previousYear}년 데이터를 찾을 수 없습니다.`);
+            }
+        }
+
+        // 예측 합계 업데이트
+        function updateForecastTotal() {
+            const amountCells = document.querySelectorAll('#forecast-items-tbody .forecast-amount');
+            let total = 0;
+            
+            amountCells.forEach(cell => {
+                const amount = parseFloat(cell.textContent) || 0;
+                total += amount;
+            });
+            
+            document.getElementById('forecast-total-amount').textContent = new Intl.NumberFormat('ko-KR').format(total);
+            
+            // 전년 대비 증감률 계산
+            const currentYear = parseInt(currentForecastYear);
+            const previousYear = currentYear - 1;
+            let previousTotal = 0;
+            
+            if (previousYear === 2025) {
+                // 2025년 실제 데이터
+                const incomeData = localStorage.getItem('incomeData_2025');
+                if (incomeData) {
+                    const data = JSON.parse(incomeData);
+                    previousTotal = data.reduce((sum, item) => sum + parseFloat(item.amount || 0), 0) / 1000000;
+                } else {
+                    previousTotal = 22500; // 기본값
+                }
+            } else {
+                // 전년도 예측 데이터
+                const forecastData = localStorage.getItem(`forecastItems_${previousYear}`);
+                if (forecastData) {
+                    const items = JSON.parse(forecastData);
+                    previousTotal = items.reduce((sum, item) => sum + parseFloat(item.amount || 0), 0);
+                }
+            }
+            
+            if (previousTotal > 0) {
+                const growthRate = ((total - previousTotal) / previousTotal * 100).toFixed(1);
+                const rateElement = document.getElementById('forecast-growth-rate');
+                rateElement.textContent = `${growthRate >= 0 ? '+' : ''}${growthRate}%`;
+                rateElement.style.color = growthRate >= 0 ? '#10b981' : '#ef4444';
+            }
+        }
+
+        // 특정 년도 예측 데이터 저장
+        function saveForecastYear(year) {
+            const tbody = document.getElementById('forecast-items-tbody');
+            const rows = tbody.querySelectorAll('tr');
+            const items = [];
+            
+            rows.forEach(row => {
+                const cells = row.querySelectorAll('td');
+                if (cells.length >= 4) {
+                    items.push({
+                        item: cells[0].textContent.trim(),
+                        amount: parseFloat(cells[1].textContent) || 0,
+                        source: cells[2].textContent.trim(),
+                        note: cells[3].textContent.trim()
+                    });
+                }
+            });
+            
+            localStorage.setItem(`forecastItems_${year}`, JSON.stringify(items));
+        }
+
+        // 모든 예측 데이터 저장
+        function saveForecastData() {
+            // 현재 년도 데이터 저장
+            saveForecastYear(currentForecastYear);
+            
+            // 차트 업데이트
             updateRevenueForecastChart();
             closeModal('forecast-modal');
             
@@ -1791,12 +1977,21 @@
             alert('✅ 예측 데이터가 저장되었습니다!\n차트가 업데이트되었습니다.');
         }
 
-        // 예측 데이터 초기화
-        function resetForecastData() {
-            if (confirm('예측 데이터를 기본값으로 초기화하시겠습니까?')) {
-                localStorage.removeItem('forecastData');
-                loadForecastData();
-                updateGrowthRates();
+        // 현재 년도 예측 데이터 초기화
+        function resetCurrentYearForecast() {
+            if (confirm(`${currentForecastYear}년 예측 데이터를 초기화하시겠습니까?`)) {
+                localStorage.removeItem(`forecastItems_${currentForecastYear}`);
+                loadForecastYear(currentForecastYear);
+            }
+        }
+
+        // 모든 예측 데이터 초기화
+        function resetAllForecastData() {
+            if (confirm('모든 년도의 예측 데이터를 초기화하시겠습니까?')) {
+                for (let year = 2026; year <= 2035; year++) {
+                    localStorage.removeItem(`forecastItems_${year}`);
+                }
+                loadForecastYear(currentForecastYear);
             }
         }
 
@@ -3763,20 +3958,24 @@
                 }
             });
             
-            // 예측 수입 데이터 수집 (2026-2035)
+            // 예측 수입 데이터 수집 (2026-2035) - 항목별 데이터 합산
             const forecastData = [];
             const forecastYears = ['2026', '2027', '2028', '2029', '2030', '2031', '2032', '2033', '2034', '2035'];
-            const savedForecast = localStorage.getItem('forecastData');
             
-            if (savedForecast) {
-                const forecast = JSON.parse(savedForecast);
-                forecastYears.forEach(year => {
-                    forecastData.push(forecast[year] ? forecast[year].amount : null);
-                });
-            } else {
-                // 기본 예측값 사용
-                forecastData.push(25800, 29200, 32500, 36000, 39800, 44000, 48500, 53200, 58000, 63000);
-            }
+            forecastYears.forEach(year => {
+                const forecastItems = localStorage.getItem(`forecastItems_${year}`);
+                if (forecastItems) {
+                    const items = JSON.parse(forecastItems);
+                    const yearTotal = items.reduce((sum, item) => sum + parseFloat(item.amount || 0), 0);
+                    forecastData.push(yearTotal);
+                } else {
+                    // 기본 예측값 사용 (년도별로 15% 성장 가정)
+                    const baseValue = 22500; // 2025년 기준
+                    const yearIndex = parseInt(year) - 2026;
+                    const defaultValue = Math.round(baseValue * Math.pow(1.15, yearIndex + 1));
+                    forecastData.push(defaultValue);
+                }
+            });
             
             // 차트 생성
             revenueForecastChart = new Chart(ctx, {
