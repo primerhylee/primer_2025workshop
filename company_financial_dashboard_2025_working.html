@@ -775,7 +775,7 @@
                 <div class="icon">
                     <i class="fas fa-chart-line"></i>
                 </div>
-                <h3>총 지출</h3>
+                        <h3>2025년 총 지출</h3>
                 <div class="value">18.3억원</div>
                 <div class="change positive">
                     <i class="fas fa-arrow-up"></i>
@@ -787,7 +787,7 @@
                 <div class="icon">
                     <i class="fas fa-coins"></i>
                 </div>
-                <h3>총 수입</h3>
+                        <h3>2025년 총 수입</h3>
                 <div class="value">22.5억원</div>
                 <div class="change positive">
                     <i class="fas fa-arrow-up"></i>
@@ -959,9 +959,14 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h2><i class="fas fa-coins"></i> 총 수입 상세</h2>
-                    <button class="modal-close" onclick="closeModal('income-modal')">
-                        <i class="fas fa-times"></i>
-                    </button>
+                    <div style="display: flex; gap: 10px; align-items: center;">
+                        <button class="btn btn-excel" onclick="scrollToIncomeChart()" style="background: rgba(59, 130, 246, 0.2); color: #3B82F6; border-color: rgba(59, 130, 246, 0.3); padding: 8px 12px;" title="수입 내역 및 향후 예측 그래프로 이동">
+                            <i class="fas fa-chart-line"></i> 그래프 보기
+                        </button>
+                        <button class="modal-close" onclick="closeModal('income-modal')">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
                 </div>
 
                 <!-- 연도 탭 -->
@@ -1047,6 +1052,117 @@
                 <div class="modal-actions">
                     <button class="btn btn-secondary" onclick="closeModal('income-modal')">취소</button>
                     <button class="btn btn-primary" onclick="saveIncomeData()">저장</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 수입 예측 설정 모달 -->
+        <div id="forecast-modal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2><i class="fas fa-crystal-ball"></i> 수입 예측 설정 (2026-2035)</h2>
+                    <button class="modal-close" onclick="closeModal('forecast-modal')">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+
+                <div class="modal-table-container">
+                    <div style="margin-bottom: 20px; padding: 15px; background: #f0f9ff; border: 1px solid #0ea5e9; border-radius: 10px;">
+                        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+                            <i class="fas fa-info-circle" style="color: #0ea5e9;"></i>
+                            <strong style="color: #0ea5e9;">예측 수입 입력 안내</strong>
+                        </div>
+                        <p style="margin: 0; color: #1e293b; font-size: 0.9rem;">
+                            • 2026년부터 2035년까지의 예상 수입을 백만원 단위로 입력하세요<br>
+                            • 입력한 값은 "수입 내역 및 향후 예측" 차트에 점선으로 표시됩니다<br>
+                            • 빈 칸으로 두면 이전 년도 대비 15% 증가율로 자동 계산됩니다
+                        </p>
+                    </div>
+
+                    <table class="modal-table" id="forecast-table">
+                        <thead>
+                            <tr>
+                                <th>년도</th>
+                                <th>예상 수입 (백만원)</th>
+                                <th>전년 대비 증감률</th>
+                                <th>비고</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>2026</strong></td>
+                                <td contenteditable="true" class="forecast-amount" data-year="2026">25800</td>
+                                <td class="growth-rate">+14.7%</td>
+                                <td contenteditable="true" class="forecast-note" data-year="2026">보수적 성장 예상</td>
+                            </tr>
+                            <tr>
+                                <td><strong>2027</strong></td>
+                                <td contenteditable="true" class="forecast-amount" data-year="2027">29200</td>
+                                <td class="growth-rate">+13.2%</td>
+                                <td contenteditable="true" class="forecast-note" data-year="2027">시장 확대 기대</td>
+                            </tr>
+                            <tr>
+                                <td><strong>2028</strong></td>
+                                <td contenteditable="true" class="forecast-amount" data-year="2028">32500</td>
+                                <td class="growth-rate">+11.3%</td>
+                                <td contenteditable="true" class="forecast-note" data-year="2028">안정적 성장</td>
+                            </tr>
+                            <tr>
+                                <td><strong>2029</strong></td>
+                                <td contenteditable="true" class="forecast-amount" data-year="2029">36000</td>
+                                <td class="growth-rate">+10.8%</td>
+                                <td contenteditable="true" class="forecast-note" data-year="2029">지속 성장</td>
+                            </tr>
+                            <tr>
+                                <td><strong>2030</strong></td>
+                                <td contenteditable="true" class="forecast-amount" data-year="2030">39800</td>
+                                <td class="growth-rate">+10.6%</td>
+                                <td contenteditable="true" class="forecast-note" data-year="2030">목표 달성</td>
+                            </tr>
+                            <tr>
+                                <td><strong>2031</strong></td>
+                                <td contenteditable="true" class="forecast-amount" data-year="2031">44000</td>
+                                <td class="growth-rate">+10.6%</td>
+                                <td contenteditable="true" class="forecast-note" data-year="2031">신규 사업 확장</td>
+                            </tr>
+                            <tr>
+                                <td><strong>2032</strong></td>
+                                <td contenteditable="true" class="forecast-amount" data-year="2032">48500</td>
+                                <td class="growth-rate">+10.2%</td>
+                                <td contenteditable="true" class="forecast-note" data-year="2032">기술 혁신 반영</td>
+                            </tr>
+                            <tr>
+                                <td><strong>2033</strong></td>
+                                <td contenteditable="true" class="forecast-amount" data-year="2033">53200</td>
+                                <td class="growth-rate">+9.7%</td>
+                                <td contenteditable="true" class="forecast-note" data-year="2033">글로벌 확장</td>
+                            </tr>
+                            <tr>
+                                <td><strong>2034</strong></td>
+                                <td contenteditable="true" class="forecast-amount" data-year="2034">58000</td>
+                                <td class="growth-rate">+9.0%</td>
+                                <td contenteditable="true" class="forecast-note" data-year="2034">시장 포화 고려</td>
+                            </tr>
+                            <tr>
+                                <td><strong>2035</strong></td>
+                                <td contenteditable="true" class="forecast-amount" data-year="2035">63000</td>
+                                <td class="growth-rate">+8.6%</td>
+                                <td contenteditable="true" class="forecast-note" data-year="2035">장기 목표</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="modal-actions">
+                    <div class="modal-actions-left">
+                        <button class="btn btn-excel" onclick="resetForecastData()" style="background: rgba(239, 68, 68, 0.2); color: #EF4444; border-color: rgba(239, 68, 68, 0.3);" title="예측 데이터를 기본값으로 초기화">
+                            <i class="fas fa-undo"></i> 초기화
+                        </button>
+                    </div>
+                    <div class="modal-actions-right">
+                        <button class="btn btn-secondary" onclick="closeModal('forecast-modal')">취소</button>
+                        <button class="btn btn-primary" onclick="saveForecastData()">저장 및 차트 업데이트</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1378,10 +1494,15 @@
         <!-- 수입 예측 (Full Width) -->
         <div class="chart-grid" id="revenue-forecast">
             <div class="chart-container chart-full">
-                <h2>
-                    <i class="fas fa-crystal-ball"></i>
-                    수입 내역 및 향후 예측 (2019-2030)
-                </h2>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h2>
+                        <i class="fas fa-crystal-ball"></i>
+                        수입 내역 및 향후 예측 (2019-2035)
+                    </h2>
+                    <button class="btn btn-excel" onclick="openForecastModal()" style="background: rgba(16, 185, 129, 0.2); color: #10B981; border-color: rgba(16, 185, 129, 0.3); padding: 8px 16px;" title="2026-2035 예상 수입 설정">
+                        <i class="fas fa-cog"></i> 예측 설정
+                    </button>
+                </div>
                 <canvas id="revenueForecastChart"></canvas>
             </div>
         </div>
@@ -1575,6 +1696,107 @@
             const modal = document.getElementById(modalId);
             if (modal) {
                 modal.classList.remove('active');
+            }
+        }
+
+        // 수입 차트로 스크롤 이동
+        function scrollToIncomeChart() {
+            closeModal('income-modal');
+            setTimeout(() => {
+                const chartSection = document.getElementById('revenue-forecast');
+                if (chartSection) {
+                    chartSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    // 차트 제목에 펄스 애니메이션 효과
+                    const chartTitle = chartSection.querySelector('h2');
+                    if (chartTitle) {
+                        chartTitle.style.animation = 'pulse 2s ease-in-out';
+                        setTimeout(() => { chartTitle.style.animation = ''; }, 2000);
+                    }
+                }
+            }, 300);
+        }
+
+        // 예측 모달 열기
+        function openForecastModal() {
+            loadForecastData();
+            document.getElementById('forecast-modal').classList.add('active');
+        }
+
+        // 예측 데이터 로드
+        function loadForecastData() {
+            const savedData = localStorage.getItem('forecastData');
+            if (savedData) {
+                const data = JSON.parse(savedData);
+                Object.keys(data).forEach(year => {
+                    const amountCell = document.querySelector(`.forecast-amount[data-year="${year}"]`);
+                    const noteCell = document.querySelector(`.forecast-note[data-year="${year}"]`);
+                    if (amountCell) amountCell.textContent = data[year].amount || '';
+                    if (noteCell) noteCell.textContent = data[year].note || '';
+                });
+                updateGrowthRates();
+            }
+        }
+
+        // 증감률 업데이트
+        function updateGrowthRates() {
+            const amounts = [];
+            for (let year = 2025; year <= 2035; year++) {
+                if (year === 2025) {
+                    // 2025년 실제 수입 가져오기
+                    const incomeData = localStorage.getItem('incomeData_2025');
+                    if (incomeData) {
+                        const data = JSON.parse(incomeData);
+                        const total = data.reduce((sum, item) => sum + parseFloat(item.amount || 0), 0);
+                        amounts.push(total / 1000000); // 백만원 단위로 변환
+                    } else {
+                        amounts.push(22500); // 기본값
+                    }
+                } else {
+                    const amountCell = document.querySelector(`.forecast-amount[data-year="${year}"]`);
+                    if (amountCell) {
+                        const amount = parseFloat(amountCell.textContent) || 0;
+                        amounts.push(amount);
+                    }
+                }
+            }
+
+            // 증감률 계산 및 표시
+            for (let i = 1; i < amounts.length; i++) {
+                const year = 2025 + i;
+                const growthRate = ((amounts[i] - amounts[i-1]) / amounts[i-1] * 100).toFixed(1);
+                const rateCell = document.querySelector(`tr:has(.forecast-amount[data-year="${year}"]) .growth-rate`);
+                if (rateCell) {
+                    rateCell.textContent = `${growthRate >= 0 ? '+' : ''}${growthRate}%`;
+                    rateCell.style.color = growthRate >= 0 ? '#10b981' : '#ef4444';
+                }
+            }
+        }
+
+        // 예측 데이터 저장
+        function saveForecastData() {
+            const data = {};
+            for (let year = 2026; year <= 2035; year++) {
+                const amountCell = document.querySelector(`.forecast-amount[data-year="${year}"]`);
+                const noteCell = document.querySelector(`.forecast-note[data-year="${year}"]`);
+                data[year] = {
+                    amount: parseFloat(amountCell.textContent) || 0,
+                    note: noteCell.textContent || ''
+                };
+            }
+            localStorage.setItem('forecastData', JSON.stringify(data));
+            updateRevenueForecastChart();
+            closeModal('forecast-modal');
+            
+            // 성공 메시지
+            alert('✅ 예측 데이터가 저장되었습니다!\n차트가 업데이트되었습니다.');
+        }
+
+        // 예측 데이터 초기화
+        function resetForecastData() {
+            if (confirm('예측 데이터를 기본값으로 초기화하시겠습니까?')) {
+                localStorage.removeItem('forecastData');
+                loadForecastData();
+                updateGrowthRates();
             }
         }
 
@@ -2250,6 +2472,9 @@
                 incomeCard.textContent = (total / 100000000).toFixed(1) + '억원';
             }
 
+            // 차트 업데이트
+            updateRevenueForecastChart();
+            
             alert('수입 데이터가 저장되었습니다!');
             closeModal('income-modal');
         }
@@ -3502,79 +3727,134 @@
             }
         });
 
-        // 6. 수입 내역 및 향후 예측
-        const revenueForecastCtx = document.getElementById('revenueForecastChart').getContext('2d');
-        new Chart(revenueForecastCtx, {
-            type: 'line',
-            data: {
-                labels: ['2019', '2020', '2021', '2022', '2023', '2024', '2025', '2026', '2027', '2028', '2029', '2030'],
-                datasets: [{
-                    label: '실제 수입',
-                    data: [8.5, 10.2, 12.5, 14.8, 17.2, 19.5, 22.5, null, null, null, null, null],
-                    borderColor: '#3B82F6',
-                    backgroundColor: 'rgba(59, 130, 246, 0.1)',
-                    tension: 0.4,
-                    fill: true,
-                    borderWidth: 3
-                }, {
-                    label: '예측 수입',
-                    data: [null, null, null, null, null, null, 22.5, 25.8, 29.2, 32.5, 36.0, 39.8],
-                    borderColor: '#06B6D4',
-                    backgroundColor: 'rgba(6, 182, 212, 0.1)',
-                    tension: 0.4,
-                    fill: true,
-                    borderDash: [5, 5],
-                    borderWidth: 3
-                }]
-            },
-            options: {
-                responsive: true,
-                interaction: {
-                    mode: 'index',
-                    intersect: false
+        // 6. 수입 내역 및 향후 예측 (동적 차트)
+        let revenueForecastChart = null;
+        
+        function updateRevenueForecastChart() {
+            const ctx = document.getElementById('revenueForecastChart').getContext('2d');
+            
+            // 기존 차트 삭제
+            if (revenueForecastChart) {
+                revenueForecastChart.destroy();
+            }
+            
+            // 실제 수입 데이터 수집 (2019-2025)
+            const actualData = [];
+            const years = ['2019', '2020', '2021', '2022', '2023', '2024', '2025'];
+            
+            years.forEach(year => {
+                const incomeData = localStorage.getItem(`incomeData_${year}`);
+                if (incomeData) {
+                    const data = JSON.parse(incomeData);
+                    const total = data.reduce((sum, item) => sum + parseFloat(item.amount || 0), 0);
+                    actualData.push(total / 1000000); // 백만원 단위로 변환
+                } else {
+                    // 기본값 사용
+                    const defaultValues = {
+                        '2019': 8500,
+                        '2020': 10200,
+                        '2021': 12500,
+                        '2022': 14800,
+                        '2023': 17200,
+                        '2024': 19500,
+                        '2025': 22500
+                    };
+                    actualData.push(defaultValues[year]);
+                }
+            });
+            
+            // 예측 수입 데이터 수집 (2026-2035)
+            const forecastData = [];
+            const forecastYears = ['2026', '2027', '2028', '2029', '2030', '2031', '2032', '2033', '2034', '2035'];
+            const savedForecast = localStorage.getItem('forecastData');
+            
+            if (savedForecast) {
+                const forecast = JSON.parse(savedForecast);
+                forecastYears.forEach(year => {
+                    forecastData.push(forecast[year] ? forecast[year].amount : null);
+                });
+            } else {
+                // 기본 예측값 사용
+                forecastData.push(25800, 29200, 32500, 36000, 39800, 44000, 48500, 53200, 58000, 63000);
+            }
+            
+            // 차트 생성
+            revenueForecastChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['2019', '2020', '2021', '2022', '2023', '2024', '2025', '2026', '2027', '2028', '2029', '2030', '2031', '2032', '2033', '2034', '2035'],
+                    datasets: [{
+                        label: '실제 수입',
+                        data: [...actualData, null, null, null, null, null, null, null, null, null, null],
+                        borderColor: '#3B82F6',
+                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                        tension: 0.4,
+                        fill: true,
+                        borderWidth: 3
+                    }, {
+                        label: '예측 수입',
+                        data: [null, null, null, null, null, null, actualData[6], ...forecastData],
+                        borderColor: '#06B6D4',
+                        backgroundColor: 'rgba(6, 182, 212, 0.1)',
+                        tension: 0.4,
+                        fill: true,
+                        borderDash: [5, 5],
+                        borderWidth: 3
+                    }]
                 },
-                plugins: {
-                    legend: {
-                        position: 'bottom',
-                        labels: {
-                            padding: 20
-                        }
+                options: {
+                    responsive: true,
+                    interaction: {
+                        mode: 'index',
+                        intersect: false
                     },
-                    tooltip: {
-                        callbacks: {
-                            label: function(context) {
-                                let label = context.dataset.label || '';
-                                if (label) {
-                                    label += ': ';
-                                }
-                                if (context.parsed.y !== null) {
-                                    label += context.parsed.y + '억원';
-                                }
-                                return label;
-                            }
-                        }
-                    }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        ticks: {
-                            callback: function(value) {
-                                return value + '억원';
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                padding: 20
                             }
                         },
-                        grid: {
-                            color: 'rgba(59, 130, 246, 0.1)'
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.parsed.y !== null) {
+                                        label += new Intl.NumberFormat('ko-KR').format(context.parsed.y) + '백만원';
+                                    }
+                                    return label;
+                                }
+                            }
                         }
                     },
-                    x: {
-                        grid: {
-                            color: 'rgba(59, 130, 246, 0.1)'
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 30000, // 3억원 = 30000백만원 간격
+                                callback: function(value) {
+                                    return new Intl.NumberFormat('ko-KR').format(value) + '백만원';
+                                }
+                            },
+                            grid: {
+                                color: 'rgba(59, 130, 246, 0.1)'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                color: 'rgba(59, 130, 246, 0.1)'
+                            }
                         }
                     }
                 }
-            }
-        });
+            });
+        }
+        
+        // 초기 차트 생성
+        updateRevenueForecastChart();
 
         // 7. 연도별 변동 내역
         const changeHistoryCtx = document.getElementById('changeHistoryChart').getContext('2d');
