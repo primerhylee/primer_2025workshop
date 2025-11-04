@@ -1659,11 +1659,17 @@
         <!-- 옵션 3: 지출 구조 상세 통합 표 -->
         <div class="chart-grid">
             <div class="chart-container chart-full">
-                <h2>
-                    <i class="fas fa-table"></i>
-                    지출 구조 상세 표
-                </h2>
-                <div style="overflow-x: auto; margin-top: 20px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h2 style="margin: 0;">
+                        <i class="fas fa-table"></i>
+                        지출 구조 상세 표
+                    </h2>
+                    <button onclick="toggleSection('expense-summary-content', 'expense-summary')" style="background: rgba(239, 68, 68, 0.2); color: #EF4444; border: 1px solid rgba(239, 68, 68, 0.3); padding: 8px 16px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 8px; font-size: 0.9rem; transition: all 0.3s ease;">
+                        <i class="fas fa-eye-slash" id="expense-summary-icon"></i>
+                        <span id="expense-summary-text">숨기기</span>
+                    </button>
+                </div>
+                <div id="expense-summary-content" style="overflow-x: auto;">
                     <table id="expense-summary-table" style="width: 100%; border-collapse: collapse;">
                         <thead>
                             <tr style="background: linear-gradient(135deg, #3B82F6 0%, #06B6D4 100%); color: white;">
