@@ -4325,6 +4325,24 @@
                 },
                 options: {
                     responsive: true,
+                    onClick: (event, elements) => {
+                        if (elements.length > 0) {
+                            const chart = elements[0];
+                            const dataIndex = chart.index;
+                            const clickedYear = revenueForecastChart.data.labels[dataIndex];
+
+                            // 2019-2025년만 클릭 가능 (실제 데이터가 있는 년도)
+                            const availableYears = ['2019', '2020', '2021', '2022', '2023', '2024', '2025'];
+                            if (availableYears.includes(clickedYear)) {
+                                // 총 수입 모달 열기
+                                const modal = document.getElementById('income-modal');
+                                if (modal) {
+                                    modal.classList.add('active');
+                                    switchIncomeYear(clickedYear);
+                                }
+                            }
+                        }
+                    },
                     interaction: {
                         mode: 'index',
                         intersect: false
@@ -4344,7 +4362,7 @@
                                         label += ': ';
                                     }
                                     if (context.parsed.y !== null) {
-                                        label += new Intl.NumberFormat('ko-KR').format(context.parsed.y) + '백만원';
+                                        label += (context.parsed.y / 100).toFixed(1) + '억원';
                                     }
                                     return label;
                                 }
@@ -4354,10 +4372,11 @@
                     scales: {
                         y: {
                             beginAtZero: true,
+                            max: 2500, // 최대 25억원 (2,500백만원)
                             ticks: {
-                                stepSize: 30000, // 3억원 = 30000백만원 간격
+                                stepSize: 500, // 5억원 간격 (500백만원)
                                 callback: function(value) {
-                                    return new Intl.NumberFormat('ko-KR').format(value) + '백만원';
+                                    return (value / 100) + '억원';
                                 }
                             },
                             grid: {
