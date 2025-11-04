@@ -143,6 +143,9 @@
             grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
             gap: 30px;
             margin-bottom: 30px;
+            max-width: 1400px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         .chart-container {
@@ -752,6 +755,9 @@
             margin-top: 30px;
             overflow-x: auto;
             box-shadow: 0 2px 10px rgba(239, 68, 68, 0.08);
+            max-width: 1400px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         .table-container h2 {
@@ -1278,8 +1284,9 @@
                                 <th style="width: 25%;">수입 항목</th>
                                 <th style="width: 20%;">예상 금액 (원)</th>
                                 <th style="width: 15%;">수입원</th>
-                                <th style="width: 30%;">비고</th>
-                                <th style="width: 10%;">삭제</th>
+                                <th style="width: 25%;">비고</th>
+                                <th style="width: 80px;">순서</th>
+                                <th style="width: 80px;">삭제</th>
                             </tr>
                         </thead>
                         <tbody id="forecast-items-tbody">
@@ -1521,11 +1528,18 @@
         <div class="chart-grid" id="expense-structure">
             <!-- 지출 구조 (탭) -->
             <div class="chart-container chart-full">
-                <h2>
-                    <i class="fas fa-layer-group"></i>
-                    지출 구조
-                </h2>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h2 style="margin: 0;">
+                        <i class="fas fa-layer-group"></i>
+                        지출 구조
+                    </h2>
+                    <button onclick="toggleSection('expense-structure-content', 'expense-structure')" style="background: rgba(239, 68, 68, 0.2); color: #EF4444; border: 1px solid rgba(239, 68, 68, 0.3); padding: 8px 16px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 8px; font-size: 0.9rem; transition: all 0.3s ease;">
+                        <i class="fas fa-eye-slash" id="expense-structure-icon"></i>
+                        <span id="expense-structure-text">숨기기</span>
+                    </button>
+                </div>
 
+                <div id="expense-structure-content">
                 <!-- 연도 탭 -->
                 <div class="year-tabs">
                     <button class="year-tab-button-chart active" data-year="2025" onclick="switchExpenseChartYear('2025')">2025</button>
@@ -1545,7 +1559,7 @@
                     <p style="font-size: 0.85rem; color: #64748b; margin-bottom: 20px;">
                         💡 차트를 클릭하면 해당 분류의 상세 내역을 확인할 수 있습니다
                     </p>
-                    <div style="max-height: 300px; position: relative; cursor: pointer;">
+                    <div style="height: 350px; max-width: 500px; margin: 0 auto; position: relative; cursor: pointer;">
                         <canvas id="categoryComparisonChart"></canvas>
                     </div>
                 </div>
@@ -1568,7 +1582,7 @@
                         </div>
                     </div>
                     <div class="tab-content active" id="support-tab">
-                        <div style="max-height: 350px; position: relative;">
+                        <div style="height: 350px; max-width: 500px; margin: 0 auto; position: relative;">
                             <canvas id="supportChart"></canvas>
                         </div>
                         <!-- 옵션 1: 차트 아래 상세 표 -->
@@ -1591,7 +1605,7 @@
                         </div>
                     </div>
                     <div class="tab-content" id="discovery-tab">
-                        <div style="max-height: 350px; position: relative;">
+                        <div style="height: 350px; max-width: 500px; margin: 0 auto; position: relative;">
                             <canvas id="discoveryChart"></canvas>
                         </div>
                         <!-- 옵션 1: 차트 아래 상세 표 -->
@@ -1614,7 +1628,7 @@
                         </div>
                     </div>
                     <div class="tab-content" id="general-tab">
-                        <div style="max-height: 350px; position: relative;">
+                        <div style="height: 350px; max-width: 500px; margin: 0 auto; position: relative;">
                             <canvas id="generalChart"></canvas>
                         </div>
                         <!-- 옵션 1: 차트 아래 상세 표 -->
@@ -1639,6 +1653,8 @@
                 </div>
             </div>
         </div>
+        </div><!-- expense-structure-content 종료 -->
+        </div>
 
         <!-- 옵션 3: 지출 구조 상세 통합 표 -->
         <div class="chart-grid">
@@ -1647,8 +1663,8 @@
                     <i class="fas fa-table"></i>
                     지출 구조 상세 표
                 </h2>
-                <div style="overflow-x: auto;">
-                    <table id="expense-summary-table" style="width: 100%; border-collapse: collapse; margin-top: 20px;">
+                <div style="overflow-x: auto; margin-top: 20px;">
+                    <table id="expense-summary-table" style="width: 100%; border-collapse: collapse;">
                         <thead>
                             <tr style="background: linear-gradient(135deg, #3B82F6 0%, #06B6D4 100%); color: white;">
                                 <th style="padding: 15px; text-align: left; font-weight: 600; border-right: 1px solid rgba(255,255,255,0.2);">분류</th>
@@ -1668,11 +1684,19 @@
         <!-- 연도별 추이 (Full Width) -->
         <div class="chart-grid" id="yearly-trend">
             <div class="chart-container chart-full">
-                <h2>
-                    <i class="fas fa-chart-line"></i>
-                    2019-2025년 항목별 예산 추이
-                </h2>
-                <canvas id="yearlyTrendChart"></canvas>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h2 style="margin: 0;">
+                        <i class="fas fa-chart-line"></i>
+                        2019-2025년 항목별 예산 추이
+                    </h2>
+                    <button onclick="toggleSection('yearly-trend-content', 'yearly-trend')" style="background: rgba(239, 68, 68, 0.2); color: #EF4444; border: 1px solid rgba(239, 68, 68, 0.3); padding: 8px 16px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 8px; font-size: 0.9rem; transition: all 0.3s ease;">
+                        <i class="fas fa-eye-slash" id="yearly-trend-icon"></i>
+                        <span id="yearly-trend-text">숨기기</span>
+                    </button>
+                </div>
+                <div id="yearly-trend-content">
+                    <canvas id="yearlyTrendChart"></canvas>
+                </div>
             </div>
         </div>
 
@@ -1680,32 +1704,56 @@
         <div class="chart-grid" id="revenue-forecast">
             <div class="chart-container chart-full">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                    <h2>
+                    <h2 style="margin: 0;">
                         <i class="fas fa-crystal-ball"></i>
                         수입 내역 및 향후 예측 (2019-2035)
                     </h2>
-                    <button class="btn btn-excel" onclick="openForecastModal()" style="background: rgba(16, 185, 129, 0.2); color: #10B981; border-color: rgba(16, 185, 129, 0.3); padding: 8px 16px;" title="2026-2035 예상 수입 설정">
-                        <i class="fas fa-cog"></i> 예측 설정
-                    </button>
+                    <div style="display: flex; gap: 10px;">
+                        <button class="btn btn-excel" onclick="openForecastModal()" style="background: rgba(16, 185, 129, 0.2); color: #10B981; border-color: rgba(16, 185, 129, 0.3); padding: 8px 16px;" title="2026-2035 예상 수입 설정">
+                            <i class="fas fa-cog"></i> 예측 설정
+                        </button>
+                        <button onclick="toggleSection('revenue-forecast-content', 'revenue-forecast')" style="background: rgba(239, 68, 68, 0.2); color: #EF4444; border: 1px solid rgba(239, 68, 68, 0.3); padding: 8px 16px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 8px; font-size: 0.9rem; transition: all 0.3s ease;">
+                            <i class="fas fa-eye-slash" id="revenue-forecast-icon"></i>
+                            <span id="revenue-forecast-text">숨기기</span>
+                        </button>
+                    </div>
                 </div>
-                <canvas id="revenueForecastChart"></canvas>
+                <div id="revenue-forecast-content">
+                    <canvas id="revenueForecastChart"></canvas>
+                </div>
             </div>
         </div>
 
         <!-- 변동 내역 -->
         <div class="chart-grid" id="change-history">
             <div class="chart-container chart-full">
-                <h2>
-                    <i class="fas fa-balance-scale"></i>
-                    연도별 변동 내역
-                </h2>
-                <canvas id="changeHistoryChart"></canvas>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h2 style="margin: 0;">
+                        <i class="fas fa-balance-scale"></i>
+                        연도별 변동 내역
+                    </h2>
+                    <button onclick="toggleYearlyHistory()" style="background: rgba(239, 68, 68, 0.2); color: #EF4444; border: 1px solid rgba(239, 68, 68, 0.3); padding: 8px 16px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 8px; font-size: 0.9rem; transition: all 0.3s ease;">
+                        <i class="fas fa-eye-slash" id="history-toggle-icon"></i>
+                        <span id="history-toggle-text">숨기기</span>
+                    </button>
+                </div>
+                <div id="yearly-history-content">
+                    <canvas id="changeHistoryChart"></canvas>
+                </div>
             </div>
         </div>
 
-        <!-- Data Table -->
-        <div class="table-container" id="detail-table">
-            <h2><i class="fas fa-table"></i> 항목별 상세 내역</h2>
+        <div id="yearly-history-content-wrapper">
+            <!-- Data Table -->
+            <div class="table-container" id="detail-table">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2 style="margin: 0;"><i class="fas fa-table"></i> 항목별 상세 내역</h2>
+                <button onclick="toggleSection('detail-table-content', 'detail-table')" style="background: rgba(239, 68, 68, 0.2); color: #EF4444; border: 1px solid rgba(239, 68, 68, 0.3); padding: 8px 16px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 8px; font-size: 0.9rem; transition: all 0.3s ease;">
+                    <i class="fas fa-eye-slash" id="detail-table-icon"></i>
+                    <span id="detail-table-text">숨기기</span>
+                </button>
+            </div>
+            <div id="detail-table-content">
             <table>
                 <thead>
                     <tr>
@@ -1760,7 +1808,9 @@
                     </tr>
                 </tbody>
             </table>
+            </div><!-- detail-table-content 종료 -->
         </div>
+        </div><!-- yearly-history-content-wrapper 종료 -->
     </div>
 
     <script>
@@ -1967,6 +2017,28 @@
             }, 300);
         }
 
+        // 섹션 토글 (공통 함수)
+        function toggleSection(contentId, sectionId) {
+            const content = document.getElementById(contentId);
+            const icon = document.getElementById(sectionId + '-icon');
+            const text = document.getElementById(sectionId + '-text');
+
+            if (content.style.display === 'none') {
+                content.style.display = 'block';
+                icon.className = 'fas fa-eye-slash';
+                text.textContent = '숨기기';
+            } else {
+                content.style.display = 'none';
+                icon.className = 'fas fa-eye';
+                text.textContent = '보이기';
+            }
+        }
+
+        // 연도별 변동 내역 토글 (호환성 유지)
+        function toggleYearlyHistory() {
+            toggleSection('yearly-history-content', 'history-toggle');
+        }
+
         // 예측 모달 관련 변수
         let currentForecastYear = '2026';
 
@@ -2018,13 +2090,27 @@
                     addForecastItemRow(item.item, item.amount, item.source, item.note);
                 });
             } else {
-                // 기본 항목 추가
-                addForecastItemRow('정부 지원금', 8500, '정부지원사업', '정부 지원 프로그램');
-                addForecastItemRow('투자 수익', 6200, '투자수익', '포트폴리오 투자 수익');
-                addForecastItemRow('교육 프로그램 수익', 4300, '자체사업', '스타트업 교육 프로그램');
-                addForecastItemRow('컨설팅 수익', 3500, '자체사업', '기업 컨설팅 서비스');
+                // 2025년 수입 데이터를 기본값으로 사용
+                const income2025 = localStorage.getItem('incomeData_2025');
+                if (income2025) {
+                    const incomeData = JSON.parse(income2025);
+                    incomeData.forEach(item => {
+                        addForecastItemRow(
+                            item.item,
+                            item.amount, // 원 단위 그대로 사용
+                            item.source,
+                            '' // 비고란 빈칸
+                        );
+                    });
+                } else {
+                    // 2025년 데이터가 없으면 기본 항목 추가
+                    addForecastItemRow('정부 지원금', 850000000, '정부지원사업', '');
+                    addForecastItemRow('투자 수익', 620000000, '투자수익', '');
+                    addForecastItemRow('교육 프로그램 수익', 430000000, '자체사업', '');
+                    addForecastItemRow('컨설팅 수익', 350000000, '자체사업', '');
+                }
             }
-            
+
             updateForecastTotal();
         }
 
@@ -2034,11 +2120,28 @@
             const row = tbody.insertRow();
             row.innerHTML = `
                 <td contenteditable="true" class="forecast-item">${item}</td>
-                <td contenteditable="true" class="forecast-amount" style="text-align: right;" oninput="updateForecastTotal()">${amount}</td>
+                <td contenteditable="true" class="forecast-amount" style="text-align: right;" oninput="updateForecastTotal()">${formatNumber(amount)}</td>
                 <td contenteditable="true" class="forecast-source">${source}</td>
                 <td contenteditable="true" class="forecast-note">${note}</td>
+                <td>
+                    <div class="move-buttons">
+                        <button class="btn-move" onclick="moveRowUp(this)" title="위로 이동">
+                            <i class="fas fa-chevron-up"></i>
+                        </button>
+                        <button class="btn-move" onclick="moveRowDown(this)" title="아래로 이동">
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                    </div>
+                </td>
                 <td><button class="btn-delete" onclick="deleteForecastRow(this)" title="항목 삭제"><i class="fas fa-trash"></i></button></td>
             `;
+
+            // 금액 필드에 포맷팅 기능 추가
+            const amountCell = row.querySelector('.forecast-amount');
+            if (amountCell) {
+                addAmountFormatting(amountCell);
+            }
+
             updateForecastTotal();
         }
 
@@ -2059,18 +2162,18 @@
         function copyFromPreviousYear() {
             const currentYear = parseInt(currentForecastYear);
             const previousYear = currentYear - 1;
-            
+
             let sourceData = null;
-            
+
             // 전년도가 2025년이면 실제 수입 데이터에서 복사
             if (previousYear === 2025) {
                 const incomeData = localStorage.getItem('incomeData_2025');
                 if (incomeData) {
                     sourceData = JSON.parse(incomeData).map(item => ({
                         item: item.item,
-                        amount: Math.round(item.amount / 1000000), // 원을 백만원으로 변환
+                        amount: item.amount, // 원 단위 그대로 사용
                         source: item.source,
-                        note: `${previousYear}년 기준 +15% 예상`
+                        note: '' // 비고란 빈칸
                     }));
                 }
             } else {
@@ -2079,9 +2182,9 @@
                 if (forecastData) {
                     sourceData = JSON.parse(forecastData).map(item => ({
                         item: item.item,
-                        amount: Math.round(item.amount * 1.15), // 15% 증가
+                        amount: item.amount, // 그대로 복사
                         source: item.source,
-                        note: `${previousYear}년 기준 +15% 예상`
+                        note: '' // 비고란 빈칸
                     }));
                 }
             }
@@ -2106,37 +2209,37 @@
         function updateForecastTotal() {
             const amountCells = document.querySelectorAll('#forecast-items-tbody .forecast-amount');
             let total = 0;
-            
+
             amountCells.forEach(cell => {
-                const amount = parseFloat(cell.textContent) || 0;
+                const amount = parseNumber(cell.textContent);
                 total += amount;
             });
-            
+
             document.getElementById('forecast-total-amount').textContent = new Intl.NumberFormat('ko-KR').format(total);
-            
+
             // 전년 대비 증감률 계산
             const currentYear = parseInt(currentForecastYear);
             const previousYear = currentYear - 1;
             let previousTotal = 0;
-            
+
             if (previousYear === 2025) {
-                // 2025년 실제 데이터
+                // 2025년 실제 데이터 (원 단위)
                 const incomeData = localStorage.getItem('incomeData_2025');
                 if (incomeData) {
                     const data = JSON.parse(incomeData);
-                    previousTotal = data.reduce((sum, item) => sum + parseFloat(item.amount || 0), 0) / 1000000;
+                    previousTotal = data.reduce((sum, item) => sum + parseFloat(item.amount || 0), 0);
                 } else {
-                    previousTotal = 22500; // 기본값
+                    previousTotal = 2250000000; // 기본값 (22.5억원)
                 }
             } else {
-                // 전년도 예측 데이터
+                // 전년도 예측 데이터 (원 단위)
                 const forecastData = localStorage.getItem(`forecastItems_${previousYear}`);
                 if (forecastData) {
                     const items = JSON.parse(forecastData);
                     previousTotal = items.reduce((sum, item) => sum + parseFloat(item.amount || 0), 0);
                 }
             }
-            
+
             if (previousTotal > 0) {
                 const growthRate = ((total - previousTotal) / previousTotal * 100).toFixed(1);
                 const rateElement = document.getElementById('forecast-growth-rate');
@@ -2150,19 +2253,19 @@
             const tbody = document.getElementById('forecast-items-tbody');
             const rows = tbody.querySelectorAll('tr');
             const items = [];
-            
+
             rows.forEach(row => {
                 const cells = row.querySelectorAll('td');
                 if (cells.length >= 4) {
                     items.push({
                         item: cells[0].textContent.trim(),
-                        amount: parseFloat(cells[1].textContent) || 0,
+                        amount: parseNumber(cells[1].textContent),
                         source: cells[2].textContent.trim(),
                         note: cells[3].textContent.trim()
                     });
                 }
             });
-            
+
             localStorage.setItem(`forecastItems_${year}`, JSON.stringify(items));
         }
 
@@ -3849,7 +3952,7 @@
                 },
                 plugins: {
                     legend: {
-                        position: 'right',
+                        position: 'bottom',
                         labels: {
                             padding: 20,
                             font: {
@@ -4283,16 +4386,16 @@
             // 예측 수입 데이터 수집 (2026-2035) - 항목별 데이터 합산
             const forecastData = [];
             const forecastYears = ['2026', '2027', '2028', '2029', '2030', '2031', '2032', '2033', '2034', '2035'];
-            
+
             forecastYears.forEach(year => {
                 const forecastItems = localStorage.getItem(`forecastItems_${year}`);
                 if (forecastItems) {
                     const items = JSON.parse(forecastItems);
                     const yearTotal = items.reduce((sum, item) => sum + parseFloat(item.amount || 0), 0);
-                    forecastData.push(yearTotal);
+                    forecastData.push(yearTotal / 1000000); // 원을 백만원으로 변환
                 } else {
                     // 기본 예측값 사용 (년도별로 15% 성장 가정)
-                    const baseValue = 22500; // 2025년 기준
+                    const baseValue = 2250; // 2025년 기준 (백만원)
                     const yearIndex = parseInt(year) - 2026;
                     const defaultValue = Math.round(baseValue * Math.pow(1.15, yearIndex + 1));
                     forecastData.push(defaultValue);
