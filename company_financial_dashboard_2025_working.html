@@ -1490,7 +1490,7 @@
                             }
                         </style>
                         <div class="modal-table-container" style="overflow-x: scroll; overflow-y: hidden; padding-bottom: 10px;">
-                            <table class="modal-table" id="detail-table" style="min-width: 1500px;">
+                            <table class="modal-table" id="modal-detail-table" style="min-width: 1500px;">
                                 <thead>
                                     <tr>
                                         <th style="min-width: 120px; position: sticky; left: 0; background: white; z-index: 10; box-shadow: 2px 0 5px rgba(0,0,0,0.05);">소분류</th>
@@ -1760,57 +1760,71 @@
                 </button>
             </div>
             <div id="detail-table-content">
+            <div style="margin-bottom: 15px; display: flex; gap: 10px;">
+                <button class="btn btn-add" onclick="addSummaryRow()" style="background: rgba(16, 185, 129, 0.2); color: #10B981; border-color: rgba(16, 185, 129, 0.3); padding: 8px 16px;">
+                    <i class="fas fa-plus"></i> 항목 추가
+                </button>
+                <button class="btn btn-add" onclick="saveSummaryDetailData()" style="background: rgba(59, 130, 246, 0.2); color: #3B82F6; border-color: rgba(59, 130, 246, 0.3); padding: 8px 16px;">
+                    <i class="fas fa-save"></i> 저장
+                </button>
+            </div>
             <table>
                 <thead>
                     <tr>
                         <th>항목</th>
-                        <th>2025 예산</th>
-                        <th>2025 집행</th>
+                        <th>2025 예산 (억원)</th>
+                        <th>2025 집행 (억원)</th>
                         <th>집행률</th>
                         <th>전년 대비</th>
                         <th>상태</th>
+                        <th style="width: 80px;">삭제</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody id="summary-detail-tbody">
                     <tr>
-                        <td>인건비</td>
-                        <td>8.5억원</td>
-                        <td>6.2억원</td>
+                        <td contenteditable="true">인건비</td>
+                        <td contenteditable="true" oninput="calculateExecutionRate(this)">8.5</td>
+                        <td contenteditable="true" oninput="calculateExecutionRate(this)">6.2</td>
                         <td>72.9%</td>
-                        <td style="color: #10b981;">+8.5%</td>
-                        <td><span style="color: #10b981;">양호</span></td>
+                        <td contenteditable="true" style="color: #10b981;">+8.5%</td>
+                        <td contenteditable="true"><span style="color: #10b981;">양호</span></td>
+                        <td><button class="btn-delete" onclick="deleteSummaryRow(this)" title="항목 삭제"><i class="fas fa-trash"></i></button></td>
                     </tr>
                     <tr>
-                        <td>운영비</td>
-                        <td>4.2억원</td>
-                        <td>3.5억원</td>
+                        <td contenteditable="true">운영비</td>
+                        <td contenteditable="true" oninput="calculateExecutionRate(this)">4.2</td>
+                        <td contenteditable="true" oninput="calculateExecutionRate(this)">3.5</td>
                         <td>83.3%</td>
-                        <td style="color: #10b981;">+5.2%</td>
-                        <td><span style="color: #10b981;">양호</span></td>
+                        <td contenteditable="true" style="color: #10b981;">+5.2%</td>
+                        <td contenteditable="true"><span style="color: #10b981;">양호</span></td>
+                        <td><button class="btn-delete" onclick="deleteSummaryRow(this)" title="항목 삭제"><i class="fas fa-trash"></i></button></td>
                     </tr>
                     <tr>
-                        <td>마케팅</td>
-                        <td>5.8억원</td>
-                        <td>4.8억원</td>
+                        <td contenteditable="true">마케팅</td>
+                        <td contenteditable="true" oninput="calculateExecutionRate(this)">5.8</td>
+                        <td contenteditable="true" oninput="calculateExecutionRate(this)">4.8</td>
                         <td>82.8%</td>
-                        <td style="color: #10b981;">+12.3%</td>
-                        <td><span style="color: #10b981;">양호</span></td>
+                        <td contenteditable="true" style="color: #10b981;">+12.3%</td>
+                        <td contenteditable="true"><span style="color: #10b981;">양호</span></td>
+                        <td><button class="btn-delete" onclick="deleteSummaryRow(this)" title="항목 삭제"><i class="fas fa-trash"></i></button></td>
                     </tr>
                     <tr>
-                        <td>연구개발</td>
-                        <td>3.5억원</td>
-                        <td>2.1억원</td>
+                        <td contenteditable="true">연구개발</td>
+                        <td contenteditable="true" oninput="calculateExecutionRate(this)">3.5</td>
+                        <td contenteditable="true" oninput="calculateExecutionRate(this)">2.1</td>
                         <td>60.0%</td>
-                        <td style="color: #ef4444;">-3.2%</td>
-                        <td><span style="color: #fbbf24;">주의</span></td>
+                        <td contenteditable="true" style="color: #ef4444;">-3.2%</td>
+                        <td contenteditable="true"><span style="color: #fbbf24;">주의</span></td>
+                        <td><button class="btn-delete" onclick="deleteSummaryRow(this)" title="항목 삭제"><i class="fas fa-trash"></i></button></td>
                     </tr>
                     <tr>
-                        <td>기타</td>
-                        <td>3.0억원</td>
-                        <td>1.7억원</td>
+                        <td contenteditable="true">기타</td>
+                        <td contenteditable="true" oninput="calculateExecutionRate(this)">3.0</td>
+                        <td contenteditable="true" oninput="calculateExecutionRate(this)">1.7</td>
                         <td>56.7%</td>
-                        <td style="color: #10b981;">+2.1%</td>
-                        <td><span style="color: #10b981;">양호</span></td>
+                        <td contenteditable="true" style="color: #10b981;">+2.1%</td>
+                        <td contenteditable="true"><span style="color: #10b981;">양호</span></td>
+                        <td><button class="btn-delete" onclick="deleteSummaryRow(this)" title="항목 삭제"><i class="fas fa-trash"></i></button></td>
                     </tr>
                 </tbody>
             </table>
@@ -1830,7 +1844,7 @@
             if (section) {
                 section.scrollIntoView({
                     behavior: 'smooth',
-                    block: 'start'
+                    block: 'center'
                 });
             }
         }
@@ -2043,6 +2057,94 @@
         // 연도별 변동 내역 토글 (호환성 유지)
         function toggleYearlyHistory() {
             toggleSection('yearly-history-content', 'history-toggle');
+        }
+
+        // 항목별 상세 내역 - 항목 추가
+        function addSummaryRow() {
+            const tbody = document.getElementById('summary-detail-tbody');
+            const row = tbody.insertRow();
+            row.innerHTML = `
+                <td contenteditable="true">새 항목</td>
+                <td contenteditable="true" class="budget-cell" oninput="calculateExecutionRate(this)">0</td>
+                <td contenteditable="true" class="execution-cell" oninput="calculateExecutionRate(this)">0</td>
+                <td class="rate-cell">0%</td>
+                <td contenteditable="true">0%</td>
+                <td contenteditable="true">-</td>
+                <td><button class="btn-delete" onclick="deleteSummaryRow(this)" title="항목 삭제"><i class="fas fa-trash"></i></button></td>
+            `;
+        }
+
+        // 집행률 자동 계산
+        function calculateExecutionRate(cell) {
+            const row = cell.closest('tr');
+            const budgetCell = row.querySelector('td:nth-child(2)');
+            const executionCell = row.querySelector('td:nth-child(3)');
+            const rateCell = row.querySelector('td:nth-child(4)');
+
+            const budget = parseFloat(budgetCell.textContent.trim()) || 0;
+            const execution = parseFloat(executionCell.textContent.trim()) || 0;
+
+            if (budget > 0) {
+                const rate = (execution / budget * 100).toFixed(1);
+                rateCell.textContent = rate + '%';
+            } else {
+                rateCell.textContent = '0%';
+            }
+        }
+
+        // 항목별 상세 내역 - 항목 삭제
+        function deleteSummaryRow(button) {
+            if (confirm('이 항목을 삭제하시겠습니까?')) {
+                const row = button.closest('tr');
+                row.remove();
+            }
+        }
+
+        // 항목별 상세 내역 - 데이터 저장
+        function saveSummaryDetailData() {
+            const tbody = document.getElementById('summary-detail-tbody');
+            const rows = tbody.querySelectorAll('tr');
+            const data = [];
+
+            rows.forEach(row => {
+                const cells = row.querySelectorAll('td');
+                if (cells.length >= 6) {
+                    data.push({
+                        item: cells[0].textContent.trim(),
+                        budget: cells[1].textContent.trim(),
+                        execution: cells[2].textContent.trim(),
+                        executionRate: cells[3].textContent.trim(),
+                        yearOverYear: cells[4].textContent.trim(),
+                        status: cells[5].textContent.trim()
+                    });
+                }
+            });
+
+            localStorage.setItem('summaryDetailData', JSON.stringify(data));
+            alert('저장되었습니다!');
+        }
+
+        // 항목별 상세 내역 - 데이터 불러오기
+        function loadSummaryDetailData() {
+            const savedData = localStorage.getItem('summaryDetailData');
+            if (savedData) {
+                const data = JSON.parse(savedData);
+                const tbody = document.getElementById('summary-detail-tbody');
+                tbody.innerHTML = '';
+
+                data.forEach(item => {
+                    const row = tbody.insertRow();
+                    row.innerHTML = `
+                        <td contenteditable="true">${item.item}</td>
+                        <td contenteditable="true" oninput="calculateExecutionRate(this)">${item.budget}</td>
+                        <td contenteditable="true" oninput="calculateExecutionRate(this)">${item.execution}</td>
+                        <td>${item.executionRate}</td>
+                        <td contenteditable="true">${item.yearOverYear}</td>
+                        <td contenteditable="true">${item.status}</td>
+                        <td><button class="btn-delete" onclick="deleteSummaryRow(this)" title="항목 삭제"><i class="fas fa-trash"></i></button></td>
+                    `;
+                });
+            }
         }
 
         // 예측 모달 관련 변수
@@ -2401,7 +2503,7 @@
 
         // 상세 데이터 저장
         function saveDetailData() {
-            const table = document.getElementById('detail-table');
+            const table = document.getElementById('modal-detail-table');
             const rows = table.querySelectorAll('tbody tr');
             const months = ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'];
 
@@ -2685,7 +2787,7 @@
 
         // 상세 엑셀 다운로드
         function downloadDetailExcel() {
-            const table = document.getElementById('detail-table');
+            const table = document.getElementById('modal-detail-table');
             const rows = table.querySelectorAll('tbody tr');
             const months = ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'];
 
@@ -4532,6 +4634,7 @@
         function initializePage() {
             initializeAmountFormatting();
             initializeMainBalance();
+            loadSummaryDetailData();
         }
 
         if (document.readyState === 'loading') {
