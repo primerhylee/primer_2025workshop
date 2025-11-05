@@ -2047,11 +2047,44 @@
                 content.style.display = 'block';
                 icon.className = 'fas fa-eye-slash';
                 text.textContent = '숨기기';
+                localStorage.setItem(`section_${contentId}_hidden`, 'false');
             } else {
                 content.style.display = 'none';
                 icon.className = 'fas fa-eye';
                 text.textContent = '보이기';
+                localStorage.setItem(`section_${contentId}_hidden`, 'true');
             }
+        }
+
+        // 섹션 숨김 상태 복원
+        function restoreSectionStates() {
+            const sections = [
+                { contentId: 'expense-structure-content', iconId: 'expense-structure-icon', textId: 'expense-structure-text' },
+                { contentId: 'expense-summary-content', iconId: 'expense-summary-icon', textId: 'expense-summary-text' },
+                { contentId: 'yearly-trend-content', iconId: 'yearly-trend-icon', textId: 'yearly-trend-text' },
+                { contentId: 'revenue-forecast-content', iconId: 'revenue-forecast-icon', textId: 'revenue-forecast-text' },
+                { contentId: 'yearly-history-content', iconId: 'history-toggle-icon', textId: 'history-toggle-text' },
+                { contentId: 'detail-table-content', iconId: 'detail-table-icon', textId: 'detail-table-text' }
+            ];
+
+            sections.forEach(section => {
+                const isHidden = localStorage.getItem(`section_${section.contentId}_hidden`) === 'true';
+                const content = document.getElementById(section.contentId);
+                const icon = document.getElementById(section.iconId);
+                const text = document.getElementById(section.textId);
+
+                if (content && icon && text) {
+                    if (isHidden) {
+                        content.style.display = 'none';
+                        icon.className = 'fas fa-eye';
+                        text.textContent = '보이기';
+                    } else {
+                        content.style.display = 'block';
+                        icon.className = 'fas fa-eye-slash';
+                        text.textContent = '숨기기';
+                    }
+                }
+            });
         }
 
         // 연도별 변동 내역 토글 (호환성 유지)
@@ -3075,6 +3108,9 @@
                 expenseCard.textContent = (total / 100000000).toFixed(1) + '억원';
             }
 
+            // 차트 업데이트
+            updateChangeHistoryChart();
+
             // 성공 메시지
             alert('지출 데이터가 저장되었습니다!');
             closeModal('expense-modal');
@@ -3182,9 +3218,22 @@
 
             // 차트 업데이트
             updateRevenueForecastChart();
-            
+            updateChangeHistoryChart();
+
             alert('수입 데이터가 저장되었습니다!');
             closeModal('income-modal');
+        }
+
+        // 연도별 변동 내역 차트 업데이트
+        function updateChangeHistoryChart() {
+            const incomeData = getYearlyIncomeData();
+            const expenseData = getYearlyExpenseData();
+            const profitData = getYearlyProfitData(incomeData, expenseData);
+
+            changeHistoryChart.data.datasets[0].data = incomeData;
+            changeHistoryChart.data.datasets[1].data = expenseData;
+            changeHistoryChart.data.datasets[2].data = profitData;
+            changeHistoryChart.update();
         }
 
         function saveBalanceData() {
@@ -4635,6 +4684,7 @@
             initializeAmountFormatting();
             initializeMainBalance();
             loadSummaryDetailData();
+            restoreSectionStates();
         }
 
         if (document.readyState === 'loading') {
@@ -4647,24 +4697,78 @@
         updateRevenueForecastChart();
 
         // 7. 연도별 변동 내역
+        // 수입 데이터 불러오기
+        function getYearlyIncomeData() {
+            const years = ['2019', '2020', '2021', '2022', '2023', '2024', '2025'];
+            const incomeData = [];
+
+            years.forEach(year => {
+                const savedData = localStorage.getItem(`incomeData_${year}`);
+                if (savedData) {
+                    const items = JSON.parse(savedData);
+                    const total = items.reduce((sum, item) => sum + (parseFloat(item.amount) || 0), 0);
+                    incomeData.push(parseFloat((total / 100000000).toFixed(1))); // 원을 억원으로 변환
+                } else {
+                    incomeData.push(0);
+                }
+            });
+
+            return incomeData;
+        }
+
+        // 지출 데이터 불러오기
+        function getYearlyExpenseData() {
+            const years = ['2019', '2020', '2021', '2022', '2023', '2024', '2025'];
+            const expenseData = [];
+
+            years.forEach(year => {
+                const savedData = localStorage.getItem(`expenseData_${year}`);
+                if (savedData) {
+                    const items = JSON.parse(savedData);
+                    const total = items.reduce((sum, item) => sum + (parseFloat(item.amount) || 0), 0);
+                    expenseData.push(parseFloat((total / 100000000).toFixed(1))); // 원을 억원으로 변환
+                } else {
+                    expenseData.push(0);
+                }
+            });
+
+            return expenseData;
+        }
+
+        // 순이익 데이터 계산 (수입 - 지출)
+        function getYearlyProfitData(incomeData, expenseData) {
+            const profitData = [];
+            for (let i = 0; i < incomeData.length; i++) {
+                const profit = (incomeData[i] - expenseData[i]).toFixed(1);
+                profitData.push(parseFloat(profit));
+            }
+            return profitData;
+        }
+
         const changeHistoryCtx = document.getElementById('changeHistoryChart').getContext('2d');
-        new Chart(changeHistoryCtx, {
+
+        // 초기 데이터 가져오기
+        const initialIncomeData = getYearlyIncomeData();
+        const initialExpenseData = getYearlyExpenseData();
+        const initialProfitData = getYearlyProfitData(initialIncomeData, initialExpenseData);
+
+        const changeHistoryChart = new Chart(changeHistoryCtx, {
             type: 'bar',
             data: {
                 labels: ['2019', '2020', '2021', '2022', '2023', '2024', '2025'],
                 datasets: [{
                     label: '수입',
-                    data: [8.5, 10.2, 12.5, 14.8, 17.2, 19.5, 22.5],
+                    data: initialIncomeData,
                     backgroundColor: '#3B82F6',
                     borderRadius: 8
                 }, {
                     label: '지출',
-                    data: [7.2, 8.5, 10.2, 12.5, 14.8, 16.2, 18.3],
+                    data: initialExpenseData,
                     backgroundColor: '#EC4899',
                     borderRadius: 8
                 }, {
                     label: '순이익',
-                    data: [1.3, 1.7, 2.3, 2.3, 2.4, 3.3, 4.2],
+                    data: initialProfitData,
                     backgroundColor: '#10b981',
                     borderRadius: 8
                 }]
