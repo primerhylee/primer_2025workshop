@@ -481,21 +481,104 @@
             width: 100%;
             border-collapse: collapse;
             margin-bottom: 10px;
+            table-layout: fixed;
+        }
+
+        /* 컬럼별 기본 너비 설정 */
+        .modal-table th,
+        .modal-table td {
+            position: relative;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* 컬럼 리사이저 */
+        .modal-table th {
+            position: relative;
+        }
+
+        .modal-table th:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 5px;
+            height: 100%;
+            cursor: col-resize;
+            background: transparent;
+            user-select: none;
+            z-index: 10;
+        }
+
+        .modal-table th:not(:last-child):hover::after {
+            background: rgba(59, 130, 246, 0.3);
+        }
+
+        /* 비고 컬럼 - 줄바꿈 허용 */
+        .modal-table td:nth-child(4) {
+            white-space: normal;
+            word-break: keep-all;
+            overflow: visible;
+        }
+
+        /* 총 수입/잔액 테이블 기본 컬럼 너비 */
+        #income-table th:nth-child(1),
+        #balance-table th:nth-child(1) {
+            width: 25%;
+        }
+
+        #income-table th:nth-child(2),
+        #balance-table th:nth-child(2) {
+            width: 15%;
+        }
+
+        #income-table th:nth-child(3),
+        #balance-table th:nth-child(3) {
+            width: 15%;
+        }
+
+        #income-table th:nth-child(4),
+        #balance-table th:nth-child(4) {
+            width: 30%;
+        }
+
+        #income-table th:nth-child(5),
+        #balance-table th:nth-child(5) {
+            width: 8%;
+        }
+
+        #income-table th:nth-child(6),
+        #balance-table th:nth-child(6) {
+            width: 7%;
         }
 
         /* 모달 테이블 셀 스타일 개선 */
         .modal-table td[contenteditable="true"] {
-            white-space: pre-wrap; /* 줄바꿈 허용 */
-            word-wrap: break-word;
-            min-height: 20px;
             vertical-align: middle;
+        }
+
+        /* 비고 셀은 줄바꿈 허용 */
+        .modal-table td[contenteditable="true"]:nth-child(4) {
+            white-space: normal;
+            word-wrap: break-word;
         }
 
         /* 금액 입력 필드 스타일 */
         .amount-input {
-            text-align: center !important;
-            font-family: inherit; /* 부모 요소의 폰트 상속 */
-            font-weight: 500;
+            text-align: right !important;
+            font-family: inherit;
+            font-weight: 600;
+        }
+
+        /* 금액 컬럼 숫자 강조 */
+        .modal-table td:nth-child(2),
+        .modal-table th:nth-child(2) {
+            font-weight: 600;
+        }
+
+        #expense-table td:nth-child(3),
+        #expense-table th:nth-child(3) {
+            font-weight: 600;
         }
 
         /* 순서 이동 버튼 스타일 */
@@ -543,7 +626,7 @@
         }
 
         .modal-table th {
-            padding: 10px 12px;
+            padding: 8px 10px;
             text-align: center;
             vertical-align: middle;
             font-weight: 700;
@@ -551,21 +634,51 @@
             border-bottom: 2px solid rgba(205, 124, 124, 0.2);
             white-space: nowrap;
             background: rgba(205, 124, 124, 0.08);
+            font-size: 0.95rem;
         }
 
-        /* 분류 컬럼 너비 제한 */
+        /* 총 지출 테이블 컬럼 너비 최적화 */
         #expense-table th:first-child,
         #expense-table td:first-child {
-            width: 160px;
-            max-width: 160px;
+            width: 100px;
+            min-width: 100px;
+        }
+
+        #expense-table th:nth-child(2),
+        #expense-table td:nth-child(2) {
+            min-width: 120px;
+            max-width: 200px;
+            text-align: center !important;
+        }
+
+        #expense-table th:nth-child(3),
+        #expense-table td:nth-child(3) {
+            width: 120px;
+            min-width: 100px;
+            text-align: right !important;
+        }
+
+        #expense-table th:nth-child(4),
+        #expense-table td:nth-child(4) {
+            min-width: 150px;
+            white-space: normal;
+        }
+
+        #expense-table th:nth-child(5),
+        #expense-table td:nth-child(5),
+        #expense-table th:nth-child(6),
+        #expense-table td:nth-child(6) {
+            width: 60px;
+            min-width: 60px;
         }
 
         .modal-table td {
-            padding: 8px 10px;
+            padding: 6px 8px;
             border-bottom: 1px solid rgba(205, 124, 124, 0.08);
             color: #334155;
             text-align: center;
             vertical-align: middle;
+            font-size: 0.95rem;
         }
 
         .modal-table td[contenteditable="true"] {
@@ -849,13 +962,13 @@
             color: #dc2626 !important;
             font-size: 1.1rem !important;
             font-weight: 900 !important;
-            text-align: center !important;
+            text-align: right !important;
         }
 
-        /* 금액 컬럼 가운데 정렬 */
+        /* 금액 컬럼 오른쪽 정렬 */
         .modal-table td:nth-child(2),
         .modal-table th:nth-child(2) {
-            text-align: center !important;
+            text-align: right !important;
         }
     </style>
 </head>
@@ -2035,6 +2148,118 @@
                         }
                     }
                 });
+            });
+        }
+
+        // 테이블 컬럼 리사이징 초기화
+        function initializeColumnResize() {
+            let isResizing = false;
+            let currentTh = null;
+            let startX = 0;
+            let startWidth = 0;
+
+            // 모든 테이블 헤더에 마우스다운 이벤트 추가
+            document.addEventListener('mousedown', function(e) {
+                const th = e.target.closest('.modal-table th');
+                if (!th) return;
+
+                // 헤더 오른쪽 경계 근처인지 확인 (10px 이내)
+                const rect = th.getBoundingClientRect();
+                const isNearRightEdge = Math.abs(e.clientX - rect.right) < 10;
+
+                if (isNearRightEdge && th.nextElementSibling) {
+                    isResizing = true;
+                    currentTh = th;
+                    startX = e.clientX;
+                    startWidth = th.offsetWidth;
+
+                    // 드래그 중 텍스트 선택 방지
+                    document.body.style.userSelect = 'none';
+                    e.preventDefault();
+                }
+            });
+
+            // 마우스 이동 시 컬럼 너비 조정
+            document.addEventListener('mousemove', function(e) {
+                // 마우스가 헤더 오른쪽 경계 근처인지 확인하여 커서 변경
+                const th = e.target.closest('.modal-table th');
+                if (th && !isResizing) {
+                    const rect = th.getBoundingClientRect();
+                    const isNearRightEdge = Math.abs(e.clientX - rect.right) < 10;
+
+                    if (isNearRightEdge && th.nextElementSibling) {
+                        document.body.style.cursor = 'col-resize';
+                    } else {
+                        if (document.body.style.cursor === 'col-resize') {
+                            document.body.style.cursor = '';
+                        }
+                    }
+                }
+
+                // 리사이징 중일 때
+                if (isResizing && currentTh) {
+                    const diff = e.clientX - startX;
+                    const newWidth = Math.max(50, startWidth + diff); // 최소 50px
+                    currentTh.style.width = newWidth + 'px';
+
+                    // 테이블 레이아웃 강제 업데이트
+                    const table = currentTh.closest('table');
+                    if (table) {
+                        table.style.tableLayout = 'fixed';
+                    }
+                }
+            });
+
+            // 마우스 버튼을 놓으면 리사이징 종료
+            document.addEventListener('mouseup', function(e) {
+                if (isResizing && currentTh) {
+                    // localStorage에 너비 저장
+                    const tableId = currentTh.closest('table')?.id;
+                    if (tableId) {
+                        const thIndex = Array.from(currentTh.parentElement.children).indexOf(currentTh);
+                        const width = currentTh.offsetWidth;
+                        localStorage.setItem(`colWidth_${tableId}_${thIndex}`, width);
+                    }
+
+                    isResizing = false;
+                    currentTh = null;
+                    document.body.style.userSelect = '';
+                    document.body.style.cursor = '';
+                }
+            });
+
+            // 저장된 컬럼 너비 복원
+            function restoreColumnWidths() {
+                document.querySelectorAll('.modal-table').forEach(table => {
+                    const tableId = table.id;
+                    if (tableId) {
+                        const headers = table.querySelectorAll('th');
+                        headers.forEach((th, index) => {
+                            const savedWidth = localStorage.getItem(`colWidth_${tableId}_${index}`);
+                            if (savedWidth) {
+                                th.style.width = savedWidth + 'px';
+                            }
+                        });
+                    }
+                });
+            }
+
+            // 페이지 로드 시 저장된 너비 복원
+            restoreColumnWidths();
+
+            // 모달이 열릴 때마다 너비 복원 (동적으로 생성되는 테이블 대응)
+            document.querySelectorAll('.modal').forEach(modal => {
+                const observer = new MutationObserver(function(mutations) {
+                    mutations.forEach(function(mutation) {
+                        if (mutation.attributeName === 'class') {
+                            if (modal.classList.contains('active')) {
+                                setTimeout(restoreColumnWidths, 10);
+                            }
+                        }
+                    });
+                });
+
+                observer.observe(modal, { attributes: true });
             });
         }
 
@@ -4822,6 +5047,7 @@
         // 페이지 로드 완료 후 초기화
         function initializePage() {
             initializeModalListeners();
+            initializeColumnResize();
             initializeAmountFormatting();
             initializeMainBalance();
             loadSummaryDetailData();
