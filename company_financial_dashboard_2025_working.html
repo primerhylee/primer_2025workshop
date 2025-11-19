@@ -917,6 +917,9 @@
                     <i class="fas fa-piggy-bank"></i>
                 </div>
                 <h3>잔액</h3>
+                <div style="font-size: 0.7rem; color: #06B6D4; font-weight: 500; margin-top: -5px; margin-bottom: 8px; letter-spacing: 0.5px; opacity: 0.9;">
+                    <i class="fas fa-calendar-day" style="font-size: 0.65rem; margin-right: 4px;"></i><span id="balance-main-date"></span> 기준
+                </div>
                 <div class="value">4.2억원</div>
                 <div class="change positive">
                     <i class="fas fa-arrow-up"></i>
@@ -949,7 +952,6 @@
                     <button class="year-tab-button" data-year="2022" onclick="switchExpenseYear('2022')">2022</button>
                     <button class="year-tab-button" data-year="2021" onclick="switchExpenseYear('2021')">2021</button>
                     <button class="year-tab-button" data-year="2020" onclick="switchExpenseYear('2020')">2020</button>
-                    <button class="year-tab-button" data-year="2019" onclick="switchExpenseYear('2019')">2019</button>
                 </div>
 
                 <div class="modal-table-container">
@@ -1105,7 +1107,6 @@
                     <button class="year-tab-button-income" data-year="2022" onclick="switchIncomeYear('2022')">2022</button>
                     <button class="year-tab-button-income" data-year="2021" onclick="switchIncomeYear('2021')">2021</button>
                     <button class="year-tab-button-income" data-year="2020" onclick="switchIncomeYear('2020')">2020</button>
-                    <button class="year-tab-button-income" data-year="2019" onclick="switchIncomeYear('2019')">2019</button>
                 </div>
 
                 <div class="modal-table-container">
@@ -1332,7 +1333,7 @@
         <div id="balance-modal" class="modal">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h2><i class="fas fa-piggy-bank"></i> 잔액 상세</h2>
+                    <h2><i class="fas fa-piggy-bank"></i> 잔액 상세 <span id="balance-date" style="font-size: 0.65em; color: #06B6D4; font-weight: normal; opacity: 0.9;"></span></h2>
                     <button class="modal-close" onclick="closeModal('balance-modal')">
                         <i class="fas fa-times"></i>
                     </button>
@@ -1548,7 +1549,6 @@
                     <button class="year-tab-button-chart" data-year="2022" onclick="switchExpenseChartYear('2022')">2022</button>
                     <button class="year-tab-button-chart" data-year="2021" onclick="switchExpenseChartYear('2021')">2021</button>
                     <button class="year-tab-button-chart" data-year="2020" onclick="switchExpenseChartYear('2020')">2020</button>
-                    <button class="year-tab-button-chart" data-year="2019" onclick="switchExpenseChartYear('2019')">2019</button>
                 </div>
 
                 <!-- 대분류 비교 차트 -->
@@ -1693,7 +1693,7 @@
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
                     <h2 style="margin: 0;">
                         <i class="fas fa-chart-line"></i>
-                        2019-2025년 항목별 예산 추이
+                        2020-2025년 항목별 예산 추이
                     </h2>
                     <button onclick="toggleSection('yearly-trend-content', 'yearly-trend')" style="background: rgba(239, 68, 68, 0.2); color: #EF4444; border: 1px solid rgba(239, 68, 68, 0.3); padding: 8px 16px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 8px; font-size: 0.9rem; transition: all 0.3s ease;">
                         <i class="fas fa-eye-slash" id="yearly-trend-icon"></i>
@@ -1712,7 +1712,7 @@
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
                     <h2 style="margin: 0;">
                         <i class="fas fa-crystal-ball"></i>
-                        수입 내역 및 향후 예측 (2019-2035)
+                        수입 내역 및 향후 예측 (2020-2035)
                     </h2>
                     <div style="display: flex; gap: 10px;">
                         <button class="btn btn-excel" onclick="openForecastModal()" style="background: rgba(16, 185, 129, 0.2); color: #10B981; border-color: rgba(16, 185, 129, 0.3); padding: 8px 16px;" title="2026-2035 예상 수입 설정">
@@ -2007,6 +2007,17 @@
                         loadExpenseYear(currentExpenseYear);
                     } else if (modalType === 'income') {
                         loadIncomeYear(currentIncomeYear);
+                    } else if (modalType === 'balance') {
+                        // 오늘 날짜 표시
+                        const today = new Date();
+                        const year = today.getFullYear();
+                        const month = String(today.getMonth() + 1).padStart(2, '0');
+                        const day = String(today.getDate()).padStart(2, '0');
+                        const dateStr = `(${year}-${month}-${day} 기준)`;
+                        const dateElement = document.getElementById('balance-date');
+                        if (dateElement) {
+                            dateElement.textContent = dateStr;
+                        }
                     }
                 }
             });
@@ -4426,43 +4437,43 @@
             switchExpenseChartYear('2025');
         });
 
-        // 4. 2019-2025년 항목별 예산 추이
+        // 4. 2020-2025년 항목별 예산 추이
         const yearlyTrendCtx = document.getElementById('yearlyTrendChart').getContext('2d');
         new Chart(yearlyTrendCtx, {
             type: 'line',
             data: {
-                labels: ['2019', '2020', '2021', '2022', '2023', '2024', '2025'],
+                labels: ['2020', '2021', '2022', '2023', '2024', '2025'],
                 datasets: [{
                     label: '인건비',
-                    data: [4.5, 5.2, 5.8, 6.5, 7.2, 7.8, 8.5],
+                    data: [5.2, 5.8, 6.5, 7.2, 7.8, 8.5],
                     borderColor: '#3B82F6',
                     backgroundColor: 'rgba(59, 130, 246, 0.1)',
                     tension: 0.4,
                     fill: true
                 }, {
                     label: '운영비',
-                    data: [2.1, 2.3, 2.8, 3.2, 3.5, 3.8, 4.2],
+                    data: [2.3, 2.8, 3.2, 3.5, 3.8, 4.2],
                     borderColor: '#06B6D4',
                     backgroundColor: 'rgba(6, 182, 212, 0.1)',
                     tension: 0.4,
                     fill: true
                 }, {
                     label: '마케팅',
-                    data: [1.8, 2.2, 2.8, 3.5, 4.2, 5.0, 5.8],
+                    data: [2.2, 2.8, 3.5, 4.2, 5.0, 5.8],
                     borderColor: '#8B5CF6',
                     backgroundColor: 'rgba(139, 92, 246, 0.1)',
                     tension: 0.4,
                     fill: true
                 }, {
                     label: '연구개발',
-                    data: [1.2, 1.5, 1.8, 2.2, 2.8, 3.2, 3.5],
+                    data: [1.5, 1.8, 2.2, 2.8, 3.2, 3.5],
                     borderColor: '#EC4899',
                     backgroundColor: 'rgba(236, 72, 153, 0.1)',
                     tension: 0.4,
                     fill: true
                 }, {
                     label: '기타',
-                    data: [1.0, 1.2, 1.5, 1.8, 2.2, 2.5, 3.0],
+                    data: [1.2, 1.5, 1.8, 2.2, 2.5, 3.0],
                     borderColor: '#F59E0B',
                     backgroundColor: 'rgba(245, 158, 11, 0.1)',
                     tension: 0.4,
@@ -4515,9 +4526,9 @@
                 revenueForecastChart.destroy();
             }
             
-            // 실제 수입 데이터 수집 (2019-2025)
+            // 실제 수입 데이터 수집 (2020-2025)
             const actualData = [];
-            const years = ['2019', '2020', '2021', '2022', '2023', '2024', '2025'];
+            const years = ['2020', '2021', '2022', '2023', '2024', '2025'];
             
             years.forEach(year => {
                 const incomeData = localStorage.getItem(`incomeData_${year}`);
@@ -4528,7 +4539,6 @@
                 } else {
                     // 기본값 사용
                     const defaultValues = {
-                        '2019': 8500,
                         '2020': 10200,
                         '2021': 12500,
                         '2022': 14800,
@@ -4563,7 +4573,7 @@
             revenueForecastChart = new Chart(ctx, {
                 type: 'line',
                 data: {
-                    labels: ['2019', '2020', '2021', '2022', '2023', '2024', '2025', '2026', '2027', '2028', '2029', '2030', '2031', '2032', '2033', '2034', '2035'],
+                    labels: ['2020', '2021', '2022', '2023', '2024', '2025', '2026', '2027', '2028', '2029', '2030', '2031', '2032', '2033', '2034', '2035'],
                     datasets: [{
                         label: '실제 수입',
                         data: [...actualData, null, null, null, null, null, null, null, null, null, null],
@@ -4574,7 +4584,7 @@
                         borderWidth: 3
                     }, {
                         label: '예측 수입',
-                        data: [null, null, null, null, null, null, actualData[6], ...forecastData],
+                        data: [null, null, null, null, null, actualData[5], ...forecastData],
                         borderColor: '#06B6D4',
                         backgroundColor: 'rgba(6, 182, 212, 0.1)',
                         tension: 0.4,
@@ -4591,8 +4601,8 @@
                             const dataIndex = chart.index;
                             const clickedYear = revenueForecastChart.data.labels[dataIndex];
 
-                            // 2019-2025년만 클릭 가능 (실제 데이터가 있는 년도)
-                            const availableYears = ['2019', '2020', '2021', '2022', '2023', '2024', '2025'];
+                            // 2020-2025년만 클릭 가능 (실제 데이터가 있는 년도)
+                            const availableYears = ['2020', '2021', '2022', '2023', '2024', '2025'];
                             if (availableYears.includes(clickedYear)) {
                                 // 총 수입 모달 열기
                                 const modal = document.getElementById('income-modal');
@@ -4677,6 +4687,17 @@
                     balanceCard.textContent = (total / 100000000).toFixed(1) + '억원';
                 }
             }
+
+            // 메인 화면에 오늘 날짜 표시
+            const today = new Date();
+            const year = today.getFullYear();
+            const month = String(today.getMonth() + 1).padStart(2, '0');
+            const day = String(today.getDate()).padStart(2, '0');
+            const dateStr = `${year}.${month}.${day}`;
+            const dateElement = document.getElementById('balance-main-date');
+            if (dateElement) {
+                dateElement.textContent = dateStr;
+            }
         }
 
         // 페이지 로드 완료 후 초기화
@@ -4699,7 +4720,7 @@
         // 7. 연도별 변동 내역
         // 수입 데이터 불러오기
         function getYearlyIncomeData() {
-            const years = ['2019', '2020', '2021', '2022', '2023', '2024', '2025'];
+            const years = ['2020', '2021', '2022', '2023', '2024', '2025'];
             const incomeData = [];
 
             years.forEach(year => {
@@ -4718,7 +4739,7 @@
 
         // 지출 데이터 불러오기
         function getYearlyExpenseData() {
-            const years = ['2019', '2020', '2021', '2022', '2023', '2024', '2025'];
+            const years = ['2020', '2021', '2022', '2023', '2024', '2025'];
             const expenseData = [];
 
             years.forEach(year => {
@@ -4755,7 +4776,7 @@
         const changeHistoryChart = new Chart(changeHistoryCtx, {
             type: 'bar',
             data: {
-                labels: ['2019', '2020', '2021', '2022', '2023', '2024', '2025'],
+                labels: ['2020', '2021', '2022', '2023', '2024', '2025'],
                 datasets: [{
                     label: '수입',
                     data: initialIncomeData,
