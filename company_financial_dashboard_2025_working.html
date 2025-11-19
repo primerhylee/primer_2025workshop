@@ -7,6 +7,7 @@
 
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
 
     <!-- SheetJS for Excel -->
     <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
@@ -1841,6 +1842,12 @@
         Chart.defaults.color = '#64748b';
         Chart.defaults.borderColor = 'rgba(205, 124, 124, 0.15)';
 
+        // datalabels 플러그인 전역 설정 - 기본적으로 비활성화
+        Chart.register(ChartDataLabels);
+        Chart.defaults.set('plugins.datalabels', {
+            display: false
+        });
+
         // 스크롤 이동 함수
         function scrollToSection(sectionId) {
             const section = document.getElementById(sectionId);
@@ -1998,33 +2005,35 @@
         let currentExpenseYear = '2025';
         let currentIncomeYear = '2025';
 
-        // 모달 열기 기능
-        const statCards = document.querySelectorAll('.stat-card[data-modal]');
-        statCards.forEach(card => {
-            card.addEventListener('click', () => {
-                const modalType = card.getAttribute('data-modal');
-                const modal = document.getElementById(modalType + '-modal');
-                if (modal) {
-                    modal.classList.add('active');
-                    if (modalType === 'expense') {
-                        loadExpenseYear(currentExpenseYear);
-                    } else if (modalType === 'income') {
-                        loadIncomeYear(currentIncomeYear);
-                    } else if (modalType === 'balance') {
-                        // 오늘 날짜 표시
-                        const today = new Date();
-                        const year = today.getFullYear();
-                        const month = String(today.getMonth() + 1).padStart(2, '0');
-                        const day = String(today.getDate()).padStart(2, '0');
-                        const dateStr = `(${year}-${month}-${day} 기준)`;
-                        const dateElement = document.getElementById('balance-date');
-                        if (dateElement) {
-                            dateElement.textContent = dateStr;
+        // 모달 열기 기능 초기화
+        function initializeModalListeners() {
+            const statCards = document.querySelectorAll('.stat-card[data-modal]');
+            statCards.forEach(card => {
+                card.addEventListener('click', () => {
+                    const modalType = card.getAttribute('data-modal');
+                    const modal = document.getElementById(modalType + '-modal');
+                    if (modal) {
+                        modal.classList.add('active');
+                        if (modalType === 'expense') {
+                            loadExpenseYear(currentExpenseYear);
+                        } else if (modalType === 'income') {
+                            loadIncomeYear(currentIncomeYear);
+                        } else if (modalType === 'balance') {
+                            // 오늘 날짜 표시
+                            const today = new Date();
+                            const year = today.getFullYear();
+                            const month = String(today.getMonth() + 1).padStart(2, '0');
+                            const day = String(today.getDate()).padStart(2, '0');
+                            const dateStr = `(${year}-${month}-${day} 기준)`;
+                            const dateElement = document.getElementById('balance-date');
+                            if (dateElement) {
+                                dateElement.textContent = dateStr;
+                            }
                         }
                     }
-                }
+                });
             });
-        });
+        }
 
         // 모달 닫기 기능
         function closeModal(modalId) {
@@ -4575,25 +4584,38 @@
             // 차트 생성
             revenueForecastChart = new Chart(ctx, {
                 type: 'line',
+                plugins: [ChartDataLabels], // 이 차트에만 datalabels 플러그인 활성화
                 data: {
                     labels: ['2020', '2021', '2022', '2023', '2024', '2025', '2026', '2027', '2028', '2029', '2030', '2031', '2032', '2033', '2034', '2035'],
                     datasets: [{
                         label: '실제 수입',
                         data: [...actualData, null, null, null, null, null, null, null, null, null, null],
-                        borderColor: '#3B82F6',
-                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                        borderColor: '#8B5CF6',
+                        backgroundColor: 'rgba(139, 92, 246, 0.15)',
                         tension: 0.4,
                         fill: true,
-                        borderWidth: 3
+                        borderWidth: 5,
+                        pointRadius: 7,
+                        pointHoverRadius: 10,
+                        pointBackgroundColor: '#8B5CF6',
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 3,
+                        pointHoverBorderWidth: 4
                     }, {
                         label: '예측 수입',
                         data: [null, null, null, null, null, actualData[5], ...forecastData],
-                        borderColor: '#06B6D4',
-                        backgroundColor: 'rgba(6, 182, 212, 0.1)',
+                        borderColor: '#EC4899',
+                        backgroundColor: 'rgba(236, 72, 153, 0.15)',
                         tension: 0.4,
                         fill: true,
                         borderDash: [5, 5],
-                        borderWidth: 3
+                        borderWidth: 5,
+                        pointRadius: 7,
+                        pointHoverRadius: 10,
+                        pointBackgroundColor: '#EC4899',
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 3,
+                        pointHoverBorderWidth: 4
                     }]
                 },
                 options: {
@@ -4624,20 +4646,87 @@
                         legend: {
                             position: 'bottom',
                             labels: {
-                                padding: 20
+                                padding: 20,
+                                font: {
+                                    size: 14,
+                                    weight: '500'
+                                }
                             }
                         },
                         tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    let label = context.dataset.label || '';
-                                    if (label) {
-                                        label += ': ';
+                            enabled: false // 툴팁 비활성화
+                        },
+                        datalabels: {
+                            display: true,
+                            align: function(context) {
+                                // 2020년(첫 번째 데이터)는 아래에 표시
+                                if (context.dataIndex === 0) {
+                                    return 'bottom';
+                                }
+                                return 'top';
+                            },
+                            anchor: function(context) {
+                                if (context.dataIndex === 0) {
+                                    return 'start';
+                                }
+                                return 'end';
+                            },
+                            offset: 10,
+                            clamp: false,
+                            font: {
+                                size: 14,
+                                weight: 'bold',
+                                family: 'Inter'
+                            },
+                            color: function(context) {
+                                return context.datasetIndex === 0 ? '#6D28D9' : '#BE185D';
+                            },
+                            formatter: function(value, context) {
+                                if (value === null) return '';
+                                return (value / 100).toFixed(1) + '억원';
+                            },
+                            backgroundColor: function(context) {
+                                if (context.dataset.data[context.dataIndex] === null) return 'transparent';
+                                return context.datasetIndex === 0 ? 'rgba(139, 92, 246, 0.25)' : 'rgba(236, 72, 153, 0.25)';
+                            },
+                            borderRadius: 6,
+                            padding: {
+                                top: 6,
+                                bottom: 6,
+                                left: 8,
+                                right: 8
+                            },
+                            borderColor: function(context) {
+                                if (context.dataset.data[context.dataIndex] === null) return 'transparent';
+                                return context.datasetIndex === 0 ? 'rgba(139, 92, 246, 0.5)' : 'rgba(236, 72, 153, 0.5)';
+                            },
+                            borderWidth: 1,
+                            listeners: {
+                                click: function(context, event) {
+                                    const dataIndex = context.dataIndex;
+                                    const clickedYear = revenueForecastChart.data.labels[dataIndex];
+                                    const availableYears = ['2020', '2021', '2022', '2023', '2024', '2025'];
+                                    if (availableYears.includes(clickedYear)) {
+                                        const modal = document.getElementById('income-modal');
+                                        if (modal) {
+                                            modal.classList.add('active');
+                                            switchIncomeYear(clickedYear);
+                                        }
                                     }
-                                    if (context.parsed.y !== null) {
-                                        label += (context.parsed.y / 100).toFixed(1) + '억원';
+                                    return true;
+                                },
+                                enter: function(context) {
+                                    const dataIndex = context.dataIndex;
+                                    const clickedYear = revenueForecastChart.data.labels[dataIndex];
+                                    const availableYears = ['2020', '2021', '2022', '2023', '2024', '2025'];
+                                    if (availableYears.includes(clickedYear)) {
+                                        document.body.style.cursor = 'pointer';
                                     }
-                                    return label;
+                                    return true;
+                                },
+                                leave: function(context) {
+                                    document.body.style.cursor = 'default';
+                                    return true;
                                 }
                             }
                         }
@@ -4645,20 +4734,44 @@
                     scales: {
                         y: {
                             beginAtZero: true,
-                            max: 2500, // 최대 25억원 (2,500백만원)
+                            max: 2700, // 최대값을 늘려서 레이블 공간 확보
                             ticks: {
                                 stepSize: 500, // 5억원 간격 (500백만원)
                                 callback: function(value) {
                                     return (value / 100) + '억원';
-                                }
+                                },
+                                font: {
+                                    size: 13,
+                                    weight: '600'
+                                },
+                                color: '#0f172a',
+                                padding: 15
                             },
                             grid: {
-                                color: 'rgba(59, 130, 246, 0.1)'
+                                color: 'rgba(139, 92, 246, 0.12)',
+                                lineWidth: 1
+                            },
+                            border: {
+                                display: true,
+                                color: 'rgba(139, 92, 246, 0.2)'
                             }
                         },
                         x: {
+                            ticks: {
+                                font: {
+                                    size: 13,
+                                    weight: '600'
+                                },
+                                color: '#0f172a',
+                                padding: 8
+                            },
                             grid: {
-                                color: 'rgba(59, 130, 246, 0.1)'
+                                color: 'rgba(139, 92, 246, 0.08)',
+                                lineWidth: 1
+                            },
+                            border: {
+                                display: true,
+                                color: 'rgba(139, 92, 246, 0.2)'
                             }
                         }
                     }
@@ -4705,6 +4818,7 @@
 
         // 페이지 로드 완료 후 초기화
         function initializePage() {
+            initializeModalListeners();
             initializeAmountFormatting();
             initializeMainBalance();
             loadSummaryDetailData();
