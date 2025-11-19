@@ -26,7 +26,7 @@
 
         body {
             font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #FFF5F5 0%, #FFEDD5 100%);
+            background: linear-gradient(135deg, #FFF9F7 0%, #FFF2EB 100%);
             color: #1e293b;
             min-height: 100vh;
             padding: 20px;
@@ -41,34 +41,37 @@
         .header {
             text-align: center;
             margin-bottom: 40px;
-            padding: 40px 20px;
-            background: rgba(255, 255, 255, 0.8);
+            padding: 50px 20px;
+            background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
             border-radius: 20px;
-            border: 1px solid rgba(239, 68, 68, 0.2);
-            box-shadow: 0 4px 20px rgba(239, 68, 68, 0.1);
+            border: 2px solid rgba(184, 72, 75, 0.2);
+            box-shadow: 0 8px 32px rgba(184, 72, 75, 0.12);
         }
 
         .header h1 {
-            font-size: 3rem;
-            font-weight: 700;
-            background: linear-gradient(135deg, #DC2626 0%, #F97316 100%);
+            font-size: 3.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #B8484B 0%, #D97847 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
             margin-bottom: 10px;
             cursor: pointer;
             transition: all 0.3s ease;
+            text-shadow: 0 2px 20px rgba(184, 72, 75, 0.15);
+            letter-spacing: -0.5px;
         }
 
         .header h1:hover {
             transform: scale(1.02);
-            opacity: 0.8;
+            filter: brightness(1.1);
         }
 
         .header p {
-            font-size: 1.2rem;
-            color: #64748b;
+            font-size: 1.3rem;
+            color: #475569;
+            font-weight: 500;
         }
 
         /* Stats Cards */
@@ -84,16 +87,16 @@
             backdrop-filter: blur(10px);
             border-radius: 16px;
             padding: 30px;
-            border: 1px solid rgba(239, 68, 68, 0.2);
+            border: 1px solid rgba(205, 124, 124, 0.15);
             transition: all 0.3s ease;
             cursor: pointer;
-            box-shadow: 0 2px 10px rgba(239, 68, 68, 0.08);
+            box-shadow: 0 2px 10px rgba(205, 124, 124, 0.06);
         }
 
         .stat-card:hover {
             transform: translateY(-5px);
-            border-color: #EF4444;
-            box-shadow: 0 10px 40px rgba(239, 68, 68, 0.2);
+            border-color: #E88B8B;
+            box-shadow: 0 10px 40px rgba(205, 124, 124, 0.15);
         }
 
         .stat-card .icon {
@@ -105,7 +108,7 @@
             justify-content: center;
             font-size: 1.8rem;
             margin-bottom: 15px;
-            background: linear-gradient(135deg, #DC2626 0%, #F97316 100%);
+            background: linear-gradient(135deg, #CD7C7C 0%, #E9A07C 100%);
         }
 
         .stat-card h3 {
@@ -134,7 +137,7 @@
         }
 
         .stat-card .change.negative {
-            color: #ef4444;
+            color: #E88B8B;
         }
 
         /* Chart Sections */
@@ -153,8 +156,8 @@
             backdrop-filter: blur(10px);
             border-radius: 16px;
             padding: 30px;
-            border: 1px solid rgba(239, 68, 68, 0.2);
-            box-shadow: 0 2px 10px rgba(239, 68, 68, 0.08);
+            border: 1px solid rgba(205, 124, 124, 0.15);
+            box-shadow: 0 2px 10px rgba(205, 124, 124, 0.06);
         }
 
         .chart-container h2 {
@@ -168,7 +171,7 @@
         }
 
         .chart-container h2 i {
-            color: #EF4444;
+            color: #E88B8B;
         }
 
         /* Tabs */
@@ -180,7 +183,7 @@
             display: flex;
             gap: 10px;
             margin-bottom: 20px;
-            border-bottom: 2px solid rgba(239, 68, 68, 0.2);
+            border-bottom: 2px solid rgba(205, 124, 124, 0.15);
         }
 
         .tab-button {
@@ -199,13 +202,13 @@
         }
 
         .tab-button:hover {
-            color: #DC2626;
+            color: #CD7C7C;
         }
 
         .tab-button.active {
             color: #1e293b;
-            border-bottom-color: #EF4444;
-            background: rgba(239, 68, 68, 0.1);
+            border-bottom-color: #E88B8B;
+            background: rgba(205, 124, 124, 0.08);
         }
 
         /* Quick Navigation */
@@ -215,8 +218,8 @@
             border-radius: 16px;
             padding: 20px;
             margin-bottom: 30px;
-            border: 1px solid rgba(239, 68, 68, 0.2);
-            box-shadow: 0 2px 10px rgba(239, 68, 68, 0.08);
+            border: 1px solid rgba(205, 124, 124, 0.15);
+            box-shadow: 0 2px 10px rgba(205, 124, 124, 0.06);
         }
 
         .quick-nav h3 {
@@ -233,9 +236,9 @@
         }
 
         .quick-nav-btn {
-            background: rgba(239, 68, 68, 0.1);
-            border: 1px solid rgba(239, 68, 68, 0.3);
-            color: #DC2626;
+            background: rgba(205, 124, 124, 0.08);
+            border: 1px solid rgba(205, 124, 124, 0.2);
+            color: #CD7C7C;
             padding: 10px 20px;
             font-size: 0.95rem;
             font-weight: 600;
@@ -249,10 +252,10 @@
         }
 
         .quick-nav-btn:hover {
-            background: #EF4444;
+            background: #E88B8B;
             color: #fff;
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+            box-shadow: 0 4px 12px rgba(205, 124, 124, 0.2);
         }
 
         .quick-nav-btn i {
@@ -265,7 +268,7 @@
             gap: 5px;
             margin-bottom: 20px;
             padding: 10px;
-            background: rgba(239, 68, 68, 0.05);
+            background: rgba(205, 124, 124, 0.04);
             border-radius: 12px;
             flex-wrap: wrap;
         }
@@ -274,7 +277,7 @@
         .year-tab-button-income,
         .year-tab-button-chart {
             background: rgba(255, 255, 255, 0.8);
-            border: 1px solid rgba(239, 68, 68, 0.2);
+            border: 1px solid rgba(205, 124, 124, 0.15);
             color: #64748b;
             padding: 8px 16px;
             font-size: 0.95rem;
@@ -288,17 +291,17 @@
         .year-tab-button:hover,
         .year-tab-button-income:hover,
         .year-tab-button-chart:hover {
-            background: rgba(239, 68, 68, 0.1);
-            border-color: #EF4444;
-            color: #DC2626;
+            background: rgba(205, 124, 124, 0.08);
+            border-color: #E88B8B;
+            color: #CD7C7C;
         }
 
         .year-tab-button.active,
         .year-tab-button-income.active,
         .year-tab-button-chart.active {
-            background: #EF4444;
+            background: #E88B8B;
             color: #fff;
-            border-color: #EF4444;
+            border-color: #E88B8B;
         }
 
         .tab-content {
@@ -349,7 +352,7 @@
             align-items: center;
             margin-bottom: 30px;
             padding-bottom: 20px;
-            border-bottom: 2px solid rgba(239, 68, 68, 0.3);
+            border-bottom: 2px solid rgba(205, 124, 124, 0.2);
         }
 
         .modal-header h2 {
@@ -361,7 +364,7 @@
         }
 
         .modal-header h2 i {
-            color: #EF4444;
+            color: #E88B8B;
         }
 
         .modal-header-actions {
@@ -371,9 +374,9 @@
         }
 
         .modal-goto-btn {
-            background: rgba(239, 68, 68, 0.15);
-            border: 1px solid rgba(239, 68, 68, 0.3);
-            color: #EF4444;
+            background: rgba(205, 124, 124, 0.12);
+            border: 1px solid rgba(205, 124, 124, 0.2);
+            color: #E88B8B;
             font-size: 1rem;
             width: 40px;
             height: 40px;
@@ -386,13 +389,13 @@
         }
 
         .modal-goto-btn:hover {
-            background: rgba(239, 68, 68, 0.25);
+            background: rgba(205, 124, 124, 0.18);
             transform: translateY(-2px);
         }
 
         .modal-close {
-            background: rgba(239, 68, 68, 0.2);
-            border: 1px solid rgba(239, 68, 68, 0.3);
+            background: rgba(205, 124, 124, 0.15);
+            border: 1px solid rgba(205, 124, 124, 0.2);
             color: #ef4444;
             font-size: 1.5rem;
             width: 40px;
@@ -406,7 +409,7 @@
         }
 
         .modal-close:hover {
-            background: rgba(239, 68, 68, 0.3);
+            background: rgba(205, 124, 124, 0.2);
             transform: rotate(90deg);
         }
 
@@ -533,7 +536,7 @@
         }
 
         .modal-table thead {
-            background: rgba(239, 68, 68, 0.15);
+            background: rgba(205, 124, 124, 0.12);
             position: sticky;
             top: 0;
         }
@@ -543,9 +546,9 @@
             text-align: left;
             font-weight: 700;
             color: #1e293b;
-            border-bottom: 2px solid rgba(239, 68, 68, 0.3);
+            border-bottom: 2px solid rgba(205, 124, 124, 0.2);
             white-space: nowrap;
-            background: rgba(239, 68, 68, 0.1);
+            background: rgba(205, 124, 124, 0.08);
         }
 
         /* 분류 컬럼 너비 제한 */
@@ -557,42 +560,42 @@
 
         .modal-table td {
             padding: 12px 15px;
-            border-bottom: 1px solid rgba(239, 68, 68, 0.1);
+            border-bottom: 1px solid rgba(205, 124, 124, 0.08);
             color: #334155;
         }
 
         .modal-table td[contenteditable="true"] {
-            background: rgba(239, 68, 68, 0.05);
+            background: rgba(205, 124, 124, 0.04);
             border-radius: 4px;
             cursor: text;
             transition: all 0.2s ease;
         }
 
         .modal-table td[contenteditable="true"]:hover {
-            background: rgba(239, 68, 68, 0.1);
+            background: rgba(205, 124, 124, 0.08);
         }
 
         .modal-table td[contenteditable="true"]:focus {
-            outline: 2px solid #EF4444;
-            background: rgba(239, 68, 68, 0.15);
+            outline: 2px solid #E88B8B;
+            background: rgba(205, 124, 124, 0.12);
         }
 
         .modal-table tr:hover {
-            background: rgba(239, 68, 68, 0.03);
+            background: rgba(205, 124, 124, 0.03);
         }
 
         /* 대분류 컬럼 스타일 */
         .modal-table td.category-col {
             font-weight: 600;
-            color: #DC2626;
-            background: rgba(239, 68, 68, 0.08);
+            color: #CD7C7C;
+            background: rgba(205, 124, 124, 0.06);
         }
 
         .category-select {
             width: auto;
             min-width: 120px;
             padding: 8px 12px;
-            border: 1px solid rgba(239, 68, 68, 0.3);
+            border: 1px solid rgba(205, 124, 124, 0.2);
             border-radius: 6px;
             background: rgba(255, 255, 255, 0.9);
             color: #1e293b;
@@ -604,14 +607,14 @@
         }
 
         .category-select:focus {
-            outline: 2px solid #EF4444;
+            outline: 2px solid #E88B8B;
             background: #fff;
         }
 
         .category-select.support {
-            background: rgba(239, 68, 68, 0.12);
-            color: #DC2626;
-            border-color: rgba(239, 68, 68, 0.4);
+            background: rgba(205, 124, 124, 0.1);
+            color: #CD7C7C;
+            border-color: rgba(205, 124, 124, 0.25);
         }
 
         .category-select.discovery {
@@ -645,13 +648,13 @@
         }
 
         .btn-primary {
-            background: linear-gradient(135deg, #DC2626 0%, #F97316 100%);
+            background: linear-gradient(135deg, #CD7C7C 0%, #E9A07C 100%);
             color: #fff;
         }
 
         .btn-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 5px 20px rgba(239, 68, 68, 0.4);
+            box-shadow: 0 5px 20px rgba(205, 124, 124, 0.25);
         }
 
         .btn-secondary {
@@ -691,9 +694,9 @@
         }
 
         .btn-delete {
-            background: rgba(239, 68, 68, 0.1);
-            color: #EF4444;
-            border: 1px solid rgba(239, 68, 68, 0.3);
+            background: rgba(205, 124, 124, 0.08);
+            color: #E88B8B;
+            border: 1px solid rgba(205, 124, 124, 0.2);
             padding: 6px 12px;
             border-radius: 6px;
             cursor: pointer;
@@ -702,7 +705,7 @@
         }
 
         .btn-delete:hover {
-            background: #EF4444;
+            background: #E88B8B;
             color: #fff;
             transform: scale(1.05);
         }
@@ -751,10 +754,10 @@
             backdrop-filter: blur(10px);
             border-radius: 16px;
             padding: 30px;
-            border: 1px solid rgba(239, 68, 68, 0.2);
+            border: 1px solid rgba(205, 124, 124, 0.15);
             margin-top: 30px;
             overflow-x: auto;
-            box-shadow: 0 2px 10px rgba(239, 68, 68, 0.08);
+            box-shadow: 0 2px 10px rgba(205, 124, 124, 0.06);
             max-width: 1400px;
             margin-left: auto;
             margin-right: auto;
@@ -773,7 +776,7 @@
         }
 
         thead {
-            background: rgba(239, 68, 68, 0.1);
+            background: rgba(205, 124, 124, 0.08);
         }
 
         th {
@@ -781,17 +784,17 @@
             text-align: left;
             font-weight: 700;
             color: #1e293b;
-            border-bottom: 2px solid rgba(239, 68, 68, 0.3);
+            border-bottom: 2px solid rgba(205, 124, 124, 0.2);
         }
 
         td {
             padding: 15px;
-            border-bottom: 1px solid rgba(239, 68, 68, 0.1);
+            border-bottom: 1px solid rgba(205, 124, 124, 0.08);
             color: #334155;
         }
 
         tr:hover {
-            background: rgba(239, 68, 68, 0.03);
+            background: rgba(205, 124, 124, 0.03);
         }
 
         /* Responsive */
@@ -1296,7 +1299,7 @@
                     </table>
 
                     <!-- 합계 표시 -->
-                    <div style="margin-top: 20px; padding: 15px; background: linear-gradient(135deg, #DC2626 0%, #F97316 100%); border-radius: 10px; color: white;">
+                    <div style="margin-top: 20px; padding: 15px; background: linear-gradient(135deg, #CD7C7C 0%, #E9A07C 100%); border-radius: 10px; color: white;">
                         <div style="display: flex; justify-content: space-between; align-items: center;">
                             <h3 style="margin: 0;">
                                 <i class="fas fa-calculator"></i> 
@@ -1314,10 +1317,10 @@
 
                 <div class="modal-actions">
                     <div class="modal-actions-left">
-                        <button class="btn btn-excel" onclick="resetCurrentYearForecast()" style="background: rgba(239, 68, 68, 0.2); color: #EF4444; border-color: rgba(239, 68, 68, 0.3);" title="현재 년도 예측 데이터 초기화">
+                        <button class="btn btn-excel" onclick="resetCurrentYearForecast()" style="background: rgba(205, 124, 124, 0.15); color: #E88B8B; border-color: rgba(205, 124, 124, 0.2);" title="현재 년도 예측 데이터 초기화">
                             <i class="fas fa-undo"></i> 현재 년도 초기화
                         </button>
-                        <button class="btn btn-excel" onclick="resetAllForecastData()" style="background: rgba(239, 68, 68, 0.2); color: #EF4444; border-color: rgba(239, 68, 68, 0.3);" title="모든 예측 데이터 초기화">
+                        <button class="btn btn-excel" onclick="resetAllForecastData()" style="background: rgba(205, 124, 124, 0.15); color: #E88B8B; border-color: rgba(205, 124, 124, 0.2);" title="모든 예측 데이터 초기화">
                             <i class="fas fa-trash-alt"></i> 전체 초기화
                         </button>
                     </div>
@@ -1534,7 +1537,7 @@
                         <i class="fas fa-layer-group"></i>
                         지출 구조
                     </h2>
-                    <button onclick="toggleSection('expense-structure-content', 'expense-structure')" style="background: rgba(239, 68, 68, 0.2); color: #EF4444; border: 1px solid rgba(239, 68, 68, 0.3); padding: 8px 16px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 8px; font-size: 0.9rem; transition: all 0.3s ease;">
+                    <button onclick="toggleSection('expense-structure-content', 'expense-structure')" style="background: rgba(205, 124, 124, 0.15); color: #E88B8B; border: 1px solid rgba(205, 124, 124, 0.2); padding: 8px 16px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 8px; font-size: 0.9rem; transition: all 0.3s ease;">
                         <i class="fas fa-eye-slash" id="expense-structure-icon"></i>
                         <span id="expense-structure-text">숨기기</span>
                     </button>
@@ -1664,7 +1667,7 @@
                         <i class="fas fa-table"></i>
                         지출 구조 상세 표
                     </h2>
-                    <button onclick="toggleSection('expense-summary-content', 'expense-summary')" style="background: rgba(239, 68, 68, 0.2); color: #EF4444; border: 1px solid rgba(239, 68, 68, 0.3); padding: 8px 16px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 8px; font-size: 0.9rem; transition: all 0.3s ease;">
+                    <button onclick="toggleSection('expense-summary-content', 'expense-summary')" style="background: rgba(205, 124, 124, 0.15); color: #E88B8B; border: 1px solid rgba(205, 124, 124, 0.2); padding: 8px 16px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 8px; font-size: 0.9rem; transition: all 0.3s ease;">
                         <i class="fas fa-eye-slash" id="expense-summary-icon"></i>
                         <span id="expense-summary-text">숨기기</span>
                     </button>
@@ -1695,7 +1698,7 @@
                         <i class="fas fa-chart-line"></i>
                         2020-2025년 항목별 예산 추이
                     </h2>
-                    <button onclick="toggleSection('yearly-trend-content', 'yearly-trend')" style="background: rgba(239, 68, 68, 0.2); color: #EF4444; border: 1px solid rgba(239, 68, 68, 0.3); padding: 8px 16px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 8px; font-size: 0.9rem; transition: all 0.3s ease;">
+                    <button onclick="toggleSection('yearly-trend-content', 'yearly-trend')" style="background: rgba(205, 124, 124, 0.15); color: #E88B8B; border: 1px solid rgba(205, 124, 124, 0.2); padding: 8px 16px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 8px; font-size: 0.9rem; transition: all 0.3s ease;">
                         <i class="fas fa-eye-slash" id="yearly-trend-icon"></i>
                         <span id="yearly-trend-text">숨기기</span>
                     </button>
@@ -1718,7 +1721,7 @@
                         <button class="btn btn-excel" onclick="openForecastModal()" style="background: rgba(16, 185, 129, 0.2); color: #10B981; border-color: rgba(16, 185, 129, 0.3); padding: 8px 16px;" title="2026-2035 예상 수입 설정">
                             <i class="fas fa-cog"></i> 예측 설정
                         </button>
-                        <button onclick="toggleSection('revenue-forecast-content', 'revenue-forecast')" style="background: rgba(239, 68, 68, 0.2); color: #EF4444; border: 1px solid rgba(239, 68, 68, 0.3); padding: 8px 16px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 8px; font-size: 0.9rem; transition: all 0.3s ease;">
+                        <button onclick="toggleSection('revenue-forecast-content', 'revenue-forecast')" style="background: rgba(205, 124, 124, 0.15); color: #E88B8B; border: 1px solid rgba(205, 124, 124, 0.2); padding: 8px 16px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 8px; font-size: 0.9rem; transition: all 0.3s ease;">
                             <i class="fas fa-eye-slash" id="revenue-forecast-icon"></i>
                             <span id="revenue-forecast-text">숨기기</span>
                         </button>
@@ -1738,7 +1741,7 @@
                         <i class="fas fa-balance-scale"></i>
                         연도별 변동 내역
                     </h2>
-                    <button onclick="toggleYearlyHistory()" style="background: rgba(239, 68, 68, 0.2); color: #EF4444; border: 1px solid rgba(239, 68, 68, 0.3); padding: 8px 16px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 8px; font-size: 0.9rem; transition: all 0.3s ease;">
+                    <button onclick="toggleYearlyHistory()" style="background: rgba(205, 124, 124, 0.15); color: #E88B8B; border: 1px solid rgba(205, 124, 124, 0.2); padding: 8px 16px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 8px; font-size: 0.9rem; transition: all 0.3s ease;">
                         <i class="fas fa-eye-slash" id="history-toggle-icon"></i>
                         <span id="history-toggle-text">숨기기</span>
                     </button>
@@ -1754,7 +1757,7 @@
             <div class="table-container" id="detail-table">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
                 <h2 style="margin: 0;"><i class="fas fa-table"></i> 항목별 상세 내역</h2>
-                <button onclick="toggleSection('detail-table-content', 'detail-table')" style="background: rgba(239, 68, 68, 0.2); color: #EF4444; border: 1px solid rgba(239, 68, 68, 0.3); padding: 8px 16px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 8px; font-size: 0.9rem; transition: all 0.3s ease;">
+                <button onclick="toggleSection('detail-table-content', 'detail-table')" style="background: rgba(205, 124, 124, 0.15); color: #E88B8B; border: 1px solid rgba(205, 124, 124, 0.2); padding: 8px 16px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 8px; font-size: 0.9rem; transition: all 0.3s ease;">
                     <i class="fas fa-eye-slash" id="detail-table-icon"></i>
                     <span id="detail-table-text">숨기기</span>
                 </button>
@@ -1836,7 +1839,7 @@
     <script>
         // Chart.js 기본 설정
         Chart.defaults.color = '#64748b';
-        Chart.defaults.borderColor = 'rgba(239, 68, 68, 0.2)';
+        Chart.defaults.borderColor = 'rgba(205, 124, 124, 0.15)';
 
         // 스크롤 이동 함수
         function scrollToSection(sectionId) {
@@ -3898,7 +3901,7 @@
 
         const colorPalette3 = [
             '#F59E0B', // 앰버
-            '#EF4444', // 레드
+            '#E88B8B', // 레드
             '#EC4899', // 핑크
             '#A855F7', // 퍼플
             '#6366F1'  // 인디고
