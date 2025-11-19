@@ -338,10 +338,10 @@
             backdrop-filter: blur(20px);
             border-radius: 20px;
             border: 1px solid rgba(59, 130, 246, 0.2);
-            padding: 40px;
-            max-width: 900px;
-            width: 90%;
-            max-height: 80vh;
+            padding: 30px;
+            max-width: 1200px;
+            width: 95%;
+            max-height: 90vh;
             overflow-y: auto;
             position: relative;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
@@ -351,8 +351,8 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 30px;
-            padding-bottom: 20px;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
             border-bottom: 2px solid rgba(205, 124, 124, 0.2);
         }
 
@@ -416,7 +416,7 @@
 
         .modal-table-container {
             overflow-x: auto;
-            margin-bottom: 20px;
+            margin-bottom: 10px;
         }
 
         /* 예측 년도 탭 스타일 */
@@ -480,7 +480,7 @@
         .modal-table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 20px;
+            margin-bottom: 10px;
         }
 
         /* 모달 테이블 셀 스타일 개선 */
@@ -488,12 +488,12 @@
             white-space: pre-wrap; /* 줄바꿈 허용 */
             word-wrap: break-word;
             min-height: 20px;
-            vertical-align: top;
+            vertical-align: middle;
         }
 
         /* 금액 입력 필드 스타일 */
         .amount-input {
-            text-align: right !important;
+            text-align: center !important;
             font-family: inherit; /* 부모 요소의 폰트 상속 */
             font-weight: 500;
         }
@@ -543,8 +543,9 @@
         }
 
         .modal-table th {
-            padding: 15px;
-            text-align: left;
+            padding: 10px 12px;
+            text-align: center;
+            vertical-align: middle;
             font-weight: 700;
             color: #1e293b;
             border-bottom: 2px solid rgba(205, 124, 124, 0.2);
@@ -560,9 +561,11 @@
         }
 
         .modal-table td {
-            padding: 12px 15px;
+            padding: 8px 10px;
             border-bottom: 1px solid rgba(205, 124, 124, 0.08);
             color: #334155;
+            text-align: center;
+            vertical-align: middle;
         }
 
         .modal-table td[contenteditable="true"] {
@@ -634,15 +637,15 @@
             display: flex;
             gap: 15px;
             justify-content: flex-end;
-            margin-top: 30px;
+            margin-top: 15px;
         }
 
         .btn {
-            padding: 12px 30px;
+            padding: 10px 24px;
             border-radius: 8px;
             border: none;
             font-weight: 600;
-            font-size: 1rem;
+            font-size: 0.95rem;
             cursor: pointer;
             transition: all 0.3s ease;
             font-family: 'Inter', sans-serif;
@@ -716,7 +719,7 @@
             justify-content: space-between;
             align-items: center;
             gap: 10px;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
         }
 
         .excel-buttons-right {
@@ -846,13 +849,13 @@
             color: #dc2626 !important;
             font-size: 1.1rem !important;
             font-weight: 900 !important;
-            text-align: right !important;
+            text-align: center !important;
         }
 
-        /* 금액 컬럼 오른쪽 정렬 */
+        /* 금액 컬럼 가운데 정렬 */
         .modal-table td:nth-child(2),
         .modal-table th:nth-child(2) {
-            text-align: right !important;
+            text-align: center !important;
         }
     </style>
 </head>
