@@ -4813,16 +4813,16 @@
                 if (incomeData) {
                     const data = JSON.parse(incomeData);
                     const total = data.reduce((sum, item) => sum + parseFloat(item.amount || 0), 0);
-                    actualData.push(total / 1000000); // 백만원 단위로 변환
+                    actualData.push(total); // 원 단위 그대로 사용
                 } else {
-                    // 기본값 사용
+                    // 기본값 사용 (원 단위)
                     const defaultValues = {
-                        '2020': 10200,
-                        '2021': 12500,
-                        '2022': 14800,
-                        '2023': 17200,
-                        '2024': 19500,
-                        '2025': 22500
+                        '2020': 1020000000,
+                        '2021': 1250000000,
+                        '2022': 1480000000,
+                        '2023': 1720000000,
+                        '2024': 1950000000,
+                        '2025': 2250000000
                     };
                     actualData.push(defaultValues[year]);
                 }
@@ -4837,10 +4837,10 @@
                 if (forecastItems) {
                     const items = JSON.parse(forecastItems);
                     const yearTotal = items.reduce((sum, item) => sum + parseFloat(item.amount || 0), 0);
-                    forecastData.push(yearTotal / 1000000); // 원을 백만원으로 변환
+                    forecastData.push(yearTotal); // 원 단위 그대로 사용
                 } else {
-                    // 기본 예측값 사용 (년도별로 15% 성장 가정)
-                    const baseValue = 2250; // 2025년 기준 (백만원)
+                    // 기본 예측값 사용 (년도별로 15% 성장 가정, 원 단위)
+                    const baseValue = 2250000000; // 2025년 기준 (원)
                     const yearIndex = parseInt(year) - 2026;
                     const defaultValue = Math.round(baseValue * Math.pow(1.15, yearIndex + 1));
                     forecastData.push(defaultValue);
