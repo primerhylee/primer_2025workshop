@@ -1252,6 +1252,9 @@
                             <button class="btn btn-excel" onclick="downloadIncomeExcel()">
                                 <i class="fas fa-download"></i> 엑셀 다운로드
                             </button>
+                            <button class="btn btn-delete" onclick="clearAllIncomeData()">
+                                <i class="fas fa-trash-alt"></i> 전체 데이터 삭제
+                            </button>
                         </div>
                     </div>
                     <table class="modal-table" id="income-table">
@@ -3407,6 +3410,35 @@
             updateChangeHistoryChart();
 
             alert(`${currentExpenseYear}년 지출 데이터가 삭제되었습니다.`);
+        }
+
+        // 현재 년도 수입 데이터 삭제 기능
+        function clearAllIncomeData() {
+            const confirmation = confirm(`⚠️ 경고!\n\n${currentIncomeYear}년 총 수입 데이터가 완전히 삭제됩니다.\n이 작업은 되돌릴 수 없습니다.\n\n정말 삭제하시겠습니까?`);
+
+            if (!confirmation) {
+                return;
+            }
+
+            // 현재 년도의 수입 데이터 삭제
+            localStorage.removeItem(`incomeData_${currentIncomeYear}`);
+
+            // 현재 테이블 초기화
+            const table = document.getElementById('income-table');
+            const tbody = table.querySelector('tbody');
+            tbody.innerHTML = '';
+
+            // 2025년 데이터가 삭제된 경우 카드 업데이트
+            if (currentIncomeYear === '2025') {
+                const incomeCard = document.querySelector('.stat-card[data-modal="income"] .value');
+                incomeCard.textContent = '0원';
+            }
+
+            // 차트 업데이트
+            updateRevenueForecastChart();
+            updateChangeHistoryChart();
+
+            alert(`${currentIncomeYear}년 수입 데이터가 삭제되었습니다.`);
         }
 
         // 총 수입 연도 전환 기능
