@@ -790,6 +790,8 @@
             color: #10b981;
             border: 1px solid rgba(16, 185, 129, 0.3);
             margin-bottom: 15px;
+            padding: 8px 15px;
+            font-size: 0.85rem;
         }
 
         .btn-add:hover {
@@ -800,10 +802,10 @@
             background: rgba(34, 197, 94, 0.2);
             color: #22c55e;
             border: 1px solid rgba(34, 197, 94, 0.3);
-            padding: 10px 20px;
-            font-size: 0.9rem;
+            padding: 8px 15px;
+            font-size: 0.85rem;
             white-space: nowrap;
-            min-width: 150px;
+            min-width: 120px;
         }
 
         .btn-excel:hover {
@@ -814,11 +816,11 @@
             background: rgba(205, 124, 124, 0.08);
             color: #E88B8B;
             border: 1px solid rgba(205, 124, 124, 0.2);
-            padding: 6px 12px;
+            padding: 5px 10px;
             border-radius: 6px;
             cursor: pointer;
             transition: all 0.3s ease;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
         }
 
         .btn-delete:hover {
@@ -1079,9 +1081,6 @@
                         <button class="btn btn-add" onclick="addExpenseRow()">
                             <i class="fas fa-plus"></i> 항목 추가
                         </button>
-                        <button class="btn btn-delete" onclick="clearAllExpenseData()" style="background: rgba(239, 68, 68, 0.1); color: #EF4444; border-color: rgba(239, 68, 68, 0.3);">
-                            <i class="fas fa-trash-alt"></i> 전체 데이터 삭제
-                        </button>
                         <div class="excel-buttons-right">
                             <button class="btn btn-excel" onclick="downloadExpenseTemplate()" style="background: rgba(139, 92, 246, 0.2); color: #8B5CF6; border-color: rgba(139, 92, 246, 0.3);">
                                 <i class="fas fa-file-download"></i> 양식 다운로드
@@ -1094,6 +1093,9 @@
                             </div>
                             <button class="btn btn-excel" onclick="downloadExpenseExcel()">
                                 <i class="fas fa-download"></i> 엑셀 다운로드
+                            </button>
+                            <button class="btn btn-delete" onclick="clearAllExpenseData()" style="background: rgba(239, 68, 68, 0.1); color: #EF4444; border-color: rgba(239, 68, 68, 0.3);">
+                                <i class="fas fa-trash-alt"></i> 전체 데이터 삭제
                             </button>
                         </div>
                     </div>
