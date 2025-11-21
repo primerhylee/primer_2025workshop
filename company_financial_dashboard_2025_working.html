@@ -3370,41 +3370,33 @@
             closeModal('expense-modal');
         }
 
-        // 전체 지출 데이터 삭제 기능
+        // 현재 년도 지출 데이터 삭제 기능
         function clearAllExpenseData() {
-            const confirmation = confirm('⚠️ 경고!\n\n모든 년도의 총 지출 데이터가 완전히 삭제됩니다.\n이 작업은 되돌릴 수 없습니다.\n\n정말 삭제하시겠습니까?');
+            const confirmation = confirm(`⚠️ 경고!\n\n${currentExpenseYear}년 총 지출 데이터가 완전히 삭제됩니다.\n이 작업은 되돌릴 수 없습니다.\n\n정말 삭제하시겠습니까?`);
 
             if (!confirmation) {
                 return;
             }
 
-            // 두 번째 확인
-            const finalConfirmation = confirm('정말로 삭제하시겠습니까?\n마지막 확인입니다.');
-
-            if (!finalConfirmation) {
-                return;
-            }
-
-            // 모든 년도의 지출 데이터 삭제
-            const years = ['2020', '2021', '2022', '2023', '2024', '2025'];
-            years.forEach(year => {
-                localStorage.removeItem(`expenseData_${year}`);
-                localStorage.removeItem(`detailData_${year}`);
-            });
+            // 현재 년도의 지출 데이터 삭제
+            localStorage.removeItem(`expenseData_${currentExpenseYear}`);
+            localStorage.removeItem(`detailData_${currentExpenseYear}`);
 
             // 현재 테이블 초기화
             const table = document.getElementById('expense-table');
             const tbody = table.querySelector('tbody');
             tbody.innerHTML = '';
 
-            // 카드 업데이트 (0으로 초기화)
-            const expenseCard = document.querySelector('.stat-card[data-modal="expense"] .value');
-            expenseCard.textContent = '0원';
+            // 2025년 데이터가 삭제된 경우 카드 업데이트
+            if (currentExpenseYear === '2025') {
+                const expenseCard = document.querySelector('.stat-card[data-modal="expense"] .value');
+                expenseCard.textContent = '0원';
+            }
 
             // 차트 업데이트
             updateChangeHistoryChart();
 
-            alert('모든 지출 데이터가 삭제되었습니다.');
+            alert(`${currentExpenseYear}년 지출 데이터가 삭제되었습니다.`);
         }
 
         // 총 수입 연도 전환 기능
