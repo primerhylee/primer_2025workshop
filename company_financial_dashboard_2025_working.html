@@ -3294,13 +3294,21 @@
             const tbody = document.querySelector('#expense-table tbody');
             tbody.innerHTML = '';
 
+            console.log(`📊 ${year}년 데이터 로드 중...`);
+
             if (savedData) {
                 const data = JSON.parse(savedData);
-                data.forEach(row => {
+                console.log(`저장된 데이터 개수: ${data.length}`);
+                data.forEach((row, index) => {
+                    console.log(`Row ${index}: item="${row.item}", amount=${row.amount} (type: ${typeof row.amount}), category="${row.category}"`);
+
                     const category = row.category || '지원';
                     let categoryClass = 'support';
                     if (category === '발굴') categoryClass = 'discovery';
                     else if (category === '일반관리비') categoryClass = 'general';
+
+                    const displayAmount = row.amount || 0;
+                    console.log(`  → 표시할 금액: ${displayAmount}, formatNumber 결과: ${formatNumber(displayAmount)}`);
 
                     const tr = tbody.insertRow();
                     tr.innerHTML = `
@@ -3312,8 +3320,8 @@
                             </select>
                         </td>
                         <td contenteditable="true">${row.item}</td>
-                        <td contenteditable="true">${formatNumber(row.amount)}</td>
-                        <td contenteditable="true">${row.note}</td>
+                        <td contenteditable="true">${formatNumber(displayAmount)}</td>
+                        <td contenteditable="true">${row.note || ''}</td>
                         <td>
                             <div class="move-buttons">
                                 <button class="btn-move" onclick="moveRowUp(this)" title="위로 이동">
