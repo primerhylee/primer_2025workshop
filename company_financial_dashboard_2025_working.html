@@ -3356,7 +3356,7 @@
                 });
 
                 const expenseCard = document.querySelector('.stat-card[data-modal="expense"] .value');
-                expenseCard.textContent = (total / 100000000).toFixed(1) + '억원';
+                expenseCard.textContent = formatNumber(total) + '원';
             }
 
             // 차트 업데이트
@@ -3463,8 +3463,8 @@
                 });
 
                 const incomeCard = document.querySelector('.stat-card[data-modal="income"] .value');
-                // 원 단위를 억원으로 변환 (1억 = 100,000,000원)
-                incomeCard.textContent = (total / 100000000).toFixed(1) + '억원';
+                // 원 단위로 표시
+                incomeCard.textContent = formatNumber(total) + '원';
             }
 
             // 차트 업데이트
@@ -3508,9 +3508,9 @@
             // 로컬 스토리지에 저장
             localStorage.setItem('balanceData', JSON.stringify(data));
 
-            // 잔액 카드 업데이트 (원을 억원으로 변환)
+            // 잔액 카드 업데이트 (원 단위)
             const balanceCard = document.querySelector('.stat-card[data-modal="balance"] .value');
-            balanceCard.textContent = (totalBalance / 100000000).toFixed(1) + '억원';
+            balanceCard.textContent = formatNumber(totalBalance) + '원';
 
             // 성공 메시지
             alert('잔액 데이터가 저장되었습니다!');
@@ -4022,7 +4022,7 @@
                     total += row.amount;
                 });
                 const expenseCard = document.querySelector('.stat-card[data-modal="expense"] .value');
-                expenseCard.textContent = (total / 100000000).toFixed(1) + '억원';
+                expenseCard.textContent = formatNumber(total) + '원';
             }
 
             // 기존 incomeData를 incomeData_2025로 마이그레이션
@@ -4041,8 +4041,8 @@
                     total += row.amount;
                 });
                 const incomeCard = document.querySelector('.stat-card[data-modal="income"] .value');
-                // 원 단위를 억원으로 변환 (1억 = 100,000,000원)
-                incomeCard.textContent = (total / 100000000).toFixed(1) + '억원';
+                // 원 단위로 표시
+                incomeCard.textContent = formatNumber(total) + '원';
             }
 
             // 잔액 데이터 로드
@@ -4074,7 +4074,7 @@
                     total += row.amount;
                 });
                 const balanceCard = document.querySelector('.stat-card[data-modal="balance"] .value');
-                balanceCard.textContent = (total / 100000000).toFixed(1) + '억원';
+                balanceCard.textContent = formatNumber(total) + '원';
             }
         });
 
@@ -4704,7 +4704,7 @@
                         beginAtZero: true,
                         ticks: {
                             callback: function(value) {
-                                return value + '억원';
+                                return formatNumber(value) + '원';
                             }
                         },
                         grid: {
@@ -4876,7 +4876,7 @@
                             },
                             formatter: function(value, context) {
                                 if (value === null) return '';
-                                return (value / 100).toFixed(1) + '억원';
+                                return formatNumber(value) + '원';
                             },
                             backgroundColor: function(context) {
                                 if (context.dataset.data[context.dataIndex] === null) return 'transparent';
@@ -4927,11 +4927,11 @@
                     scales: {
                         y: {
                             beginAtZero: true,
-                            max: 2700, // 최대값을 늘려서 레이블 공간 확보
+                            max: 2700000000, // 최대값을 늘려서 레이블 공간 확보 (27억원)
                             ticks: {
-                                stepSize: 500, // 5억원 간격 (500백만원)
+                                stepSize: 500000000, // 5억원 간격
                                 callback: function(value) {
-                                    return (value / 100) + '억원';
+                                    return formatNumber(value) + '원';
                                 },
                                 font: {
                                     size: 13,
@@ -4993,7 +4993,7 @@
                 });
                 const balanceCard = document.querySelector('.stat-card[data-modal="balance"] .value');
                 if (balanceCard) {
-                    balanceCard.textContent = (total / 100000000).toFixed(1) + '억원';
+                    balanceCard.textContent = formatNumber(total) + '원';
                 }
             }
 
@@ -5039,7 +5039,7 @@
                 if (savedData) {
                     const items = JSON.parse(savedData);
                     const total = items.reduce((sum, item) => sum + (parseFloat(item.amount) || 0), 0);
-                    incomeData.push(parseFloat((total / 100000000).toFixed(1))); // 원을 억원으로 변환
+                    incomeData.push(total); // 원 단위 그대로 사용
                 } else {
                     incomeData.push(0);
                 }
@@ -5058,7 +5058,7 @@
                 if (savedData) {
                     const items = JSON.parse(savedData);
                     const total = items.reduce((sum, item) => sum + (parseFloat(item.amount) || 0), 0);
-                    expenseData.push(parseFloat((total / 100000000).toFixed(1))); // 원을 억원으로 변환
+                    expenseData.push(total); // 원 단위 그대로 사용
                 } else {
                     expenseData.push(0);
                 }
@@ -5120,7 +5120,7 @@
                         beginAtZero: true,
                         ticks: {
                             callback: function(value) {
-                                return value + '억원';
+                                return formatNumber(value) + '원';
                             }
                         },
                         grid: {
