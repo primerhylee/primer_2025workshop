@@ -4941,7 +4941,7 @@
                             },
                             formatter: function(value, context) {
                                 if (value === null) return '';
-                                return formatNumber(value) + '원';
+                                return (value / 100000000).toFixed(1) + '억원';
                             },
                             backgroundColor: function(context) {
                                 if (context.dataset.data[context.dataIndex] === null) return 'transparent';
@@ -4992,11 +4992,10 @@
                     scales: {
                         y: {
                             beginAtZero: true,
-                            max: 2700000000, // 최대값을 늘려서 레이블 공간 확보 (27억원)
+                            grace: '10%', // 최대값에 10% 여유 공간 추가
                             ticks: {
-                                stepSize: 500000000, // 5억원 간격
                                 callback: function(value) {
-                                    return formatNumber(value) + '원';
+                                    return (value / 100000000).toFixed(1) + '억원';
                                 },
                                 font: {
                                     size: 13,
@@ -5183,9 +5182,10 @@
                 scales: {
                     y: {
                         beginAtZero: true,
+                        grace: '10%',
                         ticks: {
                             callback: function(value) {
-                                return formatNumber(value) + '원';
+                                return (value / 100000000).toFixed(1) + '억원';
                             }
                         },
                         grid: {
