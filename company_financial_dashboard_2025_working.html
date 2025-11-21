@@ -3601,6 +3601,17 @@
                     // 월별 데이터가 없으면 기존 방식 사용 (하위호환성)
                     if (!hasMonthlyData) {
                         amount = parseNumber(row['금액'] || row['금액 (백만원)'] || row['금액 (억원)'] || row['amount'] || 0);
+                        // 디버깅: 금액이 0인 경우 확인
+                        if (amount === 0 && (row['금액'] || row['금액 (백만원)'] || row['금액 (억원)'] || row['amount'])) {
+                            console.log('⚠️ 금액이 0으로 파싱됨:', {
+                                원본금액: row['금액'],
+                                백만원: row['금액 (백만원)'],
+                                억원: row['금액 (억원)'],
+                                amount: row['amount'],
+                                파싱결과: amount,
+                                전체행: row
+                            });
+                        }
                     }
 
                     // 소분류가 있는 경우 상세 데이터에 추가
@@ -3660,9 +3671,18 @@
 
                 // 업로드 완료 메시지
                 const totalDetailItems = Object.values(detailDataByYear).reduce((sum, arr) => sum + arr.length, 0);
+                const totalMainItems = Object.values(dataByYear).reduce((sum, yearMap) => sum + yearMap.size, 0);
+                let totalAmount = 0;
+                Object.values(dataByYear).forEach(yearMap => {
+                    yearMap.forEach(item => {
+                        totalAmount += item.amount;
+                    });
+                });
                 alert(`엑셀 파일이 성공적으로 업로드되었습니다!\n` +
-                      `업로드된 년도: ${importedYears.sort().join(', ')}년` +
-                      (totalDetailItems > 0 ? `\n상세 항목 ${totalDetailItems}개가 포함되어 있습니다.` : ''));
+                      `업로드된 년도: ${importedYears.sort().join(', ')}년\n` +
+                      `항목 수: ${totalMainItems}개\n` +
+                      `총 금액: ${formatNumber(totalAmount)}원` +
+                      (totalDetailItems > 0 ? `\n상세 항목: ${totalDetailItems}개` : ''));
             };
             reader.readAsArrayBuffer(file);
             event.target.value = ''; // 같은 파일 재선택 가능하도록
@@ -3713,6 +3733,17 @@
                     // 월별 데이터가 없으면 기존 방식 사용 (하위호환성)
                     if (!hasMonthlyData) {
                         amount = parseNumber(row['금액'] || row['금액 (백만원)'] || row['금액 (억원)'] || row['amount'] || 0);
+                        // 디버깅: 금액이 0인 경우 확인
+                        if (amount === 0 && (row['금액'] || row['금액 (백만원)'] || row['금액 (억원)'] || row['amount'])) {
+                            console.log('⚠️ 금액이 0으로 파싱됨:', {
+                                원본금액: row['금액'],
+                                백만원: row['금액 (백만원)'],
+                                억원: row['금액 (억원)'],
+                                amount: row['amount'],
+                                파싱결과: amount,
+                                전체행: row
+                            });
+                        }
                     }
 
                     dataByYear[year].push({
