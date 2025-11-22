@@ -3769,7 +3769,7 @@
                             </select>
                         </td>
                         <td contenteditable="true">${row.item}</td>
-                        <td contenteditable="true">${formatNumber(displayAmount)}</td>
+                        <td contenteditable="true" class="amount-input">${formatNumber(displayAmount)}</td>
                         <td contenteditable="true">${row.note || ''}</td>
                         <td>
                             <div class="move-buttons">
@@ -3783,6 +3783,10 @@
                         </td>
                         <td><button class="btn-delete" onclick="deleteRow(this)"><i class="fas fa-trash"></i></button></td>
                     `;
+
+                    // 금액 셀에 포맷팅 이벤트 추가
+                    const amountCell = tr.cells[2];
+                    addAmountFormatting(amountCell);
                 });
             } else {
                 // 기본 샘플 데이터
@@ -3796,11 +3800,17 @@
                             </select>
                         </td>
                         <td contenteditable="true">새 상세분류</td>
-                        <td contenteditable="true">0</td>
+                        <td contenteditable="true" class="amount-input">0</td>
                         <td contenteditable="true">비고</td>
                         <td><button class="btn-delete" onclick="deleteRow(this)"><i class="fas fa-trash"></i></button></td>
                     </tr>
                 `;
+
+                // 기본 행의 금액 셀에도 포맷팅 이벤트 추가
+                const amountCell = tbody.querySelector('.amount-input');
+                if (amountCell) {
+                    addAmountFormatting(amountCell);
+                }
             }
 
             // 합계 업데이트
@@ -3914,6 +3924,10 @@
                         </td>
                         <td><button class="btn-delete" onclick="deleteRow(this)"><i class="fas fa-trash"></i></button></td>
                     `;
+
+                    // 금액 셀에 포맷팅 이벤트 추가
+                    const amountCell = tr.cells[1];
+                    addAmountFormatting(amountCell);
                 });
 
                 // 합계 업데이트
@@ -4510,7 +4524,7 @@
                     const tr = tbody.insertRow();
                     tr.innerHTML = `
                         <td contenteditable="true">${row.item}</td>
-                        <td contenteditable="true">${formatNumber(row.amount)}</td>
+                        <td contenteditable="true" class="amount-input">${formatNumber(row.amount)}</td>
                         <td contenteditable="true">${row.source}</td>
                         <td contenteditable="true">${row.note}</td>
                         <td>
@@ -4525,17 +4539,27 @@
                         </td>
                         <td><button class="btn-delete" onclick="deleteRow(this)"><i class="fas fa-trash"></i></button></td>
                     `;
+
+                    // 금액 셀에 포맷팅 이벤트 추가
+                    const amountCell = tr.cells[1];
+                    addAmountFormatting(amountCell);
                 });
             } else {
                 tbody.innerHTML = `
                     <tr>
                         <td contenteditable="true">새 상세분류</td>
-                        <td contenteditable="true">0</td>
+                        <td contenteditable="true" class="amount-input">0</td>
                         <td contenteditable="true">수입원</td>
                         <td contenteditable="true">비고</td>
                         <td><button class="btn-delete" onclick="deleteRow(this)"><i class="fas fa-trash"></i></button></td>
                     </tr>
                 `;
+
+                // 기본 행의 금액 셀에도 포맷팅 이벤트 추가
+                const amountCell = tbody.querySelector('.amount-input');
+                if (amountCell) {
+                    addAmountFormatting(amountCell);
+                }
             }
 
             // 합계 업데이트
