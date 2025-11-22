@@ -3847,6 +3847,9 @@
             const tbody = table.querySelector('tbody');
             tbody.innerHTML = '';
 
+            // 합계 업데이트 (0으로 초기화)
+            updateExpenseTotal();
+
             // 2025년 데이터가 삭제된 경우 카드 업데이트
             if (currentExpenseYear === '2025') {
                 const expenseCard = document.querySelector('.stat-card[data-modal="expense"] .value');
@@ -3874,6 +3877,9 @@
             const table = document.getElementById('income-table');
             const tbody = table.querySelector('tbody');
             tbody.innerHTML = '';
+
+            // 합계 업데이트 (0으로 초기화)
+            updateIncomeTotal();
 
             // 2025년 데이터가 삭제된 경우 카드 업데이트
             if (currentIncomeYear === '2025') {
