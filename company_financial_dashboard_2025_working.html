@@ -1135,7 +1135,7 @@
                                 <div style="margin-bottom: 10px;">
                                     <label style="font-size: 0.85rem; color: #666; display: block; margin-bottom: 5px;">행 높이 (px):</label>
                                     <div style="display: flex; gap: 5px;">
-                                        <input type="number" id="expense-row-height" value="28" min="20" max="60" style="flex: 1; padding: 5px 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 0.85rem;">
+                                        <input type="number" id="expense-row-height" value="28" min="10" max="80" step="0.5" style="flex: 1; padding: 5px 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 0.85rem;">
                                         <button onclick="applyRowHeight('expense-table'); toggleTableSettings('expense');" class="btn btn-excel" style="padding: 5px 10px; font-size: 0.8rem;">
                                             적용
                                         </button>
@@ -1322,7 +1322,7 @@
                                 <div style="margin-bottom: 10px;">
                                     <label style="font-size: 0.85rem; color: #666; display: block; margin-bottom: 5px;">행 높이 (px):</label>
                                     <div style="display: flex; gap: 5px;">
-                                        <input type="number" id="income-row-height" value="28" min="20" max="60" style="flex: 1; padding: 5px 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 0.85rem;">
+                                        <input type="number" id="income-row-height" value="28" min="10" max="80" step="0.5" style="flex: 1; padding: 5px 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 0.85rem;">
                                         <button onclick="applyRowHeight('income-table'); toggleTableSettings('income');" class="btn btn-excel" style="padding: 5px 10px; font-size: 0.8rem;">
                                             적용
                                         </button>
@@ -1580,7 +1580,7 @@
                                 <div style="margin-bottom: 10px;">
                                     <label style="font-size: 0.85rem; color: #666; display: block; margin-bottom: 5px;">행 높이 (px):</label>
                                     <div style="display: flex; gap: 5px;">
-                                        <input type="number" id="balance-row-height" value="28" min="20" max="60" style="flex: 1; padding: 5px 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 0.85rem;">
+                                        <input type="number" id="balance-row-height" value="28" min="10" max="80" step="0.5" style="flex: 1; padding: 5px 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 0.85rem;">
                                         <button onclick="applyRowHeight('balance-table'); toggleTableSettings('balance');" class="btn btn-excel" style="padding: 5px 10px; font-size: 0.8rem;">
                                             적용
                                         </button>
@@ -4068,14 +4068,21 @@
         // 행 높이 조정 함수
         function applyRowHeight(tableId) {
             const inputId = tableId.replace('-table', '-row-height');
-            const height = document.getElementById(inputId).value;
+            const height = parseFloat(document.getElementById(inputId).value);
             const table = document.getElementById(tableId);
             const rows = table.querySelectorAll('tbody tr');
+
+            // 높이에 따라 padding 조정 (비례 계산)
+            // 기본: 28px 높이 = 3px padding
+            const paddingVertical = Math.max(1, Math.floor(height * 3 / 28));
+            const paddingHorizontal = 6;
 
             rows.forEach(row => {
                 const cells = row.querySelectorAll('td');
                 cells.forEach(cell => {
                     cell.style.height = height + 'px';
+                    cell.style.padding = `${paddingVertical}px ${paddingHorizontal}px`;
+                    cell.style.lineHeight = '1.2';
                 });
             });
 
