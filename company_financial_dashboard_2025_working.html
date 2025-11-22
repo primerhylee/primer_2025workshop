@@ -40,7 +40,9 @@
 
         /* Header */
         .header {
-            text-align: center;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             margin-bottom: 40px;
             padding: 50px 20px;
             background: rgba(255, 255, 255, 0.95);
@@ -992,6 +994,17 @@
         <!-- Header -->
         <div class="header">
             <h1 onclick="location.reload()">프라이머 전략팀 워크샵</h1>
+            <div style="display: flex; gap: 10px;">
+                <button onclick="exportAllData()" style="padding: 8px 16px; background: linear-gradient(135deg, #3B82F6 0%, #06B6D4 100%); color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 0.9rem; display: flex; align-items: center; gap: 6px;">
+                    <i class="fas fa-download"></i>
+                    데이터 백업
+                </button>
+                <button onclick="document.getElementById('import-data-input').click()" style="padding: 8px 16px; background: linear-gradient(135deg, #10B981 0%, #059669 100%); color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 0.9rem; display: flex; align-items: center; gap: 6px;">
+                    <i class="fas fa-upload"></i>
+                    데이터 복원
+                </button>
+                <input type="file" id="import-data-input" accept=".json" onchange="importAllData(event)" style="display: none;">
+            </div>
         </div>
 
         <!-- Quick Navigation -->
@@ -2280,6 +2293,86 @@
         // 천단위 콤마 추가 함수
         function formatNumber(num) {
             return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
+
+        // 📦 전체 데이터 백업 (JSON 다운로드)
+        function exportAllData() {
+            const allData = {};
+
+            // localStorage의 모든 데이터 수집
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                allData[key] = localStorage.getItem(key);
+            }
+
+            // JSON 파일로 다운로드
+            const dataStr = JSON.stringify(allData, null, 2);
+            const dataBlob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(dataBlob);
+            const link = document.createElement('a');
+            link.href = url;
+
+            // 현재 날짜와 시간을 파일명에 포함
+            const now = new Date();
+            const dateStr = now.getFullYear() +
+                          String(now.getMonth() + 1).padStart(2, '0') +
+                          String(now.getDate()).padStart(2, '0') + '_' +
+                          String(now.getHours()).padStart(2, '0') +
+                          String(now.getMinutes()).padStart(2, '0');
+            link.download = `프라이머_데이터_백업_${dateStr}.json`;
+
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+
+            alert('✅ 데이터가 성공적으로 백업되었습니다!\n\n파일: 프라이머_데이터_백업_' + dateStr + '.json');
+        }
+
+        // 📥 전체 데이터 복원 (JSON 업로드)
+        function importAllData(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const importedData = JSON.parse(e.target.result);
+
+                    // 확인 메시지
+                    const confirmation = confirm(
+                        '⚠️ 주의!\n\n' +
+                        '현재 저장된 모든 데이터가 백업 파일의 데이터로 교체됩니다.\n' +
+                        '이 작업은 되돌릴 수 없습니다.\n\n' +
+                        '정말 복원하시겠습니까?'
+                    );
+
+                    if (!confirmation) {
+                        event.target.value = ''; // 파일 선택 초기화
+                        return;
+                    }
+
+                    // localStorage에 데이터 복원
+                    let restoredCount = 0;
+                    for (const key in importedData) {
+                        localStorage.setItem(key, importedData[key]);
+                        restoredCount++;
+                    }
+
+                    alert(`✅ 데이터 복원 완료!\n\n총 ${restoredCount}개 항목이 복원되었습니다.\n페이지를 새로고침합니다.`);
+
+                    // 페이지 새로고침
+                    location.reload();
+
+                } catch (error) {
+                    alert('❌ 오류 발생!\n\n파일을 읽는 중 오류가 발생했습니다.\n올바른 백업 파일인지 확인해주세요.\n\n오류 내용: ' + error.message);
+                }
+
+                // 파일 선택 초기화
+                event.target.value = '';
+            };
+
+            reader.readAsText(file);
         }
 
         // 실시간 금액 포맷팅 함수
