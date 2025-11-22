@@ -1255,6 +1255,19 @@
                             </tr>
                         </tbody>
                     </table>
+
+                    <!-- 합계 표시 -->
+                    <div style="margin-top: 20px; padding: 15px; background: linear-gradient(135deg, #CD7C7C 0%, #E9A07C 100%); border-radius: 10px; color: white;">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <h3 style="margin: 0;">
+                                <i class="fas fa-calculator"></i>
+                                총 지출 합계
+                            </h3>
+                            <div style="font-size: 1.5rem; font-weight: bold;">
+                                <span id="expense-total-amount">0</span>원
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div class="modal-actions">
                     <button class="btn btn-secondary" onclick="closeModal('expense-modal')">취소</button>
@@ -3362,6 +3375,36 @@
             });
         });
 
+        // 총지출 테이블의 금액 셀 변경 시 합계 업데이트
+        document.addEventListener('blur', function(event) {
+            if (event.target.matches('#expense-table td[contenteditable="true"]')) {
+                updateExpenseTotal();
+            }
+        }, true);
+
+        // 총지출 합계 계산 및 업데이트
+        function updateExpenseTotal() {
+            const table = document.getElementById('expense-table');
+            if (!table) return;
+
+            const rows = table.querySelectorAll('tbody tr');
+            let total = 0;
+
+            rows.forEach(row => {
+                const amountCell = row.cells[2]; // 금액 열 (0: 분류, 1: 상세분류, 2: 금액)
+                if (amountCell) {
+                    const amount = parseFloat(amountCell.textContent.replace(/[^0-9.-]/g, '')) || 0;
+                    total += amount;
+                }
+            });
+
+            // 합계 표시 업데이트
+            const totalElement = document.getElementById('expense-total-amount');
+            if (totalElement) {
+                totalElement.textContent = formatNumber(total);
+            }
+        }
+
         // 행 추가 기능
         function addExpenseRow() {
             const tbody = document.querySelector('#expense-table tbody');
@@ -3389,12 +3432,15 @@
                 </td>
                 <td><button class="btn-delete" onclick="deleteRow(this)"><i class="fas fa-trash"></i></button></td>
             `;
-            
+
             // 새로 추가된 금액 필드에 포맷팅 적용
             const amountCell = newRow.querySelector('.amount-input');
             if (amountCell) {
                 addAmountFormatting(amountCell);
             }
+
+            // 합계 업데이트
+            updateExpenseTotal();
         }
 
         function addIncomeRow() {
@@ -3456,8 +3502,14 @@
         // 행 삭제 함수
         function deleteRow(button) {
             const row = button.closest('tr');
+            const table = row.closest('table');
             if (confirm('이 항목을 삭제하시겠습니까?')) {
                 row.remove();
+
+                // 테이블에 따라 합계 업데이트
+                if (table && table.id === 'expense-table') {
+                    updateExpenseTotal();
+                }
             }
         }
 
@@ -3598,6 +3650,9 @@
                     </tr>
                 `;
             }
+
+            // 합계 업데이트
+            updateExpenseTotal();
         }
 
         // 데이터 저장 기능
