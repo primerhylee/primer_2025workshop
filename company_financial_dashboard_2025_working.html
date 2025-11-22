@@ -1174,6 +1174,7 @@
                                 <th>상세분류</th>
                                 <th>금액 (원)</th>
                                 <th>비고</th>
+                                <th style="width: 100px;">분석</th>
                                 <th style="width: 80px;">순서</th>
                                 <th style="width: 80px;">삭제</th>
                             </tr>
@@ -1844,6 +1845,81 @@
                 <div class="modal-actions">
                     <button class="btn btn-secondary" onclick="closeModal('government-support-modal')">닫기</button>
                     <button class="btn btn-primary" onclick="saveGovSupportData()">저장</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 항목별 추세 그래프 모달 -->
+        <div id="trend-chart-modal" class="modal">
+            <div class="modal-content" style="max-width: 900px;">
+                <div class="modal-header">
+                    <h2><i class="fas fa-chart-line"></i> <span id="trend-item-name"></span> 추세 분석</h2>
+                    <button class="modal-close" onclick="closeModal('trend-chart-modal')">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+
+                <div class="modal-table-container" style="padding: 20px;">
+                    <div style="background: rgba(59, 130, 246, 0.05); border: 1px solid rgba(59, 130, 246, 0.2); border-radius: 8px; padding: 20px; margin-bottom: 20px;">
+                        <canvas id="trend-chart-canvas"></canvas>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                        <div style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(6, 182, 212, 0.1)); border-radius: 8px; padding: 15px; text-align: center;">
+                            <div style="font-size: 0.85rem; color: rgba(255, 255, 255, 0.7); margin-bottom: 5px;">최소 금액</div>
+                            <div id="trend-min-amount" style="font-size: 1.3rem; font-weight: 700; color: #3B82F6;">-</div>
+                        </div>
+                        <div style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(6, 182, 212, 0.1)); border-radius: 8px; padding: 15px; text-align: center;">
+                            <div style="font-size: 0.85rem; color: rgba(255, 255, 255, 0.7); margin-bottom: 5px;">최대 금액</div>
+                            <div id="trend-max-amount" style="font-size: 1.3rem; font-weight: 700; color: #06B6D4;">-</div>
+                        </div>
+                        <div style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(6, 182, 212, 0.1)); border-radius: 8px; padding: 15px; text-align: center;">
+                            <div style="font-size: 0.85rem; color: rgba(255, 255, 255, 0.7); margin-bottom: 5px;">평균 금액</div>
+                            <div id="trend-avg-amount" style="font-size: 1.3rem; font-weight: 700; color: #3B82F6;">-</div>
+                        </div>
+                        <div style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(6, 182, 212, 0.1)); border-radius: 8px; padding: 15px; text-align: center;">
+                            <div style="font-size: 0.85rem; color: rgba(255, 255, 255, 0.7); margin-bottom: 5px;">변동률</div>
+                            <div id="trend-change-rate" style="font-size: 1.3rem; font-weight: 700; color: #06B6D4;">-</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-actions">
+                    <button class="btn btn-secondary" onclick="closeModal('trend-chart-modal')">닫기</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 메모/코멘트 모달 -->
+        <div id="memo-modal" class="modal">
+            <div class="modal-content" style="max-width: 700px;">
+                <div class="modal-header">
+                    <h2><i class="fas fa-sticky-note"></i> <span id="memo-item-name"></span> 메모</h2>
+                    <button class="modal-close" onclick="closeModal('memo-modal')">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+
+                <div class="modal-table-container" style="padding: 20px;">
+                    <div style="margin-bottom: 15px;">
+                        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+                            <i class="fas fa-calendar-alt" style="color: #3B82F6;"></i>
+                            <span style="font-weight: 600; color: rgba(255, 255, 255, 0.9);" id="memo-year-label">2025년</span>
+                        </div>
+                        <textarea id="memo-textarea"
+                            style="width: 100%; min-height: 200px; padding: 15px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px; color: white; font-family: 'Inter', sans-serif; font-size: 0.95rem; resize: vertical;"
+                            placeholder="이 항목에 대한 메모를 입력하세요...&#10;&#10;예시:&#10;- 전년 대비 증가 이유: ...&#10;- 특이사항: ...&#10;- 향후 계획: ..."></textarea>
+                    </div>
+
+                    <div style="display: flex; align-items: center; gap: 8px; padding: 12px; background: rgba(6, 182, 212, 0.1); border: 1px solid rgba(6, 182, 212, 0.3); border-radius: 8px;">
+                        <i class="fas fa-info-circle" style="color: #06B6D4;"></i>
+                        <span style="font-size: 0.85rem; color: rgba(255, 255, 255, 0.8);">메모는 자동으로 저장됩니다.</span>
+                    </div>
+                </div>
+
+                <div class="modal-actions">
+                    <button class="btn btn-secondary" onclick="closeModal('memo-modal')">닫기</button>
+                    <button class="btn btn-primary" onclick="saveMemoData()">저장</button>
                 </div>
             </div>
         </div>
@@ -3564,6 +3640,14 @@
                 <td contenteditable="true">새 상세분류</td>
                 <td contenteditable="true" class="amount-input">0</td>
                 <td contenteditable="true">비고</td>
+                <td style="text-align: center;">
+                    <button class="btn-analysis" onclick="showTrendChart(this)" title="추세 그래프" style="background: rgba(59, 130, 246, 0.1); color: #3B82F6; border: 1px solid rgba(59, 130, 246, 0.3); padding: 4px 8px; border-radius: 4px; cursor: pointer; margin-right: 4px; font-size: 0.85rem;">
+                        <i class="fas fa-chart-line"></i>
+                    </button>
+                    <button class="btn-analysis" onclick="showMemo(this)" title="메모" style="background: rgba(6, 182, 212, 0.1); color: #06B6D4; border: 1px solid rgba(6, 182, 212, 0.3); padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 0.85rem;">
+                        <i class="fas fa-sticky-note"></i>
+                    </button>
+                </td>
                 <td>
                     <div class="move-buttons">
                         <button class="btn-move" onclick="moveRowUp(this)" title="위로 이동">
@@ -3773,6 +3857,14 @@
                         <td contenteditable="true">${row.item}</td>
                         <td contenteditable="true" class="amount-input">${formatNumber(displayAmount)}</td>
                         <td contenteditable="true">${row.note || ''}</td>
+                        <td style="text-align: center;">
+                            <button class="btn-analysis" onclick="showTrendChart(this)" title="추세 그래프" style="background: rgba(59, 130, 246, 0.1); color: #3B82F6; border: 1px solid rgba(59, 130, 246, 0.3); padding: 4px 8px; border-radius: 4px; cursor: pointer; margin-right: 4px; font-size: 0.85rem;">
+                                <i class="fas fa-chart-line"></i>
+                            </button>
+                            <button class="btn-analysis" onclick="showMemo(this)" title="메모" style="background: rgba(6, 182, 212, 0.1); color: #06B6D4; border: 1px solid rgba(6, 182, 212, 0.3); padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 0.85rem;">
+                                <i class="fas fa-sticky-note"></i>
+                            </button>
+                        </td>
                         <td>
                             <div class="move-buttons">
                                 <button class="btn-move" onclick="moveRowUp(this)" title="위로 이동">
@@ -3804,6 +3896,14 @@
                         <td contenteditable="true">새 상세분류</td>
                         <td contenteditable="true" class="amount-input">0</td>
                         <td contenteditable="true">비고</td>
+                        <td style="text-align: center;">
+                            <button class="btn-analysis" onclick="showTrendChart(this)" title="추세 그래프" style="background: rgba(59, 130, 246, 0.1); color: #3B82F6; border: 1px solid rgba(59, 130, 246, 0.3); padding: 4px 8px; border-radius: 4px; cursor: pointer; margin-right: 4px; font-size: 0.85rem;">
+                                <i class="fas fa-chart-line"></i>
+                            </button>
+                            <button class="btn-analysis" onclick="showMemo(this)" title="메모" style="background: rgba(6, 182, 212, 0.1); color: #06B6D4; border: 1px solid rgba(6, 182, 212, 0.3); padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 0.85rem;">
+                                <i class="fas fa-sticky-note"></i>
+                            </button>
+                        </td>
                         <td><button class="btn-delete" onclick="deleteRow(this)"><i class="fas fa-trash"></i></button></td>
                     </tr>
                 `;
@@ -3817,6 +3917,9 @@
 
             // 합계 업데이트
             updateExpenseTotal();
+
+            // 메모 버튼 스타일 업데이트
+            updateMemoButtonStyles();
         }
 
         // 데이터 저장 기능
@@ -4602,6 +4705,208 @@
             changeHistoryChart.data.datasets[1].data = expenseData;
             changeHistoryChart.data.datasets[2].data = profitData;
             changeHistoryChart.update();
+        }
+
+        // ========== 항목별 추세 그래프 & 메모 기능 ==========
+        let trendChart = null;
+        let currentMemoItem = '';
+        let currentMemoYear = '';
+
+        // 추세 그래프 표시
+        function showTrendChart(button) {
+            const row = button.closest('tr');
+            const itemName = row.cells[1].textContent.trim();
+
+            // 모달 제목 설정
+            document.getElementById('trend-item-name').textContent = itemName;
+
+            // 모든 년도에서 해당 항목의 금액 데이터 수집
+            const years = ['2020', '2021', '2022', '2023', '2024', '2025', '2026'];
+            const amounts = [];
+
+            years.forEach(year => {
+                const savedData = localStorage.getItem(`expenseData_${year}`);
+                if (savedData) {
+                    const data = JSON.parse(savedData);
+                    const item = data.find(row => row.item === itemName);
+                    amounts.push(item ? item.amount : 0);
+                } else {
+                    amounts.push(0);
+                }
+            });
+
+            // 통계 계산
+            const validAmounts = amounts.filter(a => a > 0);
+            const minAmount = validAmounts.length > 0 ? Math.min(...validAmounts) : 0;
+            const maxAmount = validAmounts.length > 0 ? Math.max(...validAmounts) : 0;
+            const avgAmount = validAmounts.length > 0 ? validAmounts.reduce((a, b) => a + b, 0) / validAmounts.length : 0;
+            const changeRate = validAmounts.length >= 2 ? ((validAmounts[validAmounts.length - 1] - validAmounts[0]) / validAmounts[0] * 100) : 0;
+
+            // 통계 표시
+            document.getElementById('trend-min-amount').textContent = formatNumber(minAmount) + '원';
+            document.getElementById('trend-max-amount').textContent = formatNumber(maxAmount) + '원';
+            document.getElementById('trend-avg-amount').textContent = formatNumber(Math.round(avgAmount)) + '원';
+
+            const changeRateEl = document.getElementById('trend-change-rate');
+            if (changeRate > 0) {
+                changeRateEl.innerHTML = `<i class="fas fa-arrow-up"></i> +${changeRate.toFixed(1)}%`;
+                changeRateEl.style.color = '#EC4899';
+            } else if (changeRate < 0) {
+                changeRateEl.innerHTML = `<i class="fas fa-arrow-down"></i> ${changeRate.toFixed(1)}%`;
+                changeRateEl.style.color = '#10b981';
+            } else {
+                changeRateEl.textContent = '0%';
+                changeRateEl.style.color = '#3B82F6';
+            }
+
+            // 차트 그리기
+            const ctx = document.getElementById('trend-chart-canvas').getContext('2d');
+
+            // 기존 차트가 있으면 제거
+            if (trendChart) {
+                trendChart.destroy();
+            }
+
+            trendChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: years,
+                    datasets: [{
+                        label: itemName + ' 추세',
+                        data: amounts,
+                        borderColor: '#3B82F6',
+                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4,
+                        pointRadius: 6,
+                        pointBackgroundColor: '#3B82F6',
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 2,
+                        pointHoverRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    aspectRatio: 2.5,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                            padding: 12,
+                            titleFont: { size: 14, weight: 'bold' },
+                            bodyFont: { size: 13 },
+                            callbacks: {
+                                label: function(context) {
+                                    return formatNumber(context.parsed.y) + '원';
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grace: '10%',
+                            ticks: {
+                                color: 'rgba(255, 255, 255, 0.7)',
+                                font: { size: 12 },
+                                callback: function(value) {
+                                    if (value >= 100000000) {
+                                        return (value / 100000000).toFixed(1) + '억';
+                                    } else if (value >= 10000000) {
+                                        return (value / 10000000).toFixed(0) + '천만';
+                                    } else if (value >= 10000) {
+                                        return (value / 10000).toFixed(0) + '만';
+                                    }
+                                    return formatNumber(value);
+                                }
+                            },
+                            grid: {
+                                color: 'rgba(59, 130, 246, 0.1)'
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                color: 'rgba(255, 255, 255, 0.7)',
+                                font: { size: 12 }
+                            },
+                            grid: {
+                                display: false
+                            }
+                        }
+                    }
+                }
+            });
+
+            // 모달 열기
+            document.getElementById('trend-chart-modal').classList.add('active');
+        }
+
+        // 메모 표시/편집
+        function showMemo(button) {
+            const row = button.closest('tr');
+            const itemName = row.cells[1].textContent.trim();
+
+            currentMemoItem = itemName;
+            currentMemoYear = currentExpenseYear;
+
+            // 모달 제목 및 년도 설정
+            document.getElementById('memo-item-name').textContent = itemName;
+            document.getElementById('memo-year-label').textContent = currentExpenseYear + '년';
+
+            // 저장된 메모 로드
+            const memoKey = `memo_expense_${currentExpenseYear}_${itemName}`;
+            const savedMemo = localStorage.getItem(memoKey) || '';
+            document.getElementById('memo-textarea').value = savedMemo;
+
+            // 메모가 있으면 메모 버튼에 표시
+            if (savedMemo) {
+                button.style.background = 'rgba(6, 182, 212, 0.3)';
+                button.style.borderColor = 'rgba(6, 182, 212, 0.5)';
+            }
+
+            // 모달 열기
+            document.getElementById('memo-modal').classList.add('active');
+        }
+
+        // 메모 저장
+        function saveMemoData() {
+            const memoText = document.getElementById('memo-textarea').value;
+            const memoKey = `memo_expense_${currentMemoYear}_${currentMemoItem}`;
+
+            localStorage.setItem(memoKey, memoText);
+
+            alert('✅ 메모가 저장되었습니다!');
+            closeModal('memo-modal');
+
+            // 해당 항목의 메모 버튼 스타일 업데이트
+            updateMemoButtonStyles();
+        }
+
+        // 메모 버튼 스타일 업데이트 (메모가 있는 항목 표시)
+        function updateMemoButtonStyles() {
+            const tbody = document.querySelector('#expense-table tbody');
+            const rows = tbody.querySelectorAll('tr');
+
+            rows.forEach(row => {
+                const itemName = row.cells[1].textContent.trim();
+                const memoKey = `memo_expense_${currentExpenseYear}_${itemName}`;
+                const savedMemo = localStorage.getItem(memoKey);
+                const memoButton = row.querySelector('.btn-analysis[onclick*="showMemo"]');
+
+                if (memoButton) {
+                    if (savedMemo && savedMemo.trim()) {
+                        memoButton.style.background = 'rgba(6, 182, 212, 0.3)';
+                        memoButton.style.borderColor = 'rgba(6, 182, 212, 0.5)';
+                    } else {
+                        memoButton.style.background = 'rgba(6, 182, 212, 0.1)';
+                        memoButton.style.borderColor = 'rgba(6, 182, 212, 0.3)';
+                    }
+                }
+            });
         }
 
         function saveBalanceData() {
