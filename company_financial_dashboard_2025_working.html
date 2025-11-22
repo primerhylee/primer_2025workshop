@@ -1254,20 +1254,18 @@
                                 <td><button class="btn-delete" onclick="deleteRow(this)"><i class="fas fa-trash"></i></button></td>
                             </tr>
                         </tbody>
+                        <tfoot>
+                            <tr style="background: linear-gradient(135deg, #CD7C7C 0%, #E9A07C 100%); color: white; font-weight: bold;">
+                                <td colspan="2" style="text-align: right; padding: 12px 15px; font-size: 1.1rem;">
+                                    <i class="fas fa-calculator"></i> 총 지출 합계
+                                </td>
+                                <td style="text-align: center; padding: 12px 15px; font-size: 1.2rem;">
+                                    <span id="expense-total-amount">0</span>원
+                                </td>
+                                <td colspan="3"></td>
+                            </tr>
+                        </tfoot>
                     </table>
-
-                    <!-- 합계 표시 -->
-                    <div style="margin-top: 20px; padding: 15px; background: linear-gradient(135deg, #CD7C7C 0%, #E9A07C 100%); border-radius: 10px; color: white;">
-                        <div style="display: flex; justify-content: space-between; align-items: center;">
-                            <h3 style="margin: 0;">
-                                <i class="fas fa-calculator"></i>
-                                총 지출 합계
-                            </h3>
-                            <div style="font-size: 1.5rem; font-weight: bold;">
-                                <span id="expense-total-amount">0</span>원
-                            </div>
-                        </div>
-                    </div>
                 </div>
                 <div class="modal-actions">
                     <button class="btn btn-secondary" onclick="closeModal('expense-modal')">취소</button>
@@ -1441,6 +1439,17 @@
                                 <td><button class="btn-delete" onclick="deleteRow(this)"><i class="fas fa-trash"></i></button></td>
                             </tr>
                         </tbody>
+                        <tfoot>
+                            <tr style="background: linear-gradient(135deg, #CD7C7C 0%, #E9A07C 100%); color: white; font-weight: bold;">
+                                <td style="text-align: right; padding: 12px 15px; font-size: 1.1rem;">
+                                    <i class="fas fa-calculator"></i> 총 수입 합계
+                                </td>
+                                <td style="text-align: center; padding: 12px 15px; font-size: 1.2rem;">
+                                    <span id="income-total-amount">0</span>원
+                                </td>
+                                <td colspan="4"></td>
+                            </tr>
+                        </tfoot>
                     </table>
                 </div>
                 <div class="modal-actions">
@@ -3375,10 +3384,12 @@
             });
         });
 
-        // 총지출 테이블의 금액 셀 변경 시 합계 업데이트
+        // 테이블 금액 셀 변경 시 합계 업데이트
         document.addEventListener('blur', function(event) {
             if (event.target.matches('#expense-table td[contenteditable="true"]')) {
                 updateExpenseTotal();
+            } else if (event.target.matches('#income-table td[contenteditable="true"]')) {
+                updateIncomeTotal();
             }
         }, true);
 
@@ -3400,6 +3411,29 @@
 
             // 합계 표시 업데이트
             const totalElement = document.getElementById('expense-total-amount');
+            if (totalElement) {
+                totalElement.textContent = formatNumber(total);
+            }
+        }
+
+        // 총수입 합계 계산 및 업데이트
+        function updateIncomeTotal() {
+            const table = document.getElementById('income-table');
+            if (!table) return;
+
+            const rows = table.querySelectorAll('tbody tr');
+            let total = 0;
+
+            rows.forEach(row => {
+                const amountCell = row.cells[1]; // 금액 열 (0: 상세분류, 1: 금액)
+                if (amountCell) {
+                    const amount = parseFloat(amountCell.textContent.replace(/[^0-9.-]/g, '')) || 0;
+                    total += amount;
+                }
+            });
+
+            // 합계 표시 업데이트
+            const totalElement = document.getElementById('income-total-amount');
             if (totalElement) {
                 totalElement.textContent = formatNumber(total);
             }
@@ -3463,12 +3497,15 @@
                 </td>
                 <td><button class="btn-delete" onclick="deleteRow(this)"><i class="fas fa-trash"></i></button></td>
             `;
-            
+
             // 새로 추가된 금액 필드에 포맷팅 적용
             const amountCell = newRow.querySelector('.amount-input');
             if (amountCell) {
                 addAmountFormatting(amountCell);
             }
+
+            // 합계 업데이트
+            updateIncomeTotal();
         }
 
         function addBalanceRow() {
@@ -3509,6 +3546,8 @@
                 // 테이블에 따라 합계 업데이트
                 if (table && table.id === 'expense-table') {
                     updateExpenseTotal();
+                } else if (table && table.id === 'income-table') {
+                    updateIncomeTotal();
                 }
             }
         }
@@ -4306,7 +4345,7 @@
                         <td><button class="btn-delete" onclick="deleteRow(this)"><i class="fas fa-trash"></i></button></td>
                     `;
                 });
-                
+
                 // 📊 합계 행 추가
                 addTotalRowToTable('income-table', data);
             } else {
@@ -4320,6 +4359,9 @@
                     </tr>
                 `;
             }
+
+            // 합계 업데이트
+            updateIncomeTotal();
         }
 
         function saveIncomeData() {
