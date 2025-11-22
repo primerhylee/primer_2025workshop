@@ -1316,6 +1316,9 @@
                         <button class="btn btn-add" onclick="addIncomeRow()">
                             <i class="fas fa-plus"></i> 항목 추가
                         </button>
+                        <button class="btn btn-excel" onclick="copyPreviousYearIncome()" style="background: rgba(139, 92, 246, 0.2); color: #8B5CF6; border-color: rgba(139, 92, 246, 0.3);">
+                            <i class="fas fa-copy"></i> 전년도 데이터 복사
+                        </button>
                         <div class="excel-buttons-right">
                             <button class="btn btn-excel" onclick="downloadIncomeTemplate()" style="background: rgba(139, 92, 246, 0.2); color: #8B5CF6; border-color: rgba(139, 92, 246, 0.3);">
                                 <i class="fas fa-file-download"></i> 양식 다운로드
@@ -3859,6 +3862,68 @@
             updateChangeHistoryChart();
 
             alert(`${currentExpenseYear}년 지출 데이터가 삭제되었습니다.`);
+        }
+
+        // 전년도 수입 데이터 복사 기능
+        function copyPreviousYearIncome() {
+            const previousYear = String(parseInt(currentIncomeYear) - 1);
+            const previousData = localStorage.getItem(`incomeData_${previousYear}`);
+
+            if (!previousData) {
+                alert(`❌ ${previousYear}년 수입 데이터가 없습니다.\n\n먼저 ${previousYear}년 데이터를 입력해주세요.`);
+                return;
+            }
+
+            // 확인 메시지
+            const confirmation = confirm(
+                `📋 전년도 데이터 복사\n\n` +
+                `${previousYear}년 수입 데이터를 ${currentIncomeYear}년으로 복사합니다.\n` +
+                `현재 ${currentIncomeYear}년에 입력된 데이터가 있다면 덮어씌워집니다.\n\n` +
+                `계속하시겠습니까?`
+            );
+
+            if (!confirmation) {
+                return;
+            }
+
+            try {
+                // 전년도 데이터 파싱
+                const data = JSON.parse(previousData);
+
+                // 현재 테이블 초기화
+                const tbody = document.querySelector('#income-table tbody');
+                tbody.innerHTML = '';
+
+                // 전년도 데이터를 현재 테이블에 추가
+                data.forEach(row => {
+                    const tr = tbody.insertRow();
+                    tr.innerHTML = `
+                        <td contenteditable="true">${row.item}</td>
+                        <td contenteditable="true" class="amount-input">${formatNumber(row.amount)}</td>
+                        <td contenteditable="true">${row.source}</td>
+                        <td contenteditable="true">${row.note}</td>
+                        <td>
+                            <div class="move-buttons">
+                                <button class="btn-move" onclick="moveRowUp(this)" title="위로 이동">
+                                    <i class="fas fa-chevron-up"></i>
+                                </button>
+                                <button class="btn-move" onclick="moveRowDown(this)" title="아래로 이동">
+                                    <i class="fas fa-chevron-down"></i>
+                                </button>
+                            </div>
+                        </td>
+                        <td><button class="btn-delete" onclick="deleteRow(this)"><i class="fas fa-trash"></i></button></td>
+                    `;
+                });
+
+                // 합계 업데이트
+                updateIncomeTotal();
+
+                alert(`✅ 복사 완료!\n\n${previousYear}년 데이터가 ${currentIncomeYear}년으로 복사되었습니다.\n총 ${data.length}개 항목`);
+
+            } catch (error) {
+                alert('❌ 오류 발생!\n\n데이터를 복사하는 중 오류가 발생했습니다.\n\n오류 내용: ' + error.message);
+            }
         }
 
         // 현재 년도 수입 데이터 삭제 기능
