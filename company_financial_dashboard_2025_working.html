@@ -2181,24 +2181,6 @@
         </div>
 
         <!-- 연도별 추이 (Full Width) -->
-        <div class="chart-grid" id="yearly-trend">
-            <div class="chart-container chart-full">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                    <h2 style="margin: 0;">
-                        <i class="fas fa-chart-line"></i>
-                        2020-2025년 항목별 예산 추이
-                    </h2>
-                    <button onclick="toggleSection('yearly-trend-content', 'yearly-trend')" style="background: rgba(205, 124, 124, 0.15); color: #E88B8B; border: 1px solid rgba(205, 124, 124, 0.2); padding: 8px 16px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 8px; font-size: 0.9rem; transition: all 0.3s ease;">
-                        <i class="fas fa-eye-slash" id="yearly-trend-icon"></i>
-                        <span id="yearly-trend-text">숨기기</span>
-                    </button>
-                </div>
-                <div id="yearly-trend-content">
-                    <canvas id="yearlyTrendChart"></canvas>
-                </div>
-            </div>
-        </div>
-
         <!-- 수입 예측 (Full Width) -->
         <div class="chart-grid" id="revenue-forecast">
             <div class="chart-container chart-full">
@@ -6093,84 +6075,6 @@
         // 페이지 로드 시 초기 데이터 표시
         window.addEventListener('load', () => {
             switchExpenseChartYear('2025');
-        });
-
-        // 4. 2020-2025년 항목별 예산 추이
-        const yearlyTrendCtx = document.getElementById('yearlyTrendChart').getContext('2d');
-        new Chart(yearlyTrendCtx, {
-            type: 'line',
-            data: {
-                labels: ['2020', '2021', '2022', '2023', '2024', '2025'],
-                datasets: [{
-                    label: '인건비',
-                    data: [5.2, 5.8, 6.5, 7.2, 7.8, 8.5],
-                    borderColor: '#3B82F6',
-                    backgroundColor: 'rgba(59, 130, 246, 0.1)',
-                    tension: 0.4,
-                    fill: true
-                }, {
-                    label: '운영비',
-                    data: [2.3, 2.8, 3.2, 3.5, 3.8, 4.2],
-                    borderColor: '#06B6D4',
-                    backgroundColor: 'rgba(6, 182, 212, 0.1)',
-                    tension: 0.4,
-                    fill: true
-                }, {
-                    label: '마케팅',
-                    data: [2.2, 2.8, 3.5, 4.2, 5.0, 5.8],
-                    borderColor: '#8B5CF6',
-                    backgroundColor: 'rgba(139, 92, 246, 0.1)',
-                    tension: 0.4,
-                    fill: true
-                }, {
-                    label: '연구개발',
-                    data: [1.5, 1.8, 2.2, 2.8, 3.2, 3.5],
-                    borderColor: '#EC4899',
-                    backgroundColor: 'rgba(236, 72, 153, 0.1)',
-                    tension: 0.4,
-                    fill: true
-                }, {
-                    label: '기타',
-                    data: [1.2, 1.5, 1.8, 2.2, 2.5, 3.0],
-                    borderColor: '#F59E0B',
-                    backgroundColor: 'rgba(245, 158, 11, 0.1)',
-                    tension: 0.4,
-                    fill: true
-                }]
-            },
-            options: {
-                responsive: true,
-                interaction: {
-                    mode: 'index',
-                    intersect: false
-                },
-                plugins: {
-                    legend: {
-                        position: 'bottom',
-                        labels: {
-                            padding: 20
-                        }
-                    }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        ticks: {
-                            callback: function(value) {
-                                return formatNumber(value) + '원';
-                            }
-                        },
-                        grid: {
-                            color: 'rgba(59, 130, 246, 0.1)'
-                        }
-                    },
-                    x: {
-                        grid: {
-                            color: 'rgba(59, 130, 246, 0.1)'
-                        }
-                    }
-                }
-            }
         });
 
         // 6. 수입 내역 및 향후 예측 (동적 차트)
