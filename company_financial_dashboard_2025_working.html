@@ -40,9 +40,8 @@
 
         /* Header */
         .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            position: relative;
+            text-align: center;
             margin-bottom: 40px;
             padding: 50px 20px;
             background: rgba(255, 255, 255, 0.95);
@@ -994,7 +993,7 @@
         <!-- Header -->
         <div class="header">
             <h1 onclick="location.reload()">프라이머 전략팀 워크샵</h1>
-            <div style="display: flex; gap: 10px;">
+            <div style="position: absolute; top: 20px; right: 20px; display: flex; gap: 10px;">
                 <button onclick="exportAllData()" style="padding: 8px 16px; background: linear-gradient(135deg, #3B82F6 0%, #06B6D4 100%); color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 0.9rem; display: flex; align-items: center; gap: 6px;">
                     <i class="fas fa-download"></i>
                     데이터 백업
