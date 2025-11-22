@@ -685,12 +685,13 @@
         }
 
         .modal-table td {
-            padding: 6px 8px;
+            padding: 3px 6px;
             border-bottom: 1px solid rgba(205, 124, 124, 0.08);
             color: #334155;
             text-align: center;
             vertical-align: middle;
             font-size: 0.95rem;
+            height: 28px;
         }
 
         .modal-table td[contenteditable="true"] {
@@ -1123,6 +1124,35 @@
                             </button>
                         </div>
                     </div>
+                    <!-- 행/열 크기 조정 도구 -->
+                    <div style="padding: 5px 0; margin-bottom: 5px;">
+                        <div style="position: relative; display: inline-block;">
+                            <button onclick="toggleTableSettings('expense')" title="행/열 크기 조정" style="padding: 5px 10px; background: white; border: 1px solid #ddd; border-radius: 4px; cursor: pointer; font-size: 0.85rem; display: flex; align-items: center; gap: 5px;">
+                                <i class="fas fa-cog"></i>
+                                <span>크기 조정</span>
+                            </button>
+                            <div id="expense-table-settings" style="display: none; position: absolute; top: 35px; left: 0; background: white; border: 1px solid #ddd; border-radius: 4px; padding: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.15); z-index: 1000; min-width: 280px;">
+                                <div style="margin-bottom: 10px;">
+                                    <label style="font-size: 0.85rem; color: #666; display: block; margin-bottom: 5px;">행 높이 (px):</label>
+                                    <div style="display: flex; gap: 5px;">
+                                        <input type="number" id="expense-row-height" value="28" min="20" max="60" style="flex: 1; padding: 5px 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 0.85rem;">
+                                        <button onclick="applyRowHeight('expense-table'); toggleTableSettings('expense');" class="btn btn-excel" style="padding: 5px 10px; font-size: 0.8rem;">
+                                            적용
+                                        </button>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label style="font-size: 0.85rem; color: #666; display: block; margin-bottom: 5px;">열 너비 (px):</label>
+                                    <div style="display: flex; gap: 5px;">
+                                        <input type="number" id="expense-col-width" value="120" min="60" max="300" style="flex: 1; padding: 5px 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 0.85rem;">
+                                        <button onclick="applyColumnWidth('expense-table'); toggleTableSettings('expense');" class="btn btn-excel" style="padding: 5px 10px; font-size: 0.8rem;">
+                                            적용
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <table class="modal-table" id="expense-table">
                         <thead>
                             <tr>
@@ -1279,6 +1309,35 @@
                             <button class="btn btn-delete" onclick="clearAllIncomeData()">
                                 <i class="fas fa-trash-alt"></i> 전체 데이터 삭제
                             </button>
+                        </div>
+                    </div>
+                    <!-- 행/열 크기 조정 도구 -->
+                    <div style="padding: 5px 0; margin-bottom: 5px;">
+                        <div style="position: relative; display: inline-block;">
+                            <button onclick="toggleTableSettings('income')" title="행/열 크기 조정" style="padding: 5px 10px; background: white; border: 1px solid #ddd; border-radius: 4px; cursor: pointer; font-size: 0.85rem; display: flex; align-items: center; gap: 5px;">
+                                <i class="fas fa-cog"></i>
+                                <span>크기 조정</span>
+                            </button>
+                            <div id="income-table-settings" style="display: none; position: absolute; top: 35px; left: 0; background: white; border: 1px solid #ddd; border-radius: 4px; padding: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.15); z-index: 1000; min-width: 280px;">
+                                <div style="margin-bottom: 10px;">
+                                    <label style="font-size: 0.85rem; color: #666; display: block; margin-bottom: 5px;">행 높이 (px):</label>
+                                    <div style="display: flex; gap: 5px;">
+                                        <input type="number" id="income-row-height" value="28" min="20" max="60" style="flex: 1; padding: 5px 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 0.85rem;">
+                                        <button onclick="applyRowHeight('income-table'); toggleTableSettings('income');" class="btn btn-excel" style="padding: 5px 10px; font-size: 0.8rem;">
+                                            적용
+                                        </button>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label style="font-size: 0.85rem; color: #666; display: block; margin-bottom: 5px;">열 너비 (px):</label>
+                                    <div style="display: flex; gap: 5px;">
+                                        <input type="number" id="income-col-width" value="120" min="60" max="300" style="flex: 1; padding: 5px 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 0.85rem;">
+                                        <button onclick="applyColumnWidth('income-table'); toggleTableSettings('income');" class="btn btn-excel" style="padding: 5px 10px; font-size: 0.8rem;">
+                                            적용
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <table class="modal-table" id="income-table">
@@ -1508,6 +1567,35 @@
                             <button class="btn btn-excel" onclick="downloadBalanceExcel()">
                                 <i class="fas fa-download"></i> 엑셀 다운로드
                             </button>
+                        </div>
+                    </div>
+                    <!-- 행/열 크기 조정 도구 -->
+                    <div style="padding: 5px 0; margin-bottom: 5px;">
+                        <div style="position: relative; display: inline-block;">
+                            <button onclick="toggleTableSettings('balance')" title="행/열 크기 조정" style="padding: 5px 10px; background: white; border: 1px solid #ddd; border-radius: 4px; cursor: pointer; font-size: 0.85rem; display: flex; align-items: center; gap: 5px;">
+                                <i class="fas fa-cog"></i>
+                                <span>크기 조정</span>
+                            </button>
+                            <div id="balance-table-settings" style="display: none; position: absolute; top: 35px; left: 0; background: white; border: 1px solid #ddd; border-radius: 4px; padding: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.15); z-index: 1000; min-width: 280px;">
+                                <div style="margin-bottom: 10px;">
+                                    <label style="font-size: 0.85rem; color: #666; display: block; margin-bottom: 5px;">행 높이 (px):</label>
+                                    <div style="display: flex; gap: 5px;">
+                                        <input type="number" id="balance-row-height" value="28" min="20" max="60" style="flex: 1; padding: 5px 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 0.85rem;">
+                                        <button onclick="applyRowHeight('balance-table'); toggleTableSettings('balance');" class="btn btn-excel" style="padding: 5px 10px; font-size: 0.8rem;">
+                                            적용
+                                        </button>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label style="font-size: 0.85rem; color: #666; display: block; margin-bottom: 5px;">열 너비 (px):</label>
+                                    <div style="display: flex; gap: 5px;">
+                                        <input type="number" id="balance-col-width" value="120" min="60" max="300" style="flex: 1; padding: 5px 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 0.85rem;">
+                                        <button onclick="applyColumnWidth('balance-table'); toggleTableSettings('balance');" class="btn btn-excel" style="padding: 5px 10px; font-size: 0.8rem;">
+                                            적용
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <table class="modal-table" id="balance-table">
@@ -3951,6 +4039,65 @@
             if (bytes < 1024) return bytes + ' B';
             if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
             return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+        }
+
+        // 테이블 설정 패널 토글
+        function toggleTableSettings(tableType) {
+            const settingsPanel = document.getElementById(tableType + '-table-settings');
+            if (settingsPanel.style.display === 'none') {
+                settingsPanel.style.display = 'block';
+            } else {
+                settingsPanel.style.display = 'none';
+            }
+        }
+
+        // 설정 패널 외부 클릭 시 닫기
+        document.addEventListener('click', function(event) {
+            const settingsPanels = ['expense-table-settings', 'income-table-settings', 'balance-table-settings'];
+
+            settingsPanels.forEach(panelId => {
+                const panel = document.getElementById(panelId);
+                const button = event.target.closest('[onclick*="toggleTableSettings"]');
+
+                if (panel && !panel.contains(event.target) && !button) {
+                    panel.style.display = 'none';
+                }
+            });
+        });
+
+        // 행 높이 조정 함수
+        function applyRowHeight(tableId) {
+            const inputId = tableId.replace('-table', '-row-height');
+            const height = document.getElementById(inputId).value;
+            const table = document.getElementById(tableId);
+            const rows = table.querySelectorAll('tbody tr');
+
+            rows.forEach(row => {
+                const cells = row.querySelectorAll('td');
+                cells.forEach(cell => {
+                    cell.style.height = height + 'px';
+                });
+            });
+
+            alert(`행 높이가 ${height}px로 설정되었습니다.`);
+        }
+
+        // 열 너비 일괄 조정 함수
+        function applyColumnWidth(tableId) {
+            const inputId = tableId.replace('-table', '-col-width');
+            const width = document.getElementById(inputId).value;
+            const table = document.getElementById(tableId);
+            const headers = table.querySelectorAll('th');
+
+            headers.forEach(header => {
+                // 삭제, 순서 버튼 컬럼은 제외
+                if (!header.textContent.includes('삭제') && !header.textContent.includes('순서')) {
+                    header.style.width = width + 'px';
+                    header.style.minWidth = width + 'px';
+                }
+            });
+
+            alert(`모든 열 너비가 ${width}px로 설정되었습니다.`);
         }
 
         // 저장 버튼
