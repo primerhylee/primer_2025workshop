@@ -1612,6 +1612,27 @@
                         </button>
                     </div>
 
+                    <!-- 파일 업로드 섹션 -->
+                    <div style="margin-bottom: 15px; padding: 10px; background: rgba(232, 139, 139, 0.05); border: 1px solid rgba(232, 139, 139, 0.2); border-radius: 6px;">
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+                            <h3 style="font-size: 0.85rem; color: #CD7C7C; margin: 0;">
+                                <i class="fas fa-file-upload"></i> 첨부 파일
+                            </h3>
+                            <div>
+                                <input type="file" id="gov-file-input" accept=".ppt,.pptx,.pdf,.doc,.docx,.xls,.xlsx" style="display: none;" onchange="uploadGovFile(event)">
+                                <button onclick="document.getElementById('gov-file-input').click()" class="btn btn-add" style="padding: 5px 10px; font-size: 0.8rem;">
+                                    <i class="fas fa-plus"></i> 파일 추가
+                                </button>
+                            </div>
+                        </div>
+                        <div id="gov-file-list" style="display: flex; flex-direction: column; gap: 6px;">
+                            <!-- 업로드된 파일 목록이 여기 표시됩니다 -->
+                        </div>
+                        <div id="gov-file-empty" style="text-align: center; padding: 8px; color: #999; font-size: 0.8rem;">
+                            업로드된 파일이 없습니다
+                        </div>
+                    </div>
+
                     <!-- 편집 도구바 -->
                     <div style="background: #f8f9fa; padding: 10px; border-radius: 8px 8px 0 0; border: 1px solid #dee2e6; border-bottom: none; display: flex; gap: 10px; flex-wrap: wrap; align-items: center;">
                         <select id="font-size-selector" onchange="changeFontSize()" style="padding: 5px 10px; border-radius: 4px; border: 1px solid #ccc;">
@@ -1627,7 +1648,31 @@
                         <button onclick="toggleItalic()" title="기울임" style="padding: 5px 12px; background: white; border: 1px solid #ccc; border-radius: 4px; cursor: pointer; font-style: italic;">I</button>
                         <button onclick="toggleUnderline()" title="밑줄" style="padding: 5px 12px; background: white; border: 1px solid #ccc; border-radius: 4px; cursor: pointer; text-decoration: underline;">U</button>
                         <div style="width: 1px; height: 20px; background: #ccc;"></div>
-                        <input type="color" id="text-color-picker" onchange="changeTextColor()" title="글자 색상" style="width: 40px; height: 30px; border: 1px solid #ccc; border-radius: 4px; cursor: pointer;">
+                        <div style="position: relative;">
+                            <button onclick="toggleColorPalette()" title="글자 색상" style="padding: 5px 12px; background: white; border: 1px solid #ccc; border-radius: 4px; cursor: pointer; display: flex; align-items: center; gap: 5px;">
+                                <i class="fas fa-palette"></i>
+                                <span style="font-size: 0.8rem;">A</span>
+                            </button>
+                            <div id="color-palette" style="display: none; position: absolute; top: 35px; left: 0; background: white; border: 1px solid #ccc; border-radius: 4px; padding: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.15); z-index: 1000;">
+                                <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 6px;">
+                                    <button onclick="applyPresetColor('#000000'); toggleColorPalette();" title="검정" style="padding: 0; width: 32px; height: 32px; background: #000000; border: 2px solid #ddd; border-radius: 4px; cursor: pointer;"></button>
+                                    <button onclick="applyPresetColor('#FF0000'); toggleColorPalette();" title="빨강" style="padding: 0; width: 32px; height: 32px; background: #FF0000; border: 2px solid #ddd; border-radius: 4px; cursor: pointer;"></button>
+                                    <button onclick="applyPresetColor('#0000FF'); toggleColorPalette();" title="파랑" style="padding: 0; width: 32px; height: 32px; background: #0000FF; border: 2px solid #ddd; border-radius: 4px; cursor: pointer;"></button>
+                                    <button onclick="applyPresetColor('#00AA00'); toggleColorPalette();" title="녹색" style="padding: 0; width: 32px; height: 32px; background: #00AA00; border: 2px solid #ddd; border-radius: 4px; cursor: pointer;"></button>
+                                    <button onclick="applyPresetColor('#FFA500'); toggleColorPalette();" title="주황" style="padding: 0; width: 32px; height: 32px; background: #FFA500; border: 2px solid #ddd; border-radius: 4px; cursor: pointer;"></button>
+                                    <button onclick="applyPresetColor('#800080'); toggleColorPalette();" title="보라" style="padding: 0; width: 32px; height: 32px; background: #800080; border: 2px solid #ddd; border-radius: 4px; cursor: pointer;"></button>
+                                    <button onclick="applyPresetColor('#A52A2A'); toggleColorPalette();" title="갈색" style="padding: 0; width: 32px; height: 32px; background: #A52A2A; border: 2px solid #ddd; border-radius: 4px; cursor: pointer;"></button>
+                                    <button onclick="applyPresetColor('#808080'); toggleColorPalette();" title="회색" style="padding: 0; width: 32px; height: 32px; background: #808080; border: 2px solid #ddd; border-radius: 4px; cursor: pointer;"></button>
+                                </div>
+                                <div style="border-top: 1px solid #ddd; padding-top: 6px;">
+                                    <label style="display: flex; align-items: center; gap: 6px; cursor: pointer; font-size: 0.8rem;">
+                                        <input type="color" id="text-color-picker" onchange="changeTextColor(); toggleColorPalette();" style="width: 30px; height: 30px; border: 1px solid #ccc; border-radius: 4px; cursor: pointer;">
+                                        <span>사용자 지정</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="width: 1px; height: 20px; background: #ccc;"></div>
                         <button onclick="insertBullet()" title="글머리 기호" style="padding: 5px 12px; background: white; border: 1px solid #ccc; border-radius: 4px; cursor: pointer;">
                             <i class="fas fa-list-ul"></i>
                         </button>
@@ -3746,6 +3791,166 @@
         function loadGovSupportYear(year) {
             currentGovProjectTab = null;
             renderGovProjectTabs();
+            loadGovFiles();
+
+            // 텍스트만 붙여넣기 이벤트 리스너 추가 (중복 방지)
+            const editor = document.getElementById('gov-support-editor');
+            if (editor && !editor.hasAttribute('data-paste-listener')) {
+                editor.setAttribute('data-paste-listener', 'true');
+                editor.addEventListener('paste', function(e) {
+                    e.preventDefault();
+
+                    // 클립보드에서 텍스트만 가져오기
+                    const text = e.clipboardData.getData('text/plain');
+
+                    // 현재 선택 영역에 텍스트 삽입
+                    document.execCommand('insertText', false, text);
+                });
+            }
+        }
+
+        // 파일 업로드
+        function uploadGovFile(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            // 파일 크기 체크 (5MB 제한)
+            if (file.size > 5 * 1024 * 1024) {
+                alert('파일 크기는 5MB 이하로 제한됩니다.\n큰 파일은 Google Drive나 Dropbox 링크를 사용해주세요.');
+                event.target.value = '';
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const fileData = {
+                    name: file.name,
+                    size: file.size,
+                    type: file.type,
+                    data: e.target.result,
+                    uploadDate: new Date().toISOString()
+                };
+
+                // 파일 목록 가져오기
+                const files = getGovFiles();
+                files.push(fileData);
+                saveGovFiles(files);
+                loadGovFiles();
+
+                // 입력 필드 초기화
+                event.target.value = '';
+                alert('파일이 업로드되었습니다.');
+            };
+
+            reader.readAsDataURL(file);
+        }
+
+        // 파일 목록 가져오기
+        function getGovFiles() {
+            const savedData = localStorage.getItem(`govFiles_${currentGovYear}`);
+            return savedData ? JSON.parse(savedData) : [];
+        }
+
+        // 파일 목록 저장
+        function saveGovFiles(files) {
+            localStorage.setItem(`govFiles_${currentGovYear}`, JSON.stringify(files));
+        }
+
+        // 파일 목록 렌더링
+        function loadGovFiles() {
+            const files = getGovFiles();
+            const fileList = document.getElementById('gov-file-list');
+            const emptyMessage = document.getElementById('gov-file-empty');
+
+            fileList.innerHTML = '';
+
+            if (files.length === 0) {
+                fileList.style.display = 'none';
+                emptyMessage.style.display = 'block';
+            } else {
+                fileList.style.display = 'flex';
+                emptyMessage.style.display = 'none';
+
+                files.forEach((file, index) => {
+                    const fileItem = document.createElement('div');
+                    fileItem.style.cssText = `
+                        display: flex;
+                        align-items: center;
+                        justify-content: space-between;
+                        padding: 8px;
+                        background: white;
+                        border: 1px solid rgba(232, 139, 139, 0.3);
+                        border-radius: 4px;
+                    `;
+
+                    const fileIcon = getFileIcon(file.name);
+                    const fileSize = formatFileSize(file.size);
+                    const uploadDate = new Date(file.uploadDate).toLocaleDateString('ko-KR');
+
+                    fileItem.innerHTML = `
+                        <div style="display: flex; align-items: center; gap: 8px; flex: 1;">
+                            <i class="fas ${fileIcon}" style="color: #CD7C7C; font-size: 1rem;"></i>
+                            <div>
+                                <div style="font-weight: 500; color: #333; font-size: 0.85rem;">${file.name}</div>
+                                <div style="font-size: 0.7rem; color: #999;">${fileSize} · ${uploadDate}</div>
+                            </div>
+                        </div>
+                        <div style="display: flex; gap: 4px;">
+                            <button onclick="downloadGovFile(${index})" class="btn btn-excel" style="padding: 4px 8px; font-size: 0.75rem;">
+                                <i class="fas fa-download"></i> 다운로드
+                            </button>
+                            <button onclick="deleteGovFile(${index})" class="btn btn-delete" style="padding: 4px 8px; font-size: 0.75rem;">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    `;
+
+                    fileList.appendChild(fileItem);
+                });
+            }
+        }
+
+        // 파일 다운로드
+        function downloadGovFile(index) {
+            const files = getGovFiles();
+            const file = files[index];
+
+            const link = document.createElement('a');
+            link.href = file.data;
+            link.download = file.name;
+            link.click();
+        }
+
+        // 파일 삭제
+        function deleteGovFile(index) {
+            if (!confirm('이 파일을 삭제하시겠습니까?')) return;
+
+            const files = getGovFiles();
+            files.splice(index, 1);
+            saveGovFiles(files);
+            loadGovFiles();
+        }
+
+        // 파일 아이콘 가져오기
+        function getFileIcon(filename) {
+            const ext = filename.split('.').pop().toLowerCase();
+            const icons = {
+                'ppt': 'fa-file-powerpoint',
+                'pptx': 'fa-file-powerpoint',
+                'pdf': 'fa-file-pdf',
+                'doc': 'fa-file-word',
+                'docx': 'fa-file-word',
+                'xls': 'fa-file-excel',
+                'xlsx': 'fa-file-excel'
+            };
+            return icons[ext] || 'fa-file';
+        }
+
+        // 파일 크기 포맷
+        function formatFileSize(bytes) {
+            if (bytes < 1024) return bytes + ' B';
+            if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+            return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
         }
 
         // 저장 버튼
@@ -3779,9 +3984,53 @@
         }
 
         function changeTextColor() {
+            const editor = document.getElementById('gov-support-editor');
             const color = document.getElementById('text-color-picker').value;
+
+            // 에디터에 포커스
+            editor.focus();
+
+            // 선택된 텍스트가 있는지 확인
+            const selection = window.getSelection();
+            if (selection.rangeCount > 0 && !selection.isCollapsed) {
+                // 선택된 텍스트가 있으면 색상 변경
+                document.execCommand('foreColor', false, color);
+            } else {
+                // 선택된 텍스트가 없으면 다음 입력부터 색상 적용
+                document.execCommand('foreColor', false, color);
+                // 안내 메시지 (선택사항)
+                // alert('텍스트를 먼저 선택하거나, 이제 입력하는 텍스트부터 색상이 적용됩니다.');
+            }
+        }
+
+        function applyPresetColor(color) {
+            const editor = document.getElementById('gov-support-editor');
+
+            // 에디터에 포커스
+            editor.focus();
+
+            // 색상 적용
             document.execCommand('foreColor', false, color);
         }
+
+        function toggleColorPalette() {
+            const palette = document.getElementById('color-palette');
+            if (palette.style.display === 'none') {
+                palette.style.display = 'block';
+            } else {
+                palette.style.display = 'none';
+            }
+        }
+
+        // 팔레트 외부 클릭 시 닫기
+        document.addEventListener('click', function(event) {
+            const palette = document.getElementById('color-palette');
+            const colorButton = event.target.closest('[onclick*="toggleColorPalette"]');
+
+            if (palette && !palette.contains(event.target) && !colorButton) {
+                palette.style.display = 'none';
+            }
+        });
 
         function insertBullet() {
             document.execCommand('insertUnorderedList', false, null);
