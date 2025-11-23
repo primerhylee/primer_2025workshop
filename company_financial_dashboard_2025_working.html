@@ -5307,14 +5307,20 @@
 
                         <!-- 메모 -->
                         <div style="margin-bottom: 20px;">
-                            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
-                                <i class="fas fa-sticky-note" style="color: #06B6D4;"></i>
-                                <span style="font-weight: 600; color: #1e293b;" id="memo-year-label">${year}년 메모</span>
+                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
+                                <div style="display: flex; align-items: center; gap: 8px;">
+                                    <i class="fas fa-sticky-note" style="color: #06B6D4;"></i>
+                                    <span style="font-weight: 600; color: #1e293b;" id="memo-year-label">${year}년 메모</span>
+                                </div>
+                                <button id="toggle-memo-btn" onclick="toggleMemoEditor()" style="padding: 6px 12px; background: linear-gradient(135deg, #06B6D4, #3B82F6); color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 0.85rem; font-weight: 600; display: flex; align-items: center; gap: 5px;">
+                                    <i class="fas fa-edit"></i>
+                                    <span id="toggle-memo-text">메모 편집</span>
+                                </button>
                             </div>
-                            <textarea id="detail-memo-textarea" style="width: 100%; min-height: 100px; padding: 12px; border: 1px solid rgba(148, 163, 184, 0.3); border-radius: 8px; font-family: 'Inter', sans-serif; font-size: 0.9rem; line-height: 1.5; resize: vertical;" placeholder="항목명, 금액 형식으로 입력하세요&#10;예) 슈퍼이스 대관비, 4504200&#10;행사 물품 대여, 775500">${savedMemo}</textarea>
+                            <textarea id="detail-memo-textarea" style="display: none; width: 100%; min-height: 100px; padding: 12px; border: 1px solid rgba(148, 163, 184, 0.3); border-radius: 8px; font-family: 'Inter', sans-serif; font-size: 0.9rem; line-height: 1.5; resize: vertical; margin-bottom: 10px;" placeholder="항목명, 금액 형식으로 입력하세요&#10;예) 슈퍼이스 대관비, 4504200&#10;행사 물품 대여, 775500">${savedMemo}</textarea>
 
                             <!-- 메모 미리보기 테이블 -->
-                            <div id="memo-preview" style="margin-top: 15px;"></div>
+                            <div id="memo-preview"></div>
                         </div>
 
                         <!-- 버튼 -->
@@ -5472,6 +5478,28 @@
             preview.innerHTML = tableHTML;
         }
 
+        // 메모 편집기 토글
+        function toggleMemoEditor() {
+            const textarea = document.getElementById('detail-memo-textarea');
+            const toggleBtn = document.getElementById('toggle-memo-text');
+            const btnIcon = document.querySelector('#toggle-memo-btn i');
+
+            if (!textarea || !toggleBtn) return;
+
+            if (textarea.style.display === 'none') {
+                // 편집 모드 활성화
+                textarea.style.display = 'block';
+                toggleBtn.textContent = '메모 숨기기';
+                btnIcon.className = 'fas fa-eye-slash';
+                textarea.focus();
+            } else {
+                // 편집 모드 비활성화
+                textarea.style.display = 'none';
+                toggleBtn.textContent = '메모 편집';
+                btnIcon.className = 'fas fa-edit';
+            }
+        }
+
         // 모달 내에서 년도 전환
         function switchYearInModal(itemName, newYear) {
             console.log('switchYearInModal 호출:', itemName, newYear);
@@ -5532,6 +5560,13 @@
             const memoTextarea = modalContent.querySelector('#detail-memo-textarea');
             if (memoTextarea) {
                 memoTextarea.value = savedMemo;
+                // 메모 편집기 닫기 (년도 전환 시 깔끔하게)
+                memoTextarea.style.display = 'none';
+                const toggleBtn = document.getElementById('toggle-memo-text');
+                const btnIcon = document.querySelector('#toggle-memo-btn i');
+                if (toggleBtn) toggleBtn.textContent = '메모 편집';
+                if (btnIcon) btnIcon.className = 'fas fa-edit';
+
                 console.log('Memo loaded for:', memoKey, 'Length:', savedMemo.length);
                 // 메모 미리보기 업데이트
                 renderMemoPreview();
