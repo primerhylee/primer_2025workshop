@@ -4246,19 +4246,40 @@
 
                 const nameSpan = document.createElement('span');
                 nameSpan.textContent = tab.name;
-                nameSpan.contentEditable = true;
+                nameSpan.contentEditable = false; // 기본적으로 편집 불가
                 nameSpan.style.cssText = `
                     outline: none;
                     min-width: 60px;
                     color: #CD7C7C;
                     font-weight: 500;
                 `;
+
+                // 더블클릭으로 이름 변경
+                nameSpan.addEventListener('dblclick', (e) => {
+                    e.stopPropagation();
+                    nameSpan.contentEditable = true;
+                    nameSpan.focus();
+                    // 텍스트 전체 선택
+                    const range = document.createRange();
+                    range.selectNodeContents(nameSpan);
+                    const sel = window.getSelection();
+                    sel.removeAllRanges();
+                    sel.addRange(range);
+                });
+
+                // 편집 완료 시 저장
                 nameSpan.addEventListener('blur', (e) => {
-                    tab.name = e.target.textContent;
+                    nameSpan.contentEditable = false;
+                    tab.name = e.target.textContent.trim() || tab.name; // 빈 값 방지
                     saveGovProjectTabs(tabs);
                 });
-                nameSpan.addEventListener('click', (e) => {
-                    e.stopPropagation();
+
+                // Enter 키로 편집 완료
+                nameSpan.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        nameSpan.blur();
+                    }
                 });
 
                 tabElement.appendChild(nameSpan);
