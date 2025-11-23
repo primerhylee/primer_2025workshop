@@ -1842,7 +1842,7 @@
                     ></div>
 
                     <div style="font-size: 0.85rem; color: rgba(6, 182, 212, 0.7); margin-top: 10px;">
-                        <i class="fas fa-info-circle"></i> 탭을 전환하면 자동으로 저장됩니다.
+                        <i class="fas fa-info-circle"></i> 입력 중 자동으로 저장됩니다. (2초마다)
                     </div>
                 </div>
 
@@ -4326,8 +4326,15 @@
             renderGovProjectTabs();
             loadGovFiles();
 
-            // 텍스트만 붙여넣기 이벤트 리스너 추가 (중복 방지)
             const editor = document.getElementById('gov-support-editor');
+            const fontSizeSelector = document.getElementById('font-size-selector');
+
+            // 폰트 크기 셀렉터를 16px로 리셋
+            if (fontSizeSelector) {
+                fontSizeSelector.value = '16px';
+            }
+
+            // 텍스트만 붙여넣기 이벤트 리스너 추가 (중복 방지)
             if (editor && !editor.hasAttribute('data-paste-listener')) {
                 editor.setAttribute('data-paste-listener', 'true');
                 editor.addEventListener('paste', function(e) {
@@ -4339,6 +4346,12 @@
                     // 현재 선택 영역에 텍스트 삽입
                     document.execCommand('insertText', false, text);
                 });
+            }
+
+            // 자동저장 이벤트 리스너 추가 (중복 방지)
+            if (editor && !editor.hasAttribute('data-autosave-listener')) {
+                editor.setAttribute('data-autosave-listener', 'true');
+                editor.addEventListener('input', autoSaveGovProject);
             }
         }
 
@@ -4556,18 +4569,43 @@
         function saveGovSupportData() {
             saveCurrentGovProject();
             alert(`${currentGovYear}년 정부지원사업 내용이 저장되었습니다.`);
-            closeModal('government-support-modal');
+            // 모달을 닫지 않고 그대로 유지
+        }
+
+        // 자동저장 타이머
+        let autoSaveTimer = null;
+
+        // 자동저장 함수
+        function autoSaveGovProject() {
+            clearTimeout(autoSaveTimer);
+            autoSaveTimer = setTimeout(() => {
+                saveCurrentGovProject();
+                console.log('자동 저장됨:', new Date().toLocaleTimeString());
+            }, 2000); // 2초 후 자동 저장
         }
 
         // 리치 텍스트 편집 기능들
         function changeFontSize() {
             const size = document.getElementById('font-size-selector').value;
-            document.execCommand('fontSize', false, '7');
-            const fontElements = document.querySelectorAll('#gov-support-editor font[size="7"]');
-            fontElements.forEach(el => {
-                el.removeAttribute('size');
-                el.style.fontSize = size;
-            });
+            const selection = window.getSelection();
+
+            // 선택된 텍스트가 있으면 선택된 부분만 변경
+            if (selection && !selection.isCollapsed) {
+                document.execCommand('fontSize', false, '7');
+                const fontElements = document.querySelectorAll('#gov-support-editor font[size="7"]');
+                fontElements.forEach(el => {
+                    el.removeAttribute('size');
+                    el.style.fontSize = size;
+                });
+            } else {
+                // 선택된 텍스트가 없으면 현재 커서 위치부터 적용
+                document.execCommand('fontSize', false, '7');
+                const fontElements = document.querySelectorAll('#gov-support-editor font[size="7"]');
+                fontElements.forEach(el => {
+                    el.removeAttribute('size');
+                    el.style.fontSize = size;
+                });
+            }
         }
 
         function toggleBold() {
