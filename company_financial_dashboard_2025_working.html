@@ -5189,46 +5189,129 @@
 
         // 상세 정보 모달 열기
         function showExpenseAnalysisDetail(itemName, year, amount, changeRate) {
-            // 메모 존재 여부 확인
+            // 전체 년도 데이터 수집
+            const years = ['2020', '2021', '2022', '2023', '2024', '2025'];
+            const yearlyData = [];
+
+            years.forEach(y => {
+                const savedData = localStorage.getItem(`expenseData_${y}`);
+                if (savedData) {
+                    const data = JSON.parse(savedData);
+                    const item = data.find(row => row.item === itemName);
+                    yearlyData.push({
+                        year: y,
+                        amount: item ? item.amount : 0
+                    });
+                } else {
+                    yearlyData.push({ year: y, amount: 0 });
+                }
+            });
+
+            // 통계 계산
+            const amounts = yearlyData.map(d => d.amount).filter(a => a > 0);
+            const avgAmount = amounts.length > 0 ? amounts.reduce((a, b) => a + b, 0) / amounts.length : 0;
+            const maxAmount = amounts.length > 0 ? Math.max(...amounts) : 0;
+            const minAmount = amounts.length > 0 ? Math.min(...amounts) : 0;
+
+            // 년도별 상세 테이블 생성
+            let tableRows = '';
+            yearlyData.forEach((data, index) => {
+                const amt = data.amount;
+                let changeRateText = '-';
+                let changeColor = '#64748b';
+
+                if (index > 0 && yearlyData[index - 1].amount > 0) {
+                    const rate = ((amt - yearlyData[index - 1].amount) / yearlyData[index - 1].amount) * 100;
+                    if (rate >= 50) {
+                        changeColor = '#DC2626';
+                        changeRateText = `<i class="fas fa-arrow-up"></i> ${rate.toFixed(1)}%`;
+                    } else if (rate <= -50) {
+                        changeColor = '#2563EB';
+                        changeRateText = `<i class="fas fa-arrow-down"></i> ${Math.abs(rate).toFixed(1)}%`;
+                    } else {
+                        changeRateText = rate >= 0 ? `+${rate.toFixed(1)}%` : `${rate.toFixed(1)}%`;
+                    }
+                }
+
+                // 선택된 년도 하이라이트
+                const isSelected = data.year === year;
+                const bgColor = isSelected ? 'rgba(59, 130, 246, 0.1)' : 'white';
+                const fontWeight = isSelected ? '700' : '500';
+
+                tableRows += `
+                    <tr style="background: ${bgColor}; border-bottom: 1px solid rgba(148, 163, 184, 0.2);">
+                        <td style="padding: 10px; text-align: center; font-weight: ${fontWeight};">${data.year}</td>
+                        <td style="padding: 10px; text-align: right; font-weight: ${fontWeight};">${amt > 0 ? formatNumber(amt) + '원' : '-'}</td>
+                        <td style="padding: 10px; text-align: center; color: ${changeColor};">${changeRateText}</td>
+                    </tr>
+                `;
+            });
+
+            // 메모 확인
             const memoKey = `memo_expense_${year}_${itemName}`;
             const savedMemo = localStorage.getItem(memoKey) || '';
 
             const modalContent = `
                 <div style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.7); display: flex; align-items: center; justify-content: center; z-index: 10000;" onclick="this.remove()">
-                    <div style="background: white; border-radius: 16px; padding: 30px; max-width: 600px; width: 90%; max-height: 80vh; overflow-y: auto;" onclick="event.stopPropagation()">
+                    <div style="background: white; border-radius: 16px; padding: 30px; max-width: 800px; width: 90%; max-height: 85vh; overflow-y: auto;" onclick="event.stopPropagation()">
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
                             <h2 style="margin: 0; color: #1e293b;">
                                 <i class="fas fa-chart-bar" style="color: #3B82F6; margin-right: 10px;"></i>
-                                ${itemName} (${year}년)
+                                ${itemName} 상세 분석
                             </h2>
                             <button onclick="this.closest('div[style*=fixed]').remove()" style="background: none; border: none; font-size: 1.5rem; color: #94A3B8; cursor: pointer;">
                                 <i class="fas fa-times"></i>
                             </button>
                         </div>
 
-                        <div style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(6, 182, 212, 0.1)); padding: 20px; border-radius: 12px; margin-bottom: 20px;">
-                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-                                <div>
-                                    <div style="font-size: 0.85rem; color: #64748b; margin-bottom: 5px;">금액</div>
-                                    <div style="font-size: 1.5rem; font-weight: 700; color: #1e293b;">${formatNumber(amount)}원</div>
-                                </div>
-                                <div>
-                                    <div style="font-size: 0.85rem; color: #64748b; margin-bottom: 5px;">전년 대비</div>
-                                    <div style="font-size: 1.5rem; font-weight: 700; color: ${changeRate >= 0 ? '#EF4444' : '#3B82F6'};">
-                                        ${changeRate >= 0 ? '↑' : '↓'} ${Math.abs(changeRate).toFixed(1)}%
-                                    </div>
-                                </div>
+                        <!-- 통계 요약 -->
+                        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 20px;">
+                            <div style="background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(220, 38, 38, 0.05)); padding: 15px; border-radius: 10px; text-align: center;">
+                                <div style="font-size: 0.8rem; color: #64748b; margin-bottom: 5px;">최대 금액</div>
+                                <div style="font-size: 1.2rem; font-weight: 700; color: #DC2626;">${formatNumber(maxAmount)}원</div>
+                            </div>
+                            <div style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(37, 99, 235, 0.05)); padding: 15px; border-radius: 10px; text-align: center;">
+                                <div style="font-size: 0.8rem; color: #64748b; margin-bottom: 5px;">평균 금액</div>
+                                <div style="font-size: 1.2rem; font-weight: 700; color: #2563EB;">${formatNumber(Math.round(avgAmount))}원</div>
+                            </div>
+                            <div style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(5, 150, 105, 0.05)); padding: 15px; border-radius: 10px; text-align: center;">
+                                <div style="font-size: 0.8rem; color: #64748b; margin-bottom: 5px;">최소 금액</div>
+                                <div style="font-size: 1.2rem; font-weight: 700; color: #10B981;">${formatNumber(minAmount)}원</div>
                             </div>
                         </div>
 
+                        <!-- 년도별 상세 테이블 -->
+                        <div style="margin-bottom: 20px;">
+                            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
+                                <i class="fas fa-table" style="color: #3B82F6;"></i>
+                                <span style="font-weight: 600; color: #1e293b;">년도별 상세 내역</span>
+                            </div>
+                            <div style="overflow-x: auto; border: 1px solid rgba(148, 163, 184, 0.2); border-radius: 8px;">
+                                <table style="width: 100%; border-collapse: collapse;">
+                                    <thead>
+                                        <tr style="background: linear-gradient(135deg, #1e293b, #334155); color: white;">
+                                            <th style="padding: 12px; text-align: center; font-weight: 600;">년도</th>
+                                            <th style="padding: 12px; text-align: center; font-weight: 600;">금액</th>
+                                            <th style="padding: 12px; text-align: center; font-weight: 600;">전년 대비</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        ${tableRows}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- 메모 -->
                         <div style="margin-bottom: 20px;">
                             <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
                                 <i class="fas fa-sticky-note" style="color: #06B6D4;"></i>
-                                <span style="font-weight: 600; color: #1e293b;">메모</span>
+                                <span style="font-weight: 600; color: #1e293b;">${year}년 메모</span>
                             </div>
-                            <textarea id="detail-memo-textarea" style="width: 100%; min-height: 150px; padding: 12px; border: 1px solid rgba(148, 163, 184, 0.3); border-radius: 8px; font-family: 'Inter', sans-serif; font-size: 0.9rem; resize: vertical;" placeholder="이 항목에 대한 메모를 입력하세요...">${savedMemo}</textarea>
+                            <textarea id="detail-memo-textarea" style="width: 100%; min-height: 120px; padding: 12px; border: 1px solid rgba(148, 163, 184, 0.3); border-radius: 8px; font-family: 'Inter', sans-serif; font-size: 0.9rem; resize: vertical;" placeholder="이 항목에 대한 메모를 입력하세요...">${savedMemo}</textarea>
                         </div>
 
+                        <!-- 버튼 -->
                         <div style="display: flex; gap: 10px; justify-content: flex-end;">
                             <button onclick="this.closest('div[style*=fixed]').remove()" style="padding: 10px 20px; background: #E2E8F0; color: #475569; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">
                                 닫기
@@ -5237,7 +5320,7 @@
                                 <i class="fas fa-save"></i> 메모 저장
                             </button>
                             <button onclick="showTrendChartFromDetail('${itemName}')" style="padding: 10px 20px; background: linear-gradient(135deg, #10B981, #059669); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">
-                                <i class="fas fa-chart-line"></i> 추세 보기
+                                <i class="fas fa-chart-line"></i> 추세 그래프
                             </button>
                         </div>
                     </div>
