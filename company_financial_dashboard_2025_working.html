@@ -6934,15 +6934,23 @@
                             const dataIndex = chart.index;
                             const clickedYear = revenueForecastChart.data.labels[dataIndex];
 
-                            // 2020-2025년만 클릭 가능 (실제 데이터가 있는 년도)
-                            const availableYears = ['2020', '2021', '2022', '2023', '2024', '2025'];
-                            if (availableYears.includes(clickedYear)) {
-                                // 총 수입 모달 열기
+                            // 2020-2025년: 실제 수입 모달 열기
+                            const actualYears = ['2020', '2021', '2022', '2023', '2024', '2025'];
+                            if (actualYears.includes(clickedYear)) {
                                 const modal = document.getElementById('income-modal');
                                 if (modal) {
                                     modal.classList.add('active');
                                     switchIncomeYear(clickedYear);
                                 }
+                            }
+
+                            // 2026-2035년: 예측 설정 모달 열기
+                            const forecastYears = ['2026', '2027', '2028', '2029', '2030', '2031', '2032', '2033', '2034', '2035'];
+                            if (forecastYears.includes(clickedYear)) {
+                                currentForecastYear = clickedYear;
+                                loadForecastYear(clickedYear);
+                                updateForecastYearTabs(clickedYear);
+                                document.getElementById('forecast-modal').classList.add('active');
                             }
                         }
                     },
