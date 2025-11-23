@@ -5332,30 +5332,38 @@
 
             document.body.insertAdjacentHTML('beforeend', modalContent);
 
-            // 년도별 행 클릭 이벤트 리스너 추가
-            setTimeout(() => {
-                const yearRows = document.querySelectorAll('.year-row');
-                yearRows.forEach(row => {
-                    row.addEventListener('click', function() {
-                        const selectedYear = this.dataset.year;
-                        const itemName = this.dataset.item.replace(/\\'/g, "'").replace(/&quot;/g, '"');
-                        switchYearInModal(itemName, selectedYear);
-                    });
+            // 년도별 행 클릭 이벤트 리스너 추가 (모달 내부에서만 검색)
+            const modal = document.getElementById('detail-modal-content');
+            const yearRows = modal.querySelectorAll('.year-row');
+            console.log('Adding event listeners to', yearRows.length, 'rows in modal');
 
-                    // 마우스 오버 효과
-                    row.addEventListener('mouseenter', function() {
-                        if (!this.classList.contains('selected')) {
-                            this.style.background = 'rgba(59, 130, 246, 0.05)';
-                        }
-                    });
+            yearRows.forEach((row, index) => {
+                console.log('Row', index, 'year:', row.dataset.year, 'item:', row.dataset.item);
 
-                    row.addEventListener('mouseleave', function() {
-                        if (!this.classList.contains('selected')) {
-                            this.style.background = 'white';
-                        }
-                    });
+                row.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    const selectedYear = this.dataset.year;
+                    const itemName = this.dataset.item.replace(/\\'/g, "'").replace(/&quot;/g, '"');
+
+                    console.log('Row clicked! Year:', selectedYear, 'Item:', itemName);
+                    switchYearInModal(itemName, selectedYear);
                 });
-            }, 0);
+
+                // 마우스 오버 효과
+                row.addEventListener('mouseenter', function() {
+                    if (!this.classList.contains('selected')) {
+                        this.style.background = 'rgba(59, 130, 246, 0.05)';
+                    }
+                });
+
+                row.addEventListener('mouseleave', function() {
+                    if (!this.classList.contains('selected')) {
+                        this.style.background = 'white';
+                    }
+                });
+            });
         }
 
         // 상세 모달에서 메모 저장 (레거시)
@@ -5390,8 +5398,8 @@
             modalContent.dataset.currentYear = newYear;
             console.log('Current year updated to:', newYear);
 
-            // 모든 행의 선택 상태 초기화
-            const allRows = document.querySelectorAll('.year-row');
+            // 모든 행의 선택 상태 초기화 (모달 내부에서만 검색)
+            const allRows = modalContent.querySelectorAll('.year-row');
             console.log('Total rows found:', allRows.length);
 
             allRows.forEach(row => {
@@ -5406,8 +5414,8 @@
                 }
             });
 
-            // 클릭한 행 하이라이트
-            const selectedRow = document.querySelector(`.year-row[data-year="${newYear}"]`);
+            // 클릭한 행 하이라이트 (모달 내부에서만 검색)
+            const selectedRow = modalContent.querySelector(`.year-row[data-year="${newYear}"]`);
             if (selectedRow) {
                 selectedRow.classList.add('selected');
                 selectedRow.style.background = 'rgba(59, 130, 246, 0.1)';
@@ -5420,19 +5428,20 @@
                 console.error('Selected row not found for year:', newYear);
             }
 
-            // 메모 년도 레이블 업데이트
-            const yearLabel = document.getElementById('memo-year-label');
+            // 메모 년도 레이블 업데이트 (모달 내부에서만 검색)
+            const yearLabel = modalContent.querySelector('#memo-year-label');
             if (yearLabel) {
                 yearLabel.textContent = `${newYear}년 메모`;
-                console.log('Year label updated to:', newYear);
+                console.log('Year label updated to:', newYear, '- Element:', yearLabel);
+                console.log('Label textContent is now:', yearLabel.textContent);
             } else {
                 console.error('Year label not found');
             }
 
-            // 해당 년도 메모 로드
+            // 해당 년도 메모 로드 (모달 내부에서만 검색)
             const memoKey = `memo_expense_${newYear}_${itemName}`;
             const savedMemo = localStorage.getItem(memoKey) || '';
-            const memoTextarea = document.getElementById('detail-memo-textarea');
+            const memoTextarea = modalContent.querySelector('#detail-memo-textarea');
             if (memoTextarea) {
                 memoTextarea.value = savedMemo;
                 console.log('Memo loaded for:', memoKey, 'Length:', savedMemo.length);
