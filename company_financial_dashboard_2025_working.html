@@ -5066,13 +5066,25 @@
                     if (amount > 0) {
                         const amountInBillion = amount / 100000000;
                         if (amountInBillion >= 100) {
+                            // 100억 이상: 정수
                             amountDiv.textContent = amountInBillion.toFixed(0) + '억';
                         } else if (amountInBillion >= 10) {
+                            // 10억~100억: 소수점 1자리
                             amountDiv.textContent = amountInBillion.toFixed(1) + '억';
                         } else if (amountInBillion >= 1) {
+                            // 1억~10억: 소수점 2자리
                             amountDiv.textContent = amountInBillion.toFixed(2) + '억';
+                        } else if (amountInBillion >= 0.1) {
+                            // 1천만~1억: 천만 단위 (소수점 1자리)
+                            amountDiv.textContent = (amount / 10000000).toFixed(1) + '천만';
                         } else {
-                            amountDiv.textContent = (amount / 10000000).toFixed(0) + '천만';
+                            // 1천만 미만: 백만 단위
+                            const amountInMillion = amount / 1000000;
+                            if (amountInMillion >= 1) {
+                                amountDiv.textContent = amountInMillion.toFixed(0) + '백만';
+                            } else {
+                                amountDiv.textContent = '< 1백만';
+                            }
                         }
                     } else {
                         amountDiv.textContent = '-';
