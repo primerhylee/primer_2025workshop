@@ -5239,7 +5239,7 @@
                 const fontWeight = isSelected ? '700' : '500';
 
                 tableRows += `
-                    <tr style="background: ${bgColor}; border-bottom: 1px solid rgba(148, 163, 184, 0.2);">
+                    <tr data-year="${data.year}" class="year-row ${isSelected ? 'selected' : ''}" style="background: ${bgColor}; border-bottom: 1px solid rgba(148, 163, 184, 0.2); cursor: pointer; transition: all 0.2s;" onmouseover="this.style.background='rgba(59, 130, 246, 0.05)'" onmouseout="if(!this.classList.contains('selected')) this.style.background='white'" onclick="switchYearInModal('${itemName}', '${data.year}')">
                         <td style="padding: 10px; text-align: center; font-weight: ${fontWeight};">${data.year}</td>
                         <td style="padding: 10px; text-align: right; font-weight: ${fontWeight};">${amt > 0 ? formatNumber(amt) + '원' : '-'}</td>
                         <td style="padding: 10px; text-align: center; color: ${changeColor};">${changeRateText}</td>
@@ -5253,7 +5253,7 @@
 
             const modalContent = `
                 <div style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.7); display: flex; align-items: center; justify-content: center; z-index: 10000;" onclick="this.remove()">
-                    <div style="background: white; border-radius: 16px; padding: 30px; max-width: 800px; width: 90%; max-height: 85vh; overflow-y: auto;" onclick="event.stopPropagation()">
+                    <div id="detail-modal-content" data-current-year="${year}" data-item-name="${itemName}" style="background: white; border-radius: 16px; padding: 30px; max-width: 800px; width: 90%; max-height: 85vh; overflow-y: auto;" onclick="event.stopPropagation()">
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
                             <h2 style="margin: 0; color: #1e293b;">
                                 <i class="fas fa-chart-bar" style="color: #3B82F6; margin-right: 10px;"></i>
@@ -5306,7 +5306,7 @@
                         <div style="margin-bottom: 20px;">
                             <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
                                 <i class="fas fa-sticky-note" style="color: #06B6D4;"></i>
-                                <span style="font-weight: 600; color: #1e293b;">${year}년 메모</span>
+                                <span style="font-weight: 600; color: #1e293b;" id="memo-year-label">${year}년 메모</span>
                             </div>
                             <textarea id="detail-memo-textarea" style="width: 100%; min-height: 120px; padding: 12px; border: 1px solid rgba(148, 163, 184, 0.3); border-radius: 8px; font-family: 'Inter', sans-serif; font-size: 0.9rem; resize: vertical;" placeholder="이 항목에 대한 메모를 입력하세요...">${savedMemo}</textarea>
                         </div>
@@ -5316,7 +5316,7 @@
                             <button onclick="this.closest('div[style*=fixed]').remove()" style="padding: 10px 20px; background: #E2E8F0; color: #475569; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">
                                 닫기
                             </button>
-                            <button onclick="saveDetailMemo('${year}', '${itemName}')" style="padding: 10px 20px; background: linear-gradient(135deg, #3B82F6, #06B6D4); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">
+                            <button id="save-memo-btn" onclick="saveDetailMemoFromModal('${itemName}')" style="padding: 10px 20px; background: linear-gradient(135deg, #3B82F6, #06B6D4); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">
                                 <i class="fas fa-save"></i> 메모 저장
                             </button>
                             <button onclick="showTrendChartFromDetail('${itemName}')" style="padding: 10px 20px; background: linear-gradient(135deg, #10B981, #059669); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">
@@ -5330,12 +5330,65 @@
             document.body.insertAdjacentHTML('beforeend', modalContent);
         }
 
-        // 상세 모달에서 메모 저장
+        // 상세 모달에서 메모 저장 (레거시)
         function saveDetailMemo(year, itemName) {
             const memoText = document.getElementById('detail-memo-textarea').value;
             const memoKey = `memo_expense_${year}_${itemName}`;
             localStorage.setItem(memoKey, memoText);
             alert('✅ 메모가 저장되었습니다!');
+        }
+
+        // 상세 모달에서 메모 저장 (새 버전)
+        function saveDetailMemoFromModal(itemName) {
+            const modalContent = document.getElementById('detail-modal-content');
+            const currentYear = modalContent.dataset.currentYear;
+            const memoText = document.getElementById('detail-memo-textarea').value;
+            const memoKey = `memo_expense_${currentYear}_${itemName}`;
+            localStorage.setItem(memoKey, memoText);
+            alert('✅ 메모가 저장되었습니다!');
+        }
+
+        // 모달 내에서 년도 전환
+        function switchYearInModal(itemName, newYear) {
+            const modalContent = document.getElementById('detail-modal-content');
+
+            // 현재 년도 업데이트
+            modalContent.dataset.currentYear = newYear;
+
+            // 모든 행의 선택 상태 초기화
+            const allRows = document.querySelectorAll('.year-row');
+            allRows.forEach(row => {
+                row.classList.remove('selected');
+                if (row.dataset.year !== newYear) {
+                    row.style.background = 'white';
+                    row.style.fontWeight = '500';
+                }
+            });
+
+            // 클릭한 행 하이라이트
+            const selectedRow = document.querySelector(`.year-row[data-year="${newYear}"]`);
+            if (selectedRow) {
+                selectedRow.classList.add('selected');
+                selectedRow.style.background = 'rgba(59, 130, 246, 0.1)';
+                const cells = selectedRow.querySelectorAll('td');
+                cells.forEach(cell => {
+                    cell.style.fontWeight = '700';
+                });
+            }
+
+            // 메모 년도 레이블 업데이트
+            const yearLabel = document.getElementById('memo-year-label');
+            if (yearLabel) {
+                yearLabel.textContent = `${newYear}년 메모`;
+            }
+
+            // 해당 년도 메모 로드
+            const memoKey = `memo_expense_${newYear}_${itemName}`;
+            const savedMemo = localStorage.getItem(memoKey) || '';
+            const memoTextarea = document.getElementById('detail-memo-textarea');
+            if (memoTextarea) {
+                memoTextarea.value = savedMemo;
+            }
         }
 
         // 상세 모달에서 추세 그래프 열기
