@@ -6609,8 +6609,13 @@
                         offset: function(context) {
                             const total = context.dataset.data.reduce((a, b) => a + b, 0);
                             const percentage = (context.dataset.data[context.dataIndex] / total) * 100;
-                            return percentage >= 8 ? 0 : 40;
-                        }
+                            // 작은 조각들을 인덱스에 따라 위아래로 분산 배치
+                            if (percentage < 8) {
+                                return context.dataIndex % 2 === 0 ? 30 : 50;
+                            }
+                            return 0;
+                        },
+                        padding: 6
                     }
                 }
             },
@@ -6690,8 +6695,13 @@
                         offset: function(context) {
                             const total = context.dataset.data.reduce((a, b) => a + b, 0);
                             const percentage = (context.dataset.data[context.dataIndex] / total) * 100;
-                            return percentage >= 8 ? 0 : 40;
-                        }
+                            // 작은 조각들을 인덱스에 따라 위아래로 분산 배치
+                            if (percentage < 8) {
+                                return context.dataIndex % 2 === 0 ? 30 : 50;
+                            }
+                            return 0;
+                        },
+                        padding: 6
                     }
                 }
             },
@@ -6771,8 +6781,13 @@
                         offset: function(context) {
                             const total = context.dataset.data.reduce((a, b) => a + b, 0);
                             const percentage = (context.dataset.data[context.dataIndex] / total) * 100;
-                            return percentage >= 8 ? 0 : 40;
-                        }
+                            // 작은 조각들을 인덱스에 따라 위아래로 분산 배치
+                            if (percentage < 8) {
+                                return context.dataIndex % 2 === 0 ? 30 : 50;
+                            }
+                            return 0;
+                        },
+                        padding: 6
                     }
                 }
             },
@@ -6893,8 +6908,13 @@
                         offset: function(context) {
                             const total = context.dataset.data.reduce((a, b) => a + b, 0);
                             const percentage = (context.dataset.data[context.dataIndex] / total) * 100;
-                            return percentage >= 8 ? 0 : 40;
-                        }
+                            // 작은 조각들을 인덱스에 따라 위아래로 분산 배치
+                            if (percentage < 8) {
+                                return context.dataIndex % 2 === 0 ? 30 : 50;
+                            }
+                            return 0;
+                        },
+                        padding: 6
                     }
                 }
             },
