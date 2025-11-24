@@ -438,6 +438,50 @@
         .modal-table-container {
             overflow-x: auto;
             margin-bottom: 10px;
+            cursor: grab;
+        }
+
+        .modal-table-container:active {
+            cursor: grabbing;
+        }
+
+        .modal-table-container table {
+            table-layout: auto;
+            white-space: nowrap;
+        }
+
+        /* 전체 탭이 아닐 때 고정 레이아웃 */
+        #expense-table:not(.all-years-view) {
+            table-layout: fixed;
+            width: 100%;
+        }
+
+        /* 전체 탭일 때도 고정 레이아웃 */
+        #expense-table.all-years-view {
+            table-layout: fixed;
+            min-width: 1400px;
+        }
+
+        /* 전체 탭의 금액 셀 강제 오른쪽 정렬 */
+        #expense-table.all-years-view td:nth-child(n+3) {
+            text-align: right !important;
+        }
+
+        /* 전체 탭의 편집 가능한 금액 셀 호버 효과 */
+        #expense-table.all-years-view tbody tr:not(:last-child) td[data-year]:hover {
+            background: rgba(59, 130, 246, 0.1);
+            outline: 1px solid rgba(59, 130, 246, 0.3);
+        }
+
+        /* 전체 탭의 연도 헤더 호버 효과 */
+        #expense-table.all-years-view th[data-year] {
+            transition: background 0.2s ease;
+        }
+
+        .modal-table-container th {
+            resize: horizontal;
+            overflow: auto;
+            position: relative;
         }
 
         /* 예측 년도 탭 스타일 */
@@ -1100,6 +1144,9 @@
                 <div class="modal-header">
                     <h2><i class="fas fa-chart-line"></i> 총 지출 상세</h2>
                     <div style="display: flex; gap: 10px; align-items: center;">
+                        <button class="btn btn-excel" onclick="scrollToExpenseStructure()" style="background: rgba(232, 139, 139, 0.2); color: #E88B8B; border-color: rgba(232, 139, 139, 0.3); padding: 8px 12px;" title="지출 구조로 이동">
+                            <i class="fas fa-chart-pie"></i> 지출구조
+                        </button>
                         <button class="btn btn-excel" onclick="scrollToExpenseAnalysis()" style="background: rgba(59, 130, 246, 0.2); color: #3B82F6; border-color: rgba(59, 130, 246, 0.3); padding: 8px 12px;" title="지출 항목별 분석으로 이동">
                             <i class="fas fa-fire"></i> 분석 보기
                         </button>
@@ -1114,6 +1161,7 @@
 
                 <!-- 연도 탭 -->
                 <div class="year-tabs">
+                    <button class="year-tab-button" data-year="all" onclick="switchExpenseYear('all')" style="font-weight: 600;">전체</button>
                     <button class="year-tab-button active" data-year="2025" onclick="switchExpenseYear('2025')">2025</button>
                     <button class="year-tab-button" data-year="2024" onclick="switchExpenseYear('2024')">2024</button>
                     <button class="year-tab-button" data-year="2023" onclick="switchExpenseYear('2023')">2023</button>
@@ -1176,7 +1224,7 @@
                     </div>
                     <table class="modal-table" id="expense-table">
                         <thead>
-                            <tr>
+                            <tr id="expense-table-header">
                                 <th>분류</th>
                                 <th>상세분류</th>
                                 <th>금액 (원)</th>
@@ -1276,7 +1324,7 @@
                                 <td><button class="btn-delete" onclick="deleteRow(this)"><i class="fas fa-trash"></i></button></td>
                             </tr>
                         </tbody>
-                        <tfoot>
+                        <tfoot id="expense-table-footer">
                             <tr style="background: linear-gradient(135deg, #CD7C7C 0%, #E9A07C 100%); color: white; font-weight: bold;">
                                 <td colspan="2" style="text-align: right; padding: 12px 15px; font-size: 1.1rem;">
                                     <i class="fas fa-calculator"></i> 총 지출 합계
@@ -2555,30 +2603,32 @@
 
         // 실시간 금액 포맷팅 함수
         function formatAmountInput(element) {
-            let value = element.textContent.replace(/[^\d]/g, ''); // 숫자만 추출
-            if (value && value !== '0') {
-                element.textContent = formatNumber(value);
-            } else if (value === '0') {
-                element.textContent = '0';
+            const text = element.textContent.trim();
+
+            // 숫자만 있는지 확인 (쉼표 제외)
+            const numbersOnly = text.replace(/,/g, '');
+
+            // 숫자만 있으면 포맷팅, 아니면 그대로 유지 (텍스트 허용)
+            if (/^\d+$/.test(numbersOnly)) {
+                if (numbersOnly && numbersOnly !== '0') {
+                    element.textContent = formatNumber(numbersOnly);
+                } else if (numbersOnly === '0') {
+                    element.textContent = '0';
+                }
             }
+            // 텍스트가 포함되어 있으면 포맷팅하지 않고 그대로 유지
         }
 
         // 금액 입력 필드에 이벤트 리스너 추가
         function addAmountFormatting(element) {
             element.classList.add('amount-input');
-            
-            // 키보드 입력 이벤트
+
+            // 키보드 입력 이벤트 (모든 문자 허용)
             element.addEventListener('keydown', function(e) {
-                // 숫자, 백스페이스, 삭제, 화살표 키만 허용
-                const allowedKeys = ['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Tab', 'Enter'];
-                const isNumber = (e.key >= '0' && e.key <= '9');
-                const isAllowed = allowedKeys.includes(e.key);
-                
-                if (!isNumber && !isAllowed) {
-                    e.preventDefault();
-                }
+                // 모든 키 입력 허용 (텍스트도 입력 가능)
+                // 제한 없음
             });
-            
+
             element.addEventListener('input', function() {
                 const selection = window.getSelection();
                 const range = selection.rangeCount > 0 ? selection.getRangeAt(0) : null;
@@ -2647,6 +2697,7 @@
         let currentExpenseYear = '2025';
         let currentIncomeYear = '2025';
         let currentGovYear = '2025';
+        let allYearsView = ['2025', '2024', '2023', '2022', '2021', '2020']; // 전체 탭에서 표시할 연도 배열
 
         // 모달 열기 기능 초기화
         function initializeModalListeners() {
@@ -2830,6 +2881,22 @@
                     if (analysisTitle) {
                         analysisTitle.style.animation = 'pulse 2s ease-in-out';
                         setTimeout(() => { analysisTitle.style.animation = ''; }, 2000);
+                    }
+                }
+            }, 300);
+        }
+
+        function scrollToExpenseStructure() {
+            closeModal('expense-modal');
+            setTimeout(() => {
+                const structureSection = document.getElementById('expense-structure');
+                if (structureSection) {
+                    structureSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    // 섹션 제목에 펄스 애니메이션 효과
+                    const structureTitle = structureSection.querySelector('h2');
+                    if (structureTitle) {
+                        structureTitle.style.animation = 'pulse 2s ease-in-out';
+                        setTimeout(() => { structureTitle.style.animation = ''; }, 2000);
                     }
                 }
             }, 300);
@@ -3845,6 +3912,45 @@
             }
         }, true);
 
+        // 테이블 드래그 스크롤 기능
+        document.addEventListener('DOMContentLoaded', function() {
+            const containers = document.querySelectorAll('.modal-table-container');
+
+            containers.forEach(container => {
+                let isDown = false;
+                let startX;
+                let scrollLeft;
+
+                container.addEventListener('mousedown', (e) => {
+                    // 드래그 가능한 요소가 아닌 경우에만 스크롤
+                    if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT' ||
+                        e.target.tagName === 'BUTTON' || e.target.hasAttribute('contenteditable')) {
+                        return;
+                    }
+
+                    isDown = true;
+                    startX = e.pageX - container.offsetLeft;
+                    scrollLeft = container.scrollLeft;
+                });
+
+                container.addEventListener('mouseleave', () => {
+                    isDown = false;
+                });
+
+                container.addEventListener('mouseup', () => {
+                    isDown = false;
+                });
+
+                container.addEventListener('mousemove', (e) => {
+                    if (!isDown) return;
+                    e.preventDefault();
+                    const x = e.pageX - container.offsetLeft;
+                    const walk = (x - startX) * 1.5; // 스크롤 속도
+                    container.scrollLeft = scrollLeft - walk;
+                });
+            });
+        });
+
         // 총지출 합계 계산 및 업데이트
         function updateExpenseTotal() {
             const table = document.getElementById('expense-table');
@@ -3927,7 +4033,7 @@
                     </select>
                 </td>
                 <td contenteditable="true">새 상세분류</td>
-                <td contenteditable="true" class="amount-input">0</td>
+                <td contenteditable="true" class="amount-input" style="text-align: right; font-variant-numeric: tabular-nums;">0</td>
                 <td contenteditable="true">비고</td>
                 <td style="text-align: center;">
                     <button class="btn-analysis" onclick="showTrendChart(this)" title="추세 그래프" style="background: rgba(59, 130, 246, 0.1); color: #3B82F6; border: 1px solid rgba(59, 130, 246, 0.3); padding: 4px 8px; border-radius: 4px; cursor: pointer; margin-right: 4px; font-size: 0.85rem;">
@@ -4074,8 +4180,10 @@
 
         // 연도 전환 기능
         function switchExpenseYear(year) {
-            // 먼저 현재 연도 데이터 저장
-            saveCurrentExpenseYear();
+            // "전체" 탭이 아닐 때만 현재 연도 데이터 저장
+            if (currentExpenseYear !== 'all') {
+                saveCurrentExpenseYear();
+            }
 
             // 연도 변경
             currentExpenseYear = year;
@@ -4087,7 +4195,11 @@
             document.querySelector(`.year-tab-button[data-year="${year}"]`).classList.add('active');
 
             // 해당 연도 데이터 로드
-            loadExpenseYear(year);
+            if (year === 'all') {
+                loadAllExpenseYears();
+            } else {
+                loadExpenseYear(year);
+            }
         }
 
         // 현재 보고 있는 연도 데이터 저장
@@ -4114,9 +4226,13 @@
 
         // 연도별 데이터 로드
         function loadExpenseYear(year) {
+            const table = document.getElementById('expense-table');
             const savedData = localStorage.getItem(`expenseData_${year}`);
             const tbody = document.querySelector('#expense-table tbody');
             tbody.innerHTML = '';
+
+            // 전체 탭 클래스 제거
+            table.classList.remove('all-years-view');
 
             console.log(`📊 ${year}년 데이터 로드 중...`);
 
@@ -4144,7 +4260,7 @@
                             </select>
                         </td>
                         <td contenteditable="true">${row.item}</td>
-                        <td contenteditable="true" class="amount-input">${formatNumber(displayAmount)}</td>
+                        <td contenteditable="true" class="amount-input" style="text-align: right; font-variant-numeric: tabular-nums;">${formatNumber(displayAmount)}</td>
                         <td contenteditable="true">${row.note || ''}</td>
                         <td style="text-align: center;">
                             <button class="btn-analysis" onclick="showTrendChart(this)" title="추세 그래프" style="background: rgba(59, 130, 246, 0.1); color: #3B82F6; border: 1px solid rgba(59, 130, 246, 0.3); padding: 4px 8px; border-radius: 4px; cursor: pointer; margin-right: 4px; font-size: 0.85rem;">
@@ -4183,7 +4299,7 @@
                             </select>
                         </td>
                         <td contenteditable="true">새 상세분류</td>
-                        <td contenteditable="true" class="amount-input">0</td>
+                        <td contenteditable="true" class="amount-input" style="text-align: right; font-variant-numeric: tabular-nums;">0</td>
                         <td contenteditable="true">비고</td>
                         <td style="text-align: center;">
                             <button class="btn-analysis" onclick="showTrendChart(this)" title="추세 그래프" style="background: rgba(59, 130, 246, 0.1); color: #3B82F6; border: 1px solid rgba(59, 130, 246, 0.3); padding: 4px 8px; border-radius: 4px; cursor: pointer; margin-right: 4px; font-size: 0.85rem;">
@@ -4209,6 +4325,423 @@
 
             // 메모 버튼 스타일 업데이트
             updateMemoButtonStyles();
+
+            // 테이블 헤더를 기본 상태로 복원
+            resetExpenseTableHeader();
+
+            // 개별 연도 탭에서는 총 지출 합계를 다시 표시
+            const totalDisplay = document.getElementById('expense-table-footer');
+            if (totalDisplay) {
+                totalDisplay.style.display = '';
+            }
+        }
+
+        // 전체 연도 데이터 로드 (피벗 테이블 형식)
+        function loadAllExpenseYears() {
+            const table = document.getElementById('expense-table');
+            const tbody = document.querySelector('#expense-table tbody');
+            tbody.innerHTML = '';
+
+            // 전체 탭 클래스 추가
+            table.classList.add('all-years-view');
+
+            console.log('📊 전체 연도 데이터 로드 중...');
+
+            // 전역 연도 배열 사용
+            const years = allYearsView;
+            const itemMap = new Map(); // key: "분류|상세분류", value: {category, item, years: {2020: amount, ...}}
+
+            years.forEach(year => {
+                const savedData = localStorage.getItem(`expenseData_${year}`);
+                if (savedData) {
+                    const data = JSON.parse(savedData);
+                    console.log(`${year}년 데이터:`, data.length, '건');
+                    data.forEach(row => {
+                        const category = row.category || '지원';
+                        const item = row.item;
+                        const amount = row.amount || 0;
+                        const key = `${category}|${item}`;
+
+                        if (!itemMap.has(key)) {
+                            itemMap.set(key, {
+                                category: category,
+                                item: item,
+                                years: {}
+                            });
+                        }
+
+                        itemMap.get(key).years[year] = amount;
+
+                        // 2025년 데이터만 특별히 로그
+                        if (year === '2025') {
+                            console.log(`  ${category} - ${item}: ${amount}`);
+                        }
+                    });
+                }
+            });
+
+            // 테이블 헤더를 연도별로 변경 (2025부터 역순)
+            const header = document.getElementById('expense-table-header');
+            header.innerHTML = `
+                <th style="min-width: 120px; width: 120px; max-width: 120px; padding: 8px 12px; box-sizing: border-box;">분류</th>
+                <th style="min-width: 180px; width: 180px; max-width: 180px; padding: 8px 12px; box-sizing: border-box;">상세분류</th>
+            `;
+
+            // 연도 헤더 동적으로 생성 (편집 가능하게)
+            years.forEach((year, index) => {
+                const th = document.createElement('th');
+                th.textContent = year;
+                th.style.cssText = `
+                    min-width: 140px;
+                    width: 140px;
+                    max-width: 140px;
+                    padding: 8px 12px;
+                    box-sizing: border-box;
+                    text-align: right;
+                    cursor: pointer;
+                    user-select: none;
+                `;
+                th.setAttribute('data-year', year);
+                th.setAttribute('data-year-index', index);
+                th.title = '더블클릭하여 연도 변경';
+
+                // 더블클릭으로 연도 변경
+                th.addEventListener('dblclick', function() {
+                    editYearHeader(this, years);
+                });
+
+                // 호버 효과
+                th.addEventListener('mouseenter', function() {
+                    this.style.background = 'rgba(59, 130, 246, 0.1)';
+                });
+                th.addEventListener('mouseleave', function() {
+                    this.style.background = '';
+                });
+
+                header.appendChild(th);
+            });
+
+            // 데이터를 분류별로 그룹화하여 표시
+            const categories = ['지원', '발굴', '일반관리비'];
+
+            categories.forEach(category => {
+                const categoryItems = Array.from(itemMap.entries())
+                    .filter(([key, value]) => value.category === category)
+                    .sort((a, b) => a[1].item.localeCompare(b[1].item));
+
+                if (categoryItems.length > 0) {
+                    let categoryColor = '#3B82F6';
+                    if (category === '발굴') categoryColor = '#06B6D4';
+                    else if (category === '일반관리비') categoryColor = '#E88B8B';
+
+                    // 각 항목별 데이터 행
+                    categoryItems.forEach(([key, data], index) => {
+                        const tr = tbody.insertRow();
+
+                        // 분류 컬럼 - 첫 번째 행에만 표시하고 rowspan 사용
+                        if (index === 0) {
+                            const categoryCell = tr.insertCell();
+                            categoryCell.textContent = category;
+                            categoryCell.style.background = `${categoryColor}15`;
+                            categoryCell.style.color = categoryColor;
+                            categoryCell.style.fontWeight = '700';
+                            categoryCell.style.textAlign = 'center';
+                            categoryCell.style.verticalAlign = 'middle';
+                            categoryCell.style.minWidth = '120px';
+                            categoryCell.style.width = '120px';
+                            categoryCell.style.maxWidth = '120px';
+                            categoryCell.style.padding = '8px 12px';
+                            categoryCell.style.boxSizing = 'border-box';
+                            categoryCell.rowSpan = categoryItems.length;
+                        }
+
+                        // 상세분류
+                        const itemCell = tr.insertCell();
+                        itemCell.textContent = data.item;
+                        itemCell.style.fontWeight = '500';
+                        itemCell.style.minWidth = '180px';
+                        itemCell.style.width = '180px';
+                        itemCell.style.maxWidth = '180px';
+                        itemCell.style.padding = '8px 12px';
+                        itemCell.style.boxSizing = 'border-box';
+
+                        // 각 연도별 금액
+                        years.forEach(year => {
+                            const amountCell = tr.insertCell();
+                            const amount = data.years[year] || 0;
+                            amountCell.textContent = amount > 0 ? formatNumber(amount) : '-';
+                            amountCell.style.cssText = `
+                                text-align: right !important;
+                                font-variant-numeric: tabular-nums;
+                                min-width: 140px;
+                                width: 140px;
+                                max-width: 140px;
+                                padding: 8px 12px;
+                                box-sizing: border-box;
+                                white-space: nowrap;
+                                overflow: hidden;
+                                color: ${amount > 0 ? '#1e293b' : '#cbd5e1'};
+                                cursor: pointer;
+                            `;
+
+                            // 금액 셀 더블클릭으로 편집 가능하게
+                            amountCell.setAttribute('data-year', year);
+                            amountCell.setAttribute('data-category', category);
+                            amountCell.setAttribute('data-item', data.item);
+                            amountCell.setAttribute('data-amount', amount);
+
+                            amountCell.addEventListener('dblclick', function() {
+                                editAllYearsAmount(this);
+                            });
+                        });
+                    });
+
+                    // 분류별 합계 행
+                    const subtotalRow = tbody.insertRow();
+                    subtotalRow.style.background = `${categoryColor}10`;
+                    subtotalRow.style.fontWeight = '600';
+
+                    const subtotalCategoryCell = subtotalRow.insertCell();
+                    subtotalCategoryCell.style.background = `${categoryColor}15`;
+                    subtotalCategoryCell.style.width = '120px';
+                    subtotalCategoryCell.style.minWidth = '120px';
+                    subtotalCategoryCell.style.maxWidth = '120px';
+                    subtotalCategoryCell.style.padding = '8px 12px';
+                    subtotalCategoryCell.style.boxSizing = 'border-box';
+
+                    const subtotalLabelCell = subtotalRow.insertCell();
+                    subtotalLabelCell.textContent = `${category} 소계`;
+                    subtotalLabelCell.style.color = categoryColor;
+                    subtotalLabelCell.style.fontWeight = '700';
+                    subtotalLabelCell.style.width = '180px';
+                    subtotalLabelCell.style.minWidth = '180px';
+                    subtotalLabelCell.style.maxWidth = '180px';
+                    subtotalLabelCell.style.padding = '8px 12px';
+                    subtotalLabelCell.style.boxSizing = 'border-box';
+
+                    years.forEach(year => {
+                        let yearTotal = 0;
+                        categoryItems.forEach(([key, data]) => {
+                            yearTotal += data.years[year] || 0;
+                        });
+                        const subtotalCell = subtotalRow.insertCell();
+                        subtotalCell.textContent = yearTotal > 0 ? formatNumber(yearTotal) : '-';
+                        subtotalCell.style.cssText = `
+                            text-align: right !important;
+                            font-variant-numeric: tabular-nums;
+                            color: ${categoryColor};
+                            font-weight: 700;
+                            width: 140px;
+                            min-width: 140px;
+                            max-width: 140px;
+                            padding: 8px 12px;
+                            box-sizing: border-box;
+                            white-space: nowrap;
+                        `;
+                    });
+                }
+            });
+
+            // 전체 합계 행
+            if (itemMap.size > 0) {
+                const totalRow = tbody.insertRow();
+                totalRow.style.background = 'linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(6, 182, 212, 0.15))';
+                totalRow.style.fontWeight = '700';
+                totalRow.style.fontSize = '1.05rem';
+                totalRow.style.borderTop = '3px solid #3B82F6';
+
+                const totalCategoryCell = totalRow.insertCell();
+                totalCategoryCell.style.background = 'rgba(59, 130, 246, 0.2)';
+                totalCategoryCell.style.width = '120px';
+                totalCategoryCell.style.minWidth = '120px';
+                totalCategoryCell.style.maxWidth = '120px';
+                totalCategoryCell.style.padding = '8px 12px';
+                totalCategoryCell.style.boxSizing = 'border-box';
+
+                const totalLabelCell = totalRow.insertCell();
+                totalLabelCell.textContent = '총 합계';
+                totalLabelCell.style.color = '#3B82F6';
+                totalLabelCell.style.fontWeight = '700';
+                totalLabelCell.style.width = '180px';
+                totalLabelCell.style.minWidth = '180px';
+                totalLabelCell.style.maxWidth = '180px';
+                totalLabelCell.style.padding = '8px 12px';
+                totalLabelCell.style.boxSizing = 'border-box';
+
+                years.forEach(year => {
+                    let yearTotal = 0;
+                    itemMap.forEach((data) => {
+                        yearTotal += data.years[year] || 0;
+                    });
+                    const totalCell = totalRow.insertCell();
+                    totalCell.textContent = yearTotal > 0 ? formatNumber(yearTotal) : '-';
+                    totalCell.style.cssText = `
+                        text-align: right !important;
+                        font-variant-numeric: tabular-nums;
+                        color: #3B82F6;
+                        font-weight: 700;
+                        width: 140px;
+                        min-width: 140px;
+                        max-width: 140px;
+                        padding: 8px 12px;
+                        box-sizing: border-box;
+                        white-space: nowrap;
+                    `;
+                });
+            }
+
+            if (itemMap.size === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="8" style="text-align: center; padding: 40px; color: #999;">
+                            저장된 데이터가 없습니다
+                        </td>
+                    </tr>
+                `;
+            }
+
+            // 전체 탭에서는 총 지출 합계를 숨김
+            const totalDisplay = document.getElementById('expense-table-footer');
+            if (totalDisplay) {
+                totalDisplay.style.display = 'none';
+            }
+        }
+
+        // 연도 헤더 수정 기능
+        function editYearHeader(th, years) {
+            const currentYear = th.getAttribute('data-year');
+            const yearIndex = parseInt(th.getAttribute('data-year-index'));
+
+            // input 엘리먼트 생성
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.value = currentYear;
+            input.style.cssText = `
+                width: 80px;
+                text-align: center;
+                border: 2px solid #3B82F6;
+                padding: 4px;
+                box-sizing: border-box;
+                font-family: inherit;
+                font-size: inherit;
+                font-weight: bold;
+                background: #fff;
+            `;
+
+            // 헤더 내용을 input으로 교체
+            th.textContent = '';
+            th.appendChild(input);
+            input.focus();
+            input.select();
+
+            // Enter 또는 blur 시 저장
+            const saveValue = () => {
+                let newYear = input.value.trim();
+
+                // 유효한 연도인지 확인 (숫자 4자리)
+                if (!/^\d{4}$/.test(newYear)) {
+                    alert('올바른 연도 형식을 입력해주세요 (예: 2025)');
+                    th.textContent = currentYear;
+                    return;
+                }
+
+                // 전역 연도 배열 업데이트
+                allYearsView[yearIndex] = newYear;
+
+                // 전체 탭 다시 로드
+                loadAllExpenseYears();
+            };
+
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    saveValue();
+                } else if (e.key === 'Escape') {
+                    th.textContent = currentYear;
+                }
+            });
+
+            input.addEventListener('blur', saveValue);
+        }
+
+        // 전체 탭에서 금액 수정 기능
+        function editAllYearsAmount(cell) {
+            const year = cell.getAttribute('data-year');
+            const category = cell.getAttribute('data-category');
+            const item = cell.getAttribute('data-item');
+            const currentAmount = parseInt(cell.getAttribute('data-amount')) || 0;
+
+            // 현재 텍스트 저장
+            const originalText = cell.textContent;
+
+            // input 엘리먼트 생성
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.value = currentAmount;
+            input.style.cssText = `
+                width: 100%;
+                text-align: right;
+                font-variant-numeric: tabular-nums;
+                border: 2px solid #3B82F6;
+                padding: 6px;
+                box-sizing: border-box;
+                font-family: inherit;
+                font-size: inherit;
+            `;
+
+            // 셀 내용을 input으로 교체
+            cell.textContent = '';
+            cell.appendChild(input);
+            input.focus();
+            input.select();
+
+            // Enter 또는 blur 시 저장
+            const saveValue = () => {
+                let newValue = input.value.replace(/,/g, '');
+                newValue = parseInt(newValue) || 0;
+
+                // localStorage에서 해당 연도 데이터 가져오기
+                const savedData = localStorage.getItem(`expenseData_${year}`);
+                if (savedData) {
+                    const data = JSON.parse(savedData);
+
+                    // 해당 항목 찾아서 업데이트
+                    const itemData = data.find(row =>
+                        (row.category || '지원') === category && row.item === item
+                    );
+
+                    if (itemData) {
+                        itemData.amount = newValue;
+                        localStorage.setItem(`expenseData_${year}`, JSON.stringify(data));
+
+                        // 전체 탭 다시 로드 (합계 재계산)
+                        loadAllExpenseYears();
+                    }
+                }
+            };
+
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    saveValue();
+                } else if (e.key === 'Escape') {
+                    cell.textContent = originalText;
+                }
+            });
+
+            input.addEventListener('blur', saveValue);
+        }
+
+        // 테이블 헤더를 기본 상태로 복원
+        function resetExpenseTableHeader() {
+            const header = document.getElementById('expense-table-header');
+            header.innerHTML = `
+                <th style="min-width: 120px; width: 120px;">분류</th>
+                <th style="min-width: 180px; width: 180px;">상세분류</th>
+                <th style="min-width: 140px; width: 140px;">금액 (원)</th>
+                <th style="min-width: 150px; width: 150px;">비고</th>
+                <th style="width: 100px;">분석</th>
+                <th style="width: 80px;">순서</th>
+                <th style="width: 80px;">삭제</th>
+            `;
         }
 
         // 데이터 저장 기능
