@@ -1965,25 +1965,32 @@
                 </div>
 
                 <div class="modal-table-container">
-                    <div class="excel-buttons">
-                        <button class="btn btn-add" onclick="addDetailRow()">
-                            <i class="fas fa-plus"></i> 항목 추가
+                    <div style="margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
+                        <button onclick="toggleDetailTable()" style="background: rgba(139, 92, 246, 0.1); color: #8B5CF6; border: 1px solid rgba(139, 92, 246, 0.3); padding: 8px 16px; border-radius: 8px; cursor: pointer; font-size: 0.9rem;">
+                            <i class="fas fa-table" id="detail-table-toggle-icon"></i>
+                            <span id="detail-table-toggle-text">상세 내역 테이블 보기</span>
                         </button>
-                        <div class="excel-buttons-right">
-                            <button class="btn btn-excel" onclick="downloadDetailTemplate()" style="background: rgba(139, 92, 246, 0.2); color: #8B5CF6; border-color: rgba(139, 92, 246, 0.3);">
-                                <i class="fas fa-file-download"></i> 양식 다운로드
-                            </button>
-                            <div class="file-input-wrapper">
-                                <button class="btn btn-excel">
-                                    <i class="fas fa-upload"></i> 엑셀 업로드
-                                </button>
-                                <input type="file" id="detail-upload" accept=".xlsx, .xls" onchange="uploadDetailExcel(event)">
-                            </div>
-                            <button class="btn btn-excel" onclick="downloadDetailExcel()">
-                                <i class="fas fa-download"></i> 엑셀 다운로드
-                            </button>
-                        </div>
                     </div>
+                    <div id="detail-table-section" style="display: none;">
+                        <div class="excel-buttons">
+                            <button class="btn btn-add" onclick="addDetailRow()">
+                                <i class="fas fa-plus"></i> 항목 추가
+                            </button>
+                            <div class="excel-buttons-right">
+                                <button class="btn btn-excel" onclick="downloadDetailTemplate()" style="background: rgba(139, 92, 246, 0.2); color: #8B5CF6; border-color: rgba(139, 92, 246, 0.3);">
+                                    <i class="fas fa-file-download"></i> 양식 다운로드
+                                </button>
+                                <div class="file-input-wrapper">
+                                    <button class="btn btn-excel">
+                                        <i class="fas fa-upload"></i> 엑셀 업로드
+                                    </button>
+                                    <input type="file" id="detail-upload" accept=".xlsx, .xls" onchange="uploadDetailExcel(event)">
+                                </div>
+                                <button class="btn btn-excel" onclick="downloadDetailExcel()">
+                                    <i class="fas fa-download"></i> 엑셀 다운로드
+                                </button>
+                            </div>
+                        </div>
                     <div style="overflow-x: auto; overflow-y: hidden; max-height: 500px;">
                         <style>
                             /* 스크롤바 항상 표시 */
@@ -2028,6 +2035,7 @@
                                 </tbody>
                             </table>
                         </div>
+                    </div>
                     </div>
 
                     <!-- 메모 섹션 -->
@@ -3527,6 +3535,23 @@
 
             // 메모 로드
             loadDetailMemo();
+        }
+
+        // 상세 테이블 토글
+        function toggleDetailTable() {
+            const section = document.getElementById('detail-table-section');
+            const icon = document.getElementById('detail-table-toggle-icon');
+            const text = document.getElementById('detail-table-toggle-text');
+
+            if (section.style.display === 'none') {
+                section.style.display = 'block';
+                icon.className = 'fas fa-table';
+                text.textContent = '상세 내역 테이블 숨기기';
+            } else {
+                section.style.display = 'none';
+                icon.className = 'fas fa-table';
+                text.textContent = '상세 내역 테이블 보기';
+            }
         }
 
         // 메모 토글
