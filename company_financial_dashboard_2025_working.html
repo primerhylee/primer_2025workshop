@@ -2188,24 +2188,30 @@
                             <i class="fas fa-sticky-note" style="color: #8B5CF6; margin-right: 8px;"></i>
                             <span id="item-analysis-memo-year-label">메모</span>
                         </h3>
-                    </div>
-                    <textarea
-                        id="item-analysis-memo"
-                        placeholder="이 항목에 대한 메모를 입력하세요..."
-                        style="width: 100%; min-height: 100px; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; font-family: 'Inter', sans-serif; font-size: 0.95rem; resize: vertical; background: white; box-sizing: border-box;"
-                        oninput="renderItemAnalysisTable()"
-                    ></textarea>
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px;">
-                        <div style="font-size: 0.85rem; color: #64748b;">
-                            <i class="fas fa-info-circle"></i> 메모는 항목별로 자동 저장됩니다.
-                        </div>
-                        <button onclick="saveItemAnalysisMemo()" class="btn btn-primary" style="padding: 8px 16px; font-size: 0.9rem;">
-                            <i class="fas fa-save"></i> 저장
+                        <button onclick="toggleItemAnalysisMemo()" style="background: transparent; border: none; color: #64748b; cursor: pointer; font-size: 0.9rem; display: flex; align-items: center; gap: 5px;">
+                            <i class="fas fa-chevron-down" id="item-analysis-memo-toggle-icon"></i>
+                            <span id="item-analysis-memo-toggle-text">메모 보기</span>
                         </button>
                     </div>
+                    <div id="item-analysis-memo-content" style="display: none;">
+                        <textarea
+                            id="item-analysis-memo"
+                            placeholder="이 항목에 대한 메모를 입력하세요..."
+                            style="width: 100%; min-height: 100px; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; font-family: 'Inter', sans-serif; font-size: 0.95rem; resize: vertical; background: white; box-sizing: border-box;"
+                            oninput="renderItemAnalysisTable()"
+                        ></textarea>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px; margin-bottom: 10px;">
+                            <div style="font-size: 0.85rem; color: #64748b;">
+                                <i class="fas fa-info-circle"></i> 메모는 항목별로 자동 저장됩니다.
+                            </div>
+                            <button onclick="saveItemAnalysisMemo()" class="btn btn-primary" style="padding: 8px 16px; font-size: 0.9rem;">
+                                <i class="fas fa-save"></i> 저장
+                            </button>
+                        </div>
+                    </div>
 
-                    <!-- 메모 파싱 테이블 -->
-                    <div id="item-analysis-table-preview" style="margin-top: 20px;"></div>
+                    <!-- 메모 파싱 테이블 (항상 보임) -->
+                    <div id="item-analysis-table-preview" style="margin-top: 10px;"></div>
                 </div>
 
                 <div class="modal-actions" style="margin-top: 20px;">
@@ -5170,6 +5176,23 @@
                 btn.innerHTML = originalText;
                 btn.style.background = '';
             }, 1500);
+        }
+
+        // 항목 분석 메모 토글 (입력창만 숨기고 표는 계속 보임)
+        function toggleItemAnalysisMemo() {
+            const content = document.getElementById('item-analysis-memo-content');
+            const icon = document.getElementById('item-analysis-memo-toggle-icon');
+            const text = document.getElementById('item-analysis-memo-toggle-text');
+
+            if (content.style.display === 'none') {
+                content.style.display = 'block';
+                icon.className = 'fas fa-chevron-up';
+                text.textContent = '메모 숨기기';
+            } else {
+                content.style.display = 'none';
+                icon.className = 'fas fa-chevron-down';
+                text.textContent = '메모 보기';
+            }
         }
 
         // 테이블 헤더를 기본 상태로 복원
