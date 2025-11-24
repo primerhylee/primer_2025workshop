@@ -5695,19 +5695,38 @@
         // 상세 모달에서 메모 저장 (새 버전)
         function saveDetailMemoFromModal(itemName) {
             const modalContent = document.getElementById('detail-modal-content');
+            if (!modalContent) {
+                console.error('Modal content not found');
+                return;
+            }
             const currentYear = modalContent.dataset.currentYear;
-            const memoText = document.getElementById('detail-memo-textarea').value;
+            const memoTextarea = modalContent.querySelector('#detail-memo-textarea');
+            if (!memoTextarea) {
+                console.error('Memo textarea not found');
+                return;
+            }
+            const memoText = memoTextarea.value;
             const memoKey = `memo_expense_${currentYear}_${itemName}`;
             localStorage.setItem(memoKey, memoText);
+            console.log('Memo saved for:', memoKey);
             alert('✅ 메모가 저장되었습니다!');
         }
 
         // 메모를 파싱해서 테이블로 렌더링
         function renderMemoPreview() {
-            const textarea = document.getElementById('detail-memo-textarea');
-            const preview = document.getElementById('memo-preview');
+            const modalContent = document.getElementById('detail-modal-content');
+            if (!modalContent) {
+                console.error('Modal content not found for memo preview');
+                return;
+            }
 
-            if (!textarea || !preview) return;
+            const textarea = modalContent.querySelector('#detail-memo-textarea');
+            const preview = modalContent.querySelector('#memo-preview');
+
+            if (!textarea || !preview) {
+                console.error('Textarea or preview not found', textarea, preview);
+                return;
+            }
 
             const memoText = textarea.value.trim();
 
@@ -5781,23 +5800,34 @@
 
         // 메모 편집기 토글
         function toggleMemoEditor() {
-            const textarea = document.getElementById('detail-memo-textarea');
-            const toggleBtn = document.getElementById('toggle-memo-text');
-            const btnIcon = document.querySelector('#toggle-memo-btn i');
+            const modalContent = document.getElementById('detail-modal-content');
+            if (!modalContent) {
+                console.error('Modal content not found');
+                return;
+            }
 
-            if (!textarea || !toggleBtn) return;
+            const textarea = modalContent.querySelector('#detail-memo-textarea');
+            const toggleBtn = modalContent.querySelector('#toggle-memo-text');
+            const btnIcon = modalContent.querySelector('#toggle-memo-btn i');
 
-            if (textarea.style.display === 'none') {
+            if (!textarea || !toggleBtn) {
+                console.error('Textarea or toggle button not found', textarea, toggleBtn);
+                return;
+            }
+
+            if (textarea.style.display === 'none' || !textarea.style.display) {
                 // 편집 모드 활성화
                 textarea.style.display = 'block';
                 toggleBtn.textContent = '메모 숨기기';
-                btnIcon.className = 'fas fa-eye-slash';
+                if (btnIcon) btnIcon.className = 'fas fa-eye-slash';
                 textarea.focus();
+                console.log('Memo editor opened');
             } else {
                 // 편집 모드 비활성화
                 textarea.style.display = 'none';
                 toggleBtn.textContent = '메모 편집';
-                btnIcon.className = 'fas fa-edit';
+                if (btnIcon) btnIcon.className = 'fas fa-edit';
+                console.log('Memo editor closed');
             }
         }
 
@@ -5863,8 +5893,8 @@
                 memoTextarea.value = savedMemo;
                 // 메모 편집기 닫기 (년도 전환 시 깔끔하게)
                 memoTextarea.style.display = 'none';
-                const toggleBtn = document.getElementById('toggle-memo-text');
-                const btnIcon = document.querySelector('#toggle-memo-btn i');
+                const toggleBtn = modalContent.querySelector('#toggle-memo-text');
+                const btnIcon = modalContent.querySelector('#toggle-memo-btn i');
                 if (toggleBtn) toggleBtn.textContent = '메모 편집';
                 if (btnIcon) btnIcon.className = 'fas fa-edit';
 
