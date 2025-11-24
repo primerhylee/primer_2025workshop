@@ -6647,19 +6647,21 @@
                             label: function(context) {
                                 const total = context.dataset.data.reduce((a, b) => a + b, 0);
                                 const percentage = ((context.parsed / total) * 100).toFixed(1);
-                                const amountInBillion = Math.round(context.parsed / 100);
+                                const amountInBillion = (context.parsed / 100000000).toFixed(1);
                                 return context.label + ': ' + amountInBillion + '억원 (' + percentage + '%)';
                             }
                         }
                     },
                     datalabels: {
+                        display: true,
                         color: '#ffffff',
                         font: {
                             size: 18,
                             weight: 'bold'
                         },
                         formatter: function(value, context) {
-                            const amountInBillion = Math.round(value / 100);
+                            if (!value || value === 0) return '';
+                            const amountInBillion = (value / 100000000).toFixed(1);
                             return amountInBillion + '억원';
                         },
                         anchor: 'center',
