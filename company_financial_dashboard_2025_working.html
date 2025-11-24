@@ -2029,6 +2029,30 @@
                             </table>
                         </div>
                     </div>
+
+                    <!-- 메모 섹션 -->
+                    <div style="margin-top: 30px; padding: 20px; background: rgba(59, 130, 246, 0.05); border-radius: 12px; border: 1px solid rgba(59, 130, 246, 0.2);">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                            <h3 style="margin: 0; font-size: 1.1rem; color: #1e293b;">
+                                <i class="fas fa-sticky-note" style="color: #3B82F6; margin-right: 8px;"></i>
+                                메모
+                            </h3>
+                            <button onclick="toggleDetailMemo()" style="background: transparent; border: none; color: #64748b; cursor: pointer; font-size: 0.9rem;">
+                                <i class="fas fa-chevron-up" id="detail-memo-toggle-icon"></i>
+                                <span id="detail-memo-toggle-text">숨기기</span>
+                            </button>
+                        </div>
+                        <div id="detail-memo-content">
+                            <textarea
+                                id="detail-memo-textarea"
+                                placeholder="여기에 메모를 입력하세요..."
+                                style="width: 100%; min-height: 120px; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; font-family: 'Inter', sans-serif; font-size: 0.95rem; resize: vertical; background: white;"
+                            ></textarea>
+                            <div style="margin-top: 10px; font-size: 0.85rem; color: #64748b;">
+                                <i class="fas fa-info-circle"></i> 메모는 항목별, 연도별로 자동 저장됩니다.
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div class="modal-actions">
                     <button class="btn btn-secondary" onclick="closeModal('detail-modal')">취소</button>
@@ -3339,6 +3363,9 @@
             // 상세 데이터 로드
             loadDetailData(category, itemName, year);
 
+            // 메모 로드
+            loadDetailMemo();
+
             // 모달 열기
             document.getElementById('detail-modal').classList.add('active');
         }
@@ -3457,6 +3484,9 @@
             // 저장
             localStorage.setItem(key, JSON.stringify(allData));
 
+            // 메모 저장
+            saveDetailMemo();
+
             // 메인 차트 업데이트 (선택적)
             switchExpenseChartYear(currentDetailYear);
 
@@ -3494,6 +3524,47 @@
 
             // 데이터 로드
             loadDetailData(currentDetailCategory, currentDetailItem, year);
+
+            // 메모 로드
+            loadDetailMemo();
+        }
+
+        // 메모 토글
+        function toggleDetailMemo() {
+            const content = document.getElementById('detail-memo-content');
+            const icon = document.getElementById('detail-memo-toggle-icon');
+            const text = document.getElementById('detail-memo-toggle-text');
+
+            if (content.style.display === 'none') {
+                content.style.display = 'block';
+                icon.className = 'fas fa-chevron-up';
+                text.textContent = '숨기기';
+            } else {
+                content.style.display = 'none';
+                icon.className = 'fas fa-chevron-down';
+                text.textContent = '보기';
+            }
+        }
+
+        // 메모 로드
+        function loadDetailMemo() {
+            const memoKey = `detailMemo_${currentDetailCategory}_${currentDetailItem}_${currentDetailYear}`;
+            const savedMemo = localStorage.getItem(memoKey);
+            const textarea = document.getElementById('detail-memo-textarea');
+
+            if (textarea) {
+                textarea.value = savedMemo || '';
+            }
+        }
+
+        // 메모 저장
+        function saveDetailMemo() {
+            const textarea = document.getElementById('detail-memo-textarea');
+            const memoKey = `detailMemo_${currentDetailCategory}_${currentDetailItem}_${currentDetailYear}`;
+
+            if (textarea) {
+                localStorage.setItem(memoKey, textarea.value);
+            }
         }
 
         // 상세 템플릿 다운로드
