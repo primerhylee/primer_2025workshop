@@ -1521,7 +1521,7 @@
 
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
                         <h3 style="margin: 0; color: #1e293b;">
-                            <i class="fas fa-calendar-alt"></i> 
+                            <i class="fas fa-calendar-alt"></i>
                             <span id="forecast-year-title">2026년</span> 예측 수입 항목별 입력
                         </h3>
                         <div style="display: flex; gap: 10px;">
@@ -1530,6 +1530,18 @@
                             </button>
                             <button class="btn btn-excel" onclick="copyFromPreviousYear()" style="background: rgba(139, 92, 246, 0.2); color: #8B5CF6; border-color: rgba(139, 92, 246, 0.3); padding: 8px 12px;" title="전년도 데이터를 복사해서 시작">
                                 <i class="fas fa-copy"></i> 전년도 복사
+                            </button>
+                            <button class="btn btn-excel" onclick="downloadForecastTemplate()" style="background: rgba(139, 92, 246, 0.2); color: #8B5CF6; border-color: rgba(139, 92, 246, 0.3); padding: 8px 12px;">
+                                <i class="fas fa-file-download"></i> 양식 다운로드
+                            </button>
+                            <div class="file-input-wrapper">
+                                <button class="btn btn-excel">
+                                    <i class="fas fa-upload"></i> 엑셀 업로드
+                                </button>
+                                <input type="file" id="forecast-upload" accept=".xlsx, .xls" onchange="uploadForecastExcel(event)">
+                            </div>
+                            <button class="btn btn-delete" onclick="deleteCurrentYearForecast()" style="padding: 8px 12px;" title="현재 년도 전체 삭제">
+                                <i class="fas fa-trash-alt"></i> 년도 삭제
                             </button>
                         </div>
                     </div>
@@ -3170,7 +3182,137 @@
                     localStorage.removeItem(`forecastItems_${year}`);
                 }
                 loadForecastYear(currentForecastYear);
+                updateRevenueForecastChart();
             }
+        }
+
+        // 현재 년도 예측 데이터 삭제
+        function deleteCurrentYearForecast() {
+            if (confirm(`${currentForecastYear}년 예측 데이터를 완전히 삭제하시겠습니까?\n\n이 작업은 되돌릴 수 없습니다.`)) {
+                localStorage.removeItem(`forecastItems_${currentForecastYear}`);
+                loadForecastYear(currentForecastYear);
+                updateRevenueForecastChart();
+                alert(`✅ ${currentForecastYear}년 예측 데이터가 삭제되었습니다.`);
+            }
+        }
+
+        // 예측 설정 양식 다운로드
+        function downloadForecastTemplate() {
+            const templateData = [
+                {
+                    '년도': 2026,
+                    '상세분류': '정부 지원금',
+                    '금액': 850000000,
+                    '수입원': '정부사업',
+                    '비고': '중소기업청 지원'
+                },
+                {
+                    '년도': 2026,
+                    '상세분류': '투자 수익',
+                    '금액': 620000000,
+                    '수입원': '투자',
+                    '비고': '포트폴리오 기업 EXIT'
+                },
+                {
+                    '년도': 2027,
+                    '상세분류': '교육 프로그램 수익',
+                    '금액': 430000000,
+                    '수입원': '자체사업',
+                    '비고': '스타트업 교육 프로그램'
+                }
+            ];
+
+            // 사용 안내 시트
+            const notesData = [
+                { '항목': '년도', '설명': '예측 년도 (2026~2035)', '필수': 'O' },
+                { '항목': '상세분류', '설명': '수입 항목 이름', '필수': 'O' },
+                { '항목': '금액', '설명': '예상 수입 금액 (원 단위)', '필수': 'O' },
+                { '항목': '수입원', '설명': '수입의 출처 (정부사업, 투자, 자체사업 등)', '필수': 'X' },
+                { '항목': '비고', '설명': '추가 설명', '필수': 'X' },
+                { '항목': '', '설명': '', '필수': '' },
+                { '항목': '💡 TIP', '설명': '년도별로 자동 분류되어 저장됩니다. 한 파일에 여러 년도 데이터 입력 가능!', '필수': '' }
+            ];
+
+            const worksheet = XLSX.utils.json_to_sheet(templateData);
+            const notesSheet = XLSX.utils.json_to_sheet(notesData);
+
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, '수입 예측 양식');
+            XLSX.utils.book_append_sheet(workbook, notesSheet, '사용 안내');
+
+            XLSX.writeFile(workbook, '수입_예측_업로드_양식.xlsx');
+        }
+
+        // 예측 설정 엑셀 업로드
+        function uploadForecastExcel(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const data = new Uint8Array(e.target.result);
+                const workbook = XLSX.read(data, { type: 'array' });
+                const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+                const jsonData = XLSX.utils.sheet_to_json(firstSheet);
+
+                // 년도별로 데이터 그룹핑
+                const dataByYear = {};
+
+                jsonData.forEach(row => {
+                    const year = (row['년도'] || row['year'] || currentForecastYear).toString();
+
+                    // 2026-2035년 범위 체크
+                    const yearNum = parseInt(year);
+                    if (yearNum < 2026 || yearNum > 2035) {
+                        console.warn(`⚠️ ${year}년은 예측 범위(2026-2035)가 아닙니다. 건너뜁니다.`);
+                        return;
+                    }
+
+                    const item = row['상세분류'] || row['항목'] || row['item'] || '';
+                    const source = row['수입원'] || row['source'] || '';
+                    const note = row['비고'] || row['note'] || '';
+
+                    // 년도별 그룹 초기화
+                    if (!dataByYear[year]) {
+                        dataByYear[year] = [];
+                    }
+
+                    // 금액 읽기
+                    const amount = parseNumber(row['금액'] || row['금액 (원)'] || row['amount'] || 0);
+
+                    dataByYear[year].push({
+                        item: item,
+                        amount: amount,
+                        source: source,
+                        note: note
+                    });
+                });
+
+                // 모든 년도의 데이터를 localStorage에 저장
+                const importedYears = [];
+                Object.keys(dataByYear).forEach(year => {
+                    localStorage.setItem(`forecastItems_${year}`, JSON.stringify(dataByYear[year]));
+                    importedYears.push(year);
+                });
+
+                // 현재 년도의 데이터가 업로드되었으면 테이블 새로고침
+                if (dataByYear[currentForecastYear]) {
+                    loadForecastYear(currentForecastYear);
+                }
+
+                // 차트 업데이트
+                updateRevenueForecastChart();
+
+                // 업로드 완료 메시지
+                const totalItems = Object.values(dataByYear).reduce((sum, arr) => sum + arr.length, 0);
+                alert(`✅ 엑셀 파일이 성공적으로 업로드되었습니다!\n\n` +
+                      `• 업로드된 년도: ${importedYears.join(', ')}\n` +
+                      `• 총 항목 수: ${totalItems}개\n\n` +
+                      `차트가 자동으로 업데이트되었습니다.`);
+            };
+
+            reader.readAsArrayBuffer(file);
+            event.target.value = ''; // 같은 파일 재선택 가능하도록
         }
 
         // 상세 내역 모달 열기 (드릴다운)
