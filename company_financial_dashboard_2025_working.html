@@ -1161,8 +1161,8 @@
 
                 <!-- 연도 탭 -->
                 <div class="year-tabs">
-                    <button class="year-tab-button" data-year="all" onclick="switchExpenseYear('all')" style="font-weight: 600;">전체</button>
-                    <button class="year-tab-button active" data-year="2025" onclick="switchExpenseYear('2025')">2025</button>
+                    <button class="year-tab-button active" data-year="all" onclick="switchExpenseYear('all')" style="font-weight: 600;">전체</button>
+                    <button class="year-tab-button" data-year="2025" onclick="switchExpenseYear('2025')">2025</button>
                     <button class="year-tab-button" data-year="2024" onclick="switchExpenseYear('2024')">2024</button>
                     <button class="year-tab-button" data-year="2023" onclick="switchExpenseYear('2023')">2023</button>
                     <button class="year-tab-button" data-year="2022" onclick="switchExpenseYear('2022')">2022</button>
@@ -2694,10 +2694,18 @@
         });
 
         // 현재 선택된 연도 저장
-        let currentExpenseYear = '2025';
+        let currentExpenseYear = 'all';
         let currentIncomeYear = '2025';
         let currentGovYear = '2025';
-        let allYearsView = ['2025', '2024', '2023', '2022', '2021', '2020']; // 전체 탭에서 표시할 연도 배열
+        // 전체 탭에서 표시할 연도 배열 (display: 화면 표시용, dataKey: 실제 데이터 키)
+        let allYearsView = [
+            { display: '2025', dataKey: '2025' },
+            { display: '2024', dataKey: '2024' },
+            { display: '2023', dataKey: '2023' },
+            { display: '2022', dataKey: '2022' },
+            { display: '2021', dataKey: '2021' },
+            { display: '2020', dataKey: '2020' }
+        ];
 
         // 모달 열기 기능 초기화
         function initializeModalListeners() {
@@ -2709,7 +2717,7 @@
                     if (modal) {
                         modal.classList.add('active');
                         if (modalType === 'expense') {
-                            loadExpenseYear(currentExpenseYear);
+                            switchExpenseYear(currentExpenseYear);
                         } else if (modalType === 'income') {
                             loadIncomeYear(currentIncomeYear);
                         } else if (modalType === 'balance') {
@@ -4351,11 +4359,11 @@
             const years = allYearsView;
             const itemMap = new Map(); // key: "분류|상세분류", value: {category, item, years: {2020: amount, ...}}
 
-            years.forEach(year => {
-                const savedData = localStorage.getItem(`expenseData_${year}`);
+            years.forEach(yearObj => {
+                const savedData = localStorage.getItem(`expenseData_${yearObj.dataKey}`);
                 if (savedData) {
                     const data = JSON.parse(savedData);
-                    console.log(`${year}년 데이터:`, data.length, '건');
+                    console.log(`${yearObj.display}년 데이터:`, data.length, '건');
                     data.forEach(row => {
                         const category = row.category || '지원';
                         const item = row.item;
@@ -4370,10 +4378,10 @@
                             });
                         }
 
-                        itemMap.get(key).years[year] = amount;
+                        itemMap.get(key).years[yearObj.dataKey] = amount;
 
                         // 2025년 데이터만 특별히 로그
-                        if (year === '2025') {
+                        if (yearObj.dataKey === '2025') {
                             console.log(`  ${category} - ${item}: ${amount}`);
                         }
                     });
@@ -4388,9 +4396,9 @@
             `;
 
             // 연도 헤더 동적으로 생성 (편집 가능하게)
-            years.forEach((year, index) => {
+            years.forEach((yearObj, index) => {
                 const th = document.createElement('th');
-                th.textContent = year;
+                th.textContent = yearObj.display;
                 th.style.cssText = `
                     min-width: 140px;
                     width: 140px;
@@ -4401,7 +4409,8 @@
                     cursor: pointer;
                     user-select: none;
                 `;
-                th.setAttribute('data-year', year);
+                th.setAttribute('data-year', yearObj.dataKey);
+                th.setAttribute('data-display', yearObj.display);
                 th.setAttribute('data-year-index', index);
                 th.title = '더블클릭하여 연도 변경';
 
@@ -4466,9 +4475,9 @@
                         itemCell.style.boxSizing = 'border-box';
 
                         // 각 연도별 금액
-                        years.forEach(year => {
+                        years.forEach(yearObj => {
                             const amountCell = tr.insertCell();
-                            const amount = data.years[year] || 0;
+                            const amount = data.years[yearObj.dataKey] || 0;
                             amountCell.textContent = amount > 0 ? formatNumber(amount) : '-';
                             amountCell.style.cssText = `
                                 text-align: right !important;
@@ -4485,7 +4494,7 @@
                             `;
 
                             // 금액 셀 더블클릭으로 편집 가능하게
-                            amountCell.setAttribute('data-year', year);
+                            amountCell.setAttribute('data-year', yearObj.dataKey);
                             amountCell.setAttribute('data-category', category);
                             amountCell.setAttribute('data-item', data.item);
                             amountCell.setAttribute('data-amount', amount);
@@ -4519,10 +4528,10 @@
                     subtotalLabelCell.style.padding = '8px 12px';
                     subtotalLabelCell.style.boxSizing = 'border-box';
 
-                    years.forEach(year => {
+                    years.forEach(yearObj => {
                         let yearTotal = 0;
                         categoryItems.forEach(([key, data]) => {
-                            yearTotal += data.years[year] || 0;
+                            yearTotal += data.years[yearObj.dataKey] || 0;
                         });
                         const subtotalCell = subtotalRow.insertCell();
                         subtotalCell.textContent = yearTotal > 0 ? formatNumber(yearTotal) : '-';
@@ -4568,10 +4577,10 @@
                 totalLabelCell.style.padding = '8px 12px';
                 totalLabelCell.style.boxSizing = 'border-box';
 
-                years.forEach(year => {
+                years.forEach(yearObj => {
                     let yearTotal = 0;
                     itemMap.forEach((data) => {
-                        yearTotal += data.years[year] || 0;
+                        yearTotal += data.years[yearObj.dataKey] || 0;
                     });
                     const totalCell = totalRow.insertCell();
                     totalCell.textContent = yearTotal > 0 ? formatNumber(yearTotal) : '-';
@@ -4609,15 +4618,16 @@
 
         // 연도 헤더 수정 기능
         function editYearHeader(th, years) {
-            const currentYear = th.getAttribute('data-year');
+            const currentDisplay = th.getAttribute('data-display');
+            const dataKey = th.getAttribute('data-year');
             const yearIndex = parseInt(th.getAttribute('data-year-index'));
 
             // input 엘리먼트 생성
             const input = document.createElement('input');
             input.type = 'text';
-            input.value = currentYear;
+            input.value = currentDisplay;
             input.style.cssText = `
-                width: 80px;
+                width: 100px;
                 text-align: center;
                 border: 2px solid #3B82F6;
                 padding: 4px;
@@ -4636,17 +4646,17 @@
 
             // Enter 또는 blur 시 저장
             const saveValue = () => {
-                let newYear = input.value.trim();
+                let newDisplay = input.value.trim();
 
-                // 유효한 연도인지 확인 (숫자 4자리)
-                if (!/^\d{4}$/.test(newYear)) {
-                    alert('올바른 연도 형식을 입력해주세요 (예: 2025)');
-                    th.textContent = currentYear;
+                // 빈 값이 아닌 경우 저장
+                if (newDisplay === '') {
+                    alert('연도를 입력해주세요');
+                    th.textContent = currentDisplay;
                     return;
                 }
 
-                // 전역 연도 배열 업데이트
-                allYearsView[yearIndex] = newYear;
+                // 전역 연도 배열 업데이트 (display만 변경, dataKey는 유지)
+                allYearsView[yearIndex].display = newDisplay;
 
                 // 전체 탭 다시 로드
                 loadAllExpenseYears();
@@ -4656,7 +4666,7 @@
                 if (e.key === 'Enter') {
                     saveValue();
                 } else if (e.key === 'Escape') {
-                    th.textContent = currentYear;
+                    th.textContent = currentDisplay;
                 }
             });
 
