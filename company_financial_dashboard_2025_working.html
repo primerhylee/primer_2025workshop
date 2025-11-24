@@ -1770,24 +1770,27 @@
                         </button>
                     </div>
 
-                    <!-- 파일 업로드 섹션 -->
-                    <div style="margin-bottom: 15px; padding: 10px; background: rgba(232, 139, 139, 0.05); border: 1px solid rgba(232, 139, 139, 0.2); border-radius: 6px;">
-                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+                    <!-- 파일 업로드 섹션 (접을 수 있음) -->
+                    <div style="margin-bottom: 15px; background: rgba(232, 139, 139, 0.05); border: 1px solid rgba(232, 139, 139, 0.2); border-radius: 6px;">
+                        <div onclick="toggleGovFileSection()" style="padding: 10px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; user-select: none;">
                             <h3 style="font-size: 0.85rem; color: #CD7C7C; margin: 0; text-align: left;">
                                 <i class="fas fa-file-upload"></i> 첨부 파일
                             </h3>
-                            <div>
+                            <i id="gov-file-toggle-icon" class="fas fa-chevron-down" style="color: #CD7C7C; font-size: 0.8rem;"></i>
+                        </div>
+                        <div id="gov-file-content" style="display: none; padding: 0 10px 10px 10px;">
+                            <div style="margin-bottom: 8px;">
                                 <input type="file" id="gov-file-input" accept=".ppt,.pptx,.pdf,.doc,.docx,.xls,.xlsx" style="display: none;" onchange="uploadGovFile(event)">
-                                <button onclick="document.getElementById('gov-file-input').click()" class="btn btn-add" style="padding: 5px 10px; font-size: 0.8rem;">
+                                <button onclick="event.stopPropagation(); document.getElementById('gov-file-input').click()" class="btn btn-add" style="padding: 5px 10px; font-size: 0.8rem;">
                                     <i class="fas fa-plus"></i> 파일 추가
                                 </button>
                             </div>
-                        </div>
-                        <div id="gov-file-list" style="display: flex; flex-direction: column; gap: 6px;">
-                            <!-- 업로드된 파일 목록이 여기 표시됩니다 -->
-                        </div>
-                        <div id="gov-file-empty" style="text-align: center; padding: 12px; color: #999; font-size: 0.85rem;">
-                            업로드된 파일이 없습니다
+                            <div id="gov-file-list" style="display: flex; flex-direction: column; gap: 6px;">
+                                <!-- 업로드된 파일 목록이 여기 표시됩니다 -->
+                            </div>
+                            <div id="gov-file-empty" style="text-align: center; padding: 12px; color: #999; font-size: 0.85rem;">
+                                업로드된 파일이 없습니다
+                            </div>
                         </div>
                     </div>
 
@@ -1842,8 +1845,8 @@
                         contenteditable="true"
                         placeholder="정부지원사업 내용을 자유롭게 입력하세요..."
                         style="width: 100%;
-                               min-height: 400px;
-                               max-height: 500px;
+                               min-height: 550px;
+                               max-height: 650px;
                                overflow-y: auto;
                                padding: 20px;
                                border: 1px solid #dee2e6;
@@ -4611,6 +4614,22 @@
             if (editor && !editor.hasAttribute('data-autosave-listener')) {
                 editor.setAttribute('data-autosave-listener', 'true');
                 editor.addEventListener('input', autoSaveGovProject);
+            }
+        }
+
+        // 첨부파일 섹션 토글
+        function toggleGovFileSection() {
+            const content = document.getElementById('gov-file-content');
+            const icon = document.getElementById('gov-file-toggle-icon');
+
+            if (content.style.display === 'none') {
+                content.style.display = 'block';
+                icon.classList.remove('fa-chevron-down');
+                icon.classList.add('fa-chevron-up');
+            } else {
+                content.style.display = 'none';
+                icon.classList.remove('fa-chevron-up');
+                icon.classList.add('fa-chevron-down');
             }
         }
 
