@@ -6554,14 +6554,6 @@
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
-                layout: {
-                    padding: {
-                        top: 40,
-                        bottom: 40,
-                        left: 40,
-                        right: 40
-                    }
-                },
                 onClick: (event, activeElements) => {
                     if (activeElements.length > 0) {
                         const index = activeElements[0].index;
@@ -6594,6 +6586,7 @@
                     },
                     datalabels: {
                         display: true,
+                        clip: false,
                         color: '#000000',
                         font: {
                             size: 14,
@@ -6601,8 +6594,9 @@
                         },
                         formatter: function(value, context) {
                             if (!value || value === 0) return '';
-                            const amountInBillion = (value / 100000000).toFixed(1);
-                            return amountInBillion + '억원';
+                            const amountInBillion = value / 100000000;
+                            if (amountInBillion < 0.1) return ''; // 1천만원 미만은 표시 안함
+                            return amountInBillion.toFixed(1) + '억원';
                         },
                         anchor: function(context) {
                             const total = context.dataset.data.reduce((a, b) => a + b, 0);
@@ -6648,14 +6642,6 @@
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
-                layout: {
-                    padding: {
-                        top: 40,
-                        bottom: 40,
-                        left: 40,
-                        right: 40
-                    }
-                },
                 onClick: (event, activeElements) => {
                     if (activeElements.length > 0) {
                         const index = activeElements[0].index;
@@ -6688,6 +6674,7 @@
                     },
                     datalabels: {
                         display: true,
+                        clip: false,
                         color: '#000000',
                         font: {
                             size: 14,
@@ -6695,8 +6682,9 @@
                         },
                         formatter: function(value, context) {
                             if (!value || value === 0) return '';
-                            const amountInBillion = (value / 100000000).toFixed(1);
-                            return amountInBillion + '억원';
+                            const amountInBillion = value / 100000000;
+                            if (amountInBillion < 0.1) return ''; // 1천만원 미만은 표시 안함
+                            return amountInBillion.toFixed(1) + '억원';
                         },
                         anchor: function(context) {
                             const total = context.dataset.data.reduce((a, b) => a + b, 0);
@@ -6742,14 +6730,6 @@
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
-                layout: {
-                    padding: {
-                        top: 40,
-                        bottom: 40,
-                        left: 40,
-                        right: 40
-                    }
-                },
                 onClick: (event, activeElements) => {
                     if (activeElements.length > 0) {
                         const index = activeElements[0].index;
@@ -6782,6 +6762,7 @@
                     },
                     datalabels: {
                         display: true,
+                        clip: false,
                         color: '#000000',
                         font: {
                             size: 14,
@@ -6789,8 +6770,9 @@
                         },
                         formatter: function(value, context) {
                             if (!value || value === 0) return '';
-                            const amountInBillion = (value / 100000000).toFixed(1);
-                            return amountInBillion + '억원';
+                            const amountInBillion = value / 100000000;
+                            if (amountInBillion < 0.1) return ''; // 1천만원 미만은 표시 안함
+                            return amountInBillion.toFixed(1) + '억원';
                         },
                         anchor: function(context) {
                             const total = context.dataset.data.reduce((a, b) => a + b, 0);
@@ -6872,14 +6854,6 @@
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
-                layout: {
-                    padding: {
-                        top: 40,
-                        bottom: 40,
-                        left: 40,
-                        right: 40
-                    }
-                },
                 onClick: (event, activeElements) => {
                     if (activeElements.length > 0) {
                         const index = activeElements[0].index;
@@ -6917,6 +6891,7 @@
                     },
                     datalabels: {
                         display: true,
+                        clip: false,
                         color: '#000000',
                         font: {
                             size: 14,
@@ -6924,8 +6899,9 @@
                         },
                         formatter: function(value, context) {
                             if (!value || value === 0) return '';
-                            const amountInBillion = (value / 100000000).toFixed(1);
-                            return amountInBillion + '억원';
+                            const amountInBillion = value / 100000000;
+                            if (amountInBillion < 0.1) return ''; // 1천만원 미만은 표시 안함
+                            return amountInBillion.toFixed(1) + '억원';
                         },
                         anchor: function(context) {
                             const total = context.dataset.data.reduce((a, b) => a + b, 0);
