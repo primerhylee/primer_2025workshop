@@ -1099,7 +1099,10 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h2><i class="fas fa-chart-line"></i> 총 지출 상세</h2>
-                    <div class="modal-header-actions">
+                    <div style="display: flex; gap: 10px; align-items: center;">
+                        <button class="btn btn-excel" onclick="scrollToExpenseAnalysis()" style="background: rgba(59, 130, 246, 0.2); color: #3B82F6; border-color: rgba(59, 130, 246, 0.3); padding: 8px 12px;" title="지출 항목별 분석으로 이동">
+                            <i class="fas fa-fire"></i> 분석 보기
+                        </button>
                         <button class="modal-goto-btn" onclick="goToYearlyComparison()" title="연도별 비교 표로 이동">
                             <i class="fas fa-table"></i>
                         </button>
@@ -2776,6 +2779,22 @@
                     if (chartTitle) {
                         chartTitle.style.animation = 'pulse 2s ease-in-out';
                         setTimeout(() => { chartTitle.style.animation = ''; }, 2000);
+                    }
+                }
+            }, 300);
+        }
+
+        function scrollToExpenseAnalysis() {
+            closeModal('expense-modal');
+            setTimeout(() => {
+                const analysisSection = document.getElementById('expense-analysis');
+                if (analysisSection) {
+                    analysisSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    // 섹션 제목에 펄스 애니메이션 효과
+                    const analysisTitle = analysisSection.querySelector('h2');
+                    if (analysisTitle) {
+                        analysisTitle.style.animation = 'pulse 2s ease-in-out';
+                        setTimeout(() => { analysisTitle.style.animation = ''; }, 2000);
                     }
                 }
             }, 300);
