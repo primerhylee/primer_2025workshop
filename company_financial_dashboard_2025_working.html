@@ -2974,27 +2974,8 @@
                 items.forEach(item => {
                     addForecastItemRow(item.item, item.amount, item.source, item.note);
                 });
-            } else {
-                // 2025년 수입 데이터를 기본값으로 사용
-                const income2025 = localStorage.getItem('incomeData_2025');
-                if (income2025) {
-                    const incomeData = JSON.parse(income2025);
-                    incomeData.forEach(item => {
-                        addForecastItemRow(
-                            item.item,
-                            item.amount, // 원 단위 그대로 사용
-                            item.source,
-                            '' // 비고란 빈칸
-                        );
-                    });
-                } else {
-                    // 2025년 데이터가 없으면 기본 항목 추가
-                    addForecastItemRow('정부 지원금', 850000000, '정부지원사업', '');
-                    addForecastItemRow('투자 수익', 620000000, '투자수익', '');
-                    addForecastItemRow('교육 프로그램 수익', 430000000, '자체사업', '');
-                    addForecastItemRow('컨설팅 수익', 350000000, '자체사업', '');
-                }
             }
+            // 데이터가 없으면 빈 테이블 유지 (삭제 후에도 빈 상태 유지)
 
             updateForecastTotal();
         }
