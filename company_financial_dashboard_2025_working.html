@@ -2120,6 +2120,100 @@
             </div>
         </div>
 
+        <!-- 항목별 년도 분석 모달 -->
+        <div id="item-analysis-modal" class="modal">
+            <div class="modal-content" style="max-width: 900px;">
+                <div class="modal-header">
+                    <h2><i class="fas fa-chart-bar"></i> <span id="item-analysis-title">항목별 상세 분석</span></h2>
+                    <button class="modal-close" onclick="closeModal('item-analysis-modal')">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+
+                <!-- 통계 카드 -->
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 30px;">
+                    <!-- 최대 금액 -->
+                    <div style="background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(220, 38, 38, 0.05)); border: 1px solid rgba(239, 68, 68, 0.2); border-radius: 12px; padding: 20px;">
+                        <div style="font-size: 0.85rem; color: #64748b; margin-bottom: 8px;">
+                            <i class="fas fa-arrow-up" style="color: #EF4444;"></i> 최대 금액
+                        </div>
+                        <div id="item-max-amount" style="font-size: 1.8rem; font-weight: 700; color: #EF4444;">0원</div>
+                        <div id="item-max-year" style="font-size: 0.8rem; color: #94a3b8; margin-top: 5px;">-</div>
+                    </div>
+
+                    <!-- 평균 금액 -->
+                    <div style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(6, 182, 212, 0.05)); border: 1px solid rgba(59, 130, 246, 0.2); border-radius: 12px; padding: 20px;">
+                        <div style="font-size: 0.85rem; color: #64748b; margin-bottom: 8px;">
+                            <i class="fas fa-equals" style="color: #3B82F6;"></i> 평균 금액
+                        </div>
+                        <div id="item-avg-amount" style="font-size: 1.8rem; font-weight: 700; color: #3B82F6;">0원</div>
+                        <div style="font-size: 0.8rem; color: #94a3b8; margin-top: 5px;">6개년 평균</div>
+                    </div>
+
+                    <!-- 최소 금액 -->
+                    <div style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(5, 150, 105, 0.05)); border: 1px solid rgba(16, 185, 129, 0.2); border-radius: 12px; padding: 20px;">
+                        <div style="font-size: 0.85rem; color: #64748b; margin-bottom: 8px;">
+                            <i class="fas fa-arrow-down" style="color: #10B981;"></i> 최소 금액
+                        </div>
+                        <div id="item-min-amount" style="font-size: 1.8rem; font-weight: 700; color: #10B981;">0원</div>
+                        <div id="item-min-year" style="font-size: 0.8rem; color: #94a3b8; margin-top: 5px;">-</div>
+                    </div>
+                </div>
+
+                <!-- 년도별 상세 내역 -->
+                <div style="background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 25px;">
+                    <div style="background: linear-gradient(135deg, #3B82F6 0%, #06B6D4 100%); color: white; padding: 15px; font-weight: 600;">
+                        <i class="fas fa-table"></i> 년도별 상세 내역
+                    </div>
+                    <div style="overflow-x: auto;">
+                        <table class="modal-table" id="item-analysis-table" style="width: 100%;">
+                            <thead>
+                                <tr style="background: rgba(59, 130, 246, 0.05);">
+                                    <th style="text-align: center; padding: 12px;">년도</th>
+                                    <th style="text-align: right; padding: 12px;">금액</th>
+                                    <th style="text-align: center; padding: 12px;">전년 대비</th>
+                                </tr>
+                            </thead>
+                            <tbody id="item-analysis-tbody">
+                                <!-- 데이터가 동적으로 로드됩니다 -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- 메모 섹션 -->
+                <div style="background: rgba(139, 92, 246, 0.05); border-radius: 12px; border: 1px solid rgba(139, 92, 246, 0.2); padding: 20px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                        <h3 style="margin: 0; font-size: 1.1rem; color: #1e293b;">
+                            <i class="fas fa-sticky-note" style="color: #8B5CF6; margin-right: 8px;"></i>
+                            <span id="item-analysis-memo-year-label">메모</span>
+                        </h3>
+                    </div>
+                    <textarea
+                        id="item-analysis-memo"
+                        placeholder="이 항목에 대한 메모를 입력하세요..."
+                        style="width: 100%; min-height: 100px; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; font-family: 'Inter', sans-serif; font-size: 0.95rem; resize: vertical; background: white; box-sizing: border-box;"
+                        oninput="renderItemAnalysisTable()"
+                    ></textarea>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px;">
+                        <div style="font-size: 0.85rem; color: #64748b;">
+                            <i class="fas fa-info-circle"></i> 메모는 항목별로 자동 저장됩니다.
+                        </div>
+                        <button onclick="saveItemAnalysisMemo()" class="btn btn-primary" style="padding: 8px 16px; font-size: 0.9rem;">
+                            <i class="fas fa-save"></i> 저장
+                        </button>
+                    </div>
+
+                    <!-- 메모 파싱 테이블 -->
+                    <div id="item-analysis-table-preview" style="margin-top: 20px;"></div>
+                </div>
+
+                <div class="modal-actions" style="margin-top: 20px;">
+                    <button class="btn btn-secondary" onclick="closeModal('item-analysis-modal')">닫기</button>
+                </div>
+            </div>
+        </div>
+
         <!-- Charts Grid -->
         <div class="chart-grid" id="expense-structure">
             <!-- 지출 구조 (탭) -->
@@ -2706,6 +2800,12 @@
             { display: '2021', dataKey: '2021' },
             { display: '2020', dataKey: '2020' }
         ];
+        // 항목 분석 모달 현재 상태 저장
+        let currentItemAnalysis = {
+            category: '',
+            item: '',
+            clickedYear: ''
+        };
 
         // 모달 열기 기능 초기화
         function initializeModalListeners() {
@@ -4493,13 +4593,28 @@
                                 cursor: pointer;
                             `;
 
-                            // 금액 셀 더블클릭으로 편집 가능하게
+                            // 금액 셀 클릭/더블클릭 이벤트
                             amountCell.setAttribute('data-year', yearObj.dataKey);
                             amountCell.setAttribute('data-category', category);
                             amountCell.setAttribute('data-item', data.item);
                             amountCell.setAttribute('data-amount', amount);
+                            amountCell.setAttribute('data-year-display', yearObj.display);
 
-                            amountCell.addEventListener('dblclick', function() {
+                            let clickTimer = null;
+
+                            // 단일 클릭: 상세 분석 모달 열기
+                            amountCell.addEventListener('click', function(e) {
+                                // 금액이 0이거나 '-'인 경우는 모달을 열지 않음
+                                if (amount === 0) return;
+
+                                clickTimer = setTimeout(() => {
+                                    openItemAnalysisModal(category, data.item, yearObj.dataKey);
+                                }, 250);
+                            });
+
+                            // 더블클릭: 편집 모드
+                            amountCell.addEventListener('dblclick', function(e) {
+                                clearTimeout(clickTimer);
                                 editAllYearsAmount(this);
                             });
                         });
@@ -4738,6 +4853,323 @@
             });
 
             input.addEventListener('blur', saveValue);
+        }
+
+        // 항목별 년도 분석 모달 열기
+        function openItemAnalysisModal(category, itemName, clickedYear) {
+            console.log('📊 항목 분석 모달 열기:', category, itemName, clickedYear);
+
+            // 현재 상태 저장
+            currentItemAnalysis = {
+                category: category,
+                item: itemName,
+                clickedYear: clickedYear
+            };
+
+            // 모달 제목 업데이트
+            document.getElementById('item-analysis-title').textContent = `${itemName} 상세 분석`;
+
+            // 클릭한 년도 정보 표시
+            const clickedYearObj = allYearsView.find(y => y.dataKey === clickedYear);
+            const yearLabel = clickedYearObj ? clickedYearObj.display : clickedYear;
+            document.getElementById('item-analysis-memo-year-label').textContent = `메모 (${yearLabel}년 클릭됨)`;
+
+            // 모든 년도의 데이터 수집
+            const yearData = [];
+            allYearsView.forEach(yearObj => {
+                const savedData = localStorage.getItem(`expenseData_${yearObj.dataKey}`);
+                if (savedData) {
+                    const data = JSON.parse(savedData);
+                    const itemData = data.find(row =>
+                        (row.category || '지원') === category && row.item === itemName
+                    );
+
+                    if (itemData && itemData.amount) {
+                        yearData.push({
+                            year: yearObj.dataKey,
+                            yearDisplay: yearObj.display,
+                            amount: itemData.amount || 0
+                        });
+                    } else {
+                        yearData.push({
+                            year: yearObj.dataKey,
+                            yearDisplay: yearObj.display,
+                            amount: 0
+                        });
+                    }
+                }
+            });
+
+            console.log('수집된 데이터:', yearData);
+
+            // 통계 계산 (0이 아닌 금액만 사용)
+            const nonZeroAmounts = yearData.filter(d => d.amount > 0).map(d => d.amount);
+
+            let maxAmount = 0;
+            let maxYear = '-';
+            let minAmount = 0;
+            let minYear = '-';
+            let avgAmount = 0;
+
+            if (nonZeroAmounts.length > 0) {
+                maxAmount = Math.max(...nonZeroAmounts);
+                const maxData = yearData.find(d => d.amount === maxAmount);
+                maxYear = maxData ? maxData.yearDisplay : '-';
+
+                minAmount = Math.min(...nonZeroAmounts);
+                const minData = yearData.find(d => d.amount === minAmount);
+                minYear = minData ? minData.yearDisplay : '-';
+
+                avgAmount = nonZeroAmounts.reduce((sum, val) => sum + val, 0) / nonZeroAmounts.length;
+            }
+
+            // 통계 카드 업데이트
+            document.getElementById('item-max-amount').textContent = formatNumber(maxAmount) + '원';
+            document.getElementById('item-max-year').textContent = maxYear + '년';
+
+            document.getElementById('item-avg-amount').textContent = formatNumber(Math.round(avgAmount)) + '원';
+
+            document.getElementById('item-min-amount').textContent = formatNumber(minAmount) + '원';
+            document.getElementById('item-min-year').textContent = minYear + '년';
+
+            // 년도별 테이블 데이터 생성
+            const tbody = document.getElementById('item-analysis-tbody');
+            tbody.innerHTML = '';
+
+            yearData.forEach((data, index) => {
+                const tr = tbody.insertRow();
+
+                // 클릭한 년도는 하이라이트
+                const isClickedYear = data.year === clickedYear;
+                if (isClickedYear) {
+                    tr.style.background = 'rgba(59, 130, 246, 0.1)';
+                    tr.style.borderLeft = '4px solid #3B82F6';
+                }
+
+                // 년도
+                const yearCell = tr.insertCell();
+                yearCell.textContent = data.yearDisplay;
+                yearCell.style.cssText = `
+                    text-align: center;
+                    padding: 12px;
+                    font-weight: ${isClickedYear ? '700' : '500'};
+                    color: ${isClickedYear ? '#3B82F6' : '#1e293b'};
+                `;
+
+                // 금액
+                const amountCell = tr.insertCell();
+                amountCell.textContent = data.amount > 0 ? formatNumber(data.amount) + '원' : '-';
+                amountCell.style.cssText = `
+                    text-align: right;
+                    padding: 12px;
+                    font-variant-numeric: tabular-nums;
+                    font-weight: ${isClickedYear ? '700' : '400'};
+                    color: ${data.amount > 0 ? '#1e293b' : '#cbd5e1'};
+                `;
+
+                // 전년 대비 증감률
+                const changeCell = tr.insertCell();
+                if (index > 0 && yearData[index - 1].amount > 0 && data.amount > 0) {
+                    const prevAmount = yearData[index - 1].amount;
+                    const changePercent = ((data.amount - prevAmount) / prevAmount * 100);
+                    const changeIcon = changePercent > 0 ? '↑' : changePercent < 0 ? '↓' : '→';
+                    const changeColor = changePercent > 0 ? '#EF4444' : changePercent < 0 ? '#10B981' : '#94a3b8';
+
+                    changeCell.innerHTML = `
+                        <span style="color: ${changeColor}; font-weight: 600;">
+                            ${changeIcon} ${Math.abs(changePercent).toFixed(1)}%
+                        </span>
+                    `;
+                } else {
+                    changeCell.textContent = '-';
+                    changeCell.style.color = '#cbd5e1';
+                }
+                changeCell.style.cssText += 'text-align: center; padding: 12px;';
+            });
+
+            // 메모 불러오기
+            let memoText = '';
+
+            // 1순위: 사용자가 수정해서 저장한 메모 확인
+            const customMemoKey = `expenseItemAnalysisMemo_${category}_${itemName}_${clickedYear}`;
+            const customMemo = localStorage.getItem(customMemoKey);
+
+            if (customMemo) {
+                // 사용자가 수정한 메모가 있으면 그걸 사용
+                memoText = customMemo;
+                console.log('✏️ 사용자 수정 메모 로드:', customMemoKey);
+            } else {
+                // 2순위: memo_expense_YYYY_항목명 형식의 메모 확인 (분석 모달에서 저장한 메모)
+                const memoExpenseKey = `memo_expense_${clickedYear}_${itemName}`;
+                const memoExpense = localStorage.getItem(memoExpenseKey);
+
+                if (memoExpense && memoExpense.trim()) {
+                    memoText = memoExpense;
+                    console.log('📝 memo_expense에서 메모 로드:', memoExpenseKey);
+                } else {
+                    // 3순위: detailMemo에서 확인 (detail-modal에서 저장한 메모)
+                    const detailMemoKey = `detailMemo_${category}_${itemName}_${clickedYear}`;
+                    const detailMemo = localStorage.getItem(detailMemoKey);
+
+                    if (detailMemo && detailMemo.trim()) {
+                        memoText = detailMemo;
+                        console.log('📝 detailMemo에서 메모 로드:', detailMemoKey);
+                    } else {
+                        // 4순위: detailData에서 해당 항목의 소분류별 메모 가져오기
+                        const detailKey = `detailData_${clickedYear}`;
+                        const detailData = localStorage.getItem(detailKey);
+
+                        console.log('🔍 detailData 키 확인:', detailKey);
+
+                        if (detailData) {
+                            const allDetailData = JSON.parse(detailData);
+                            console.log('📦 전체 detailData:', allDetailData);
+
+                            // 필터 조건 수정: note 필터 제거
+                            const itemDetails = allDetailData.filter(row =>
+                                row.category === category && row.item === itemName
+                            );
+
+                            console.log('🎯 필터된 항목:', itemDetails);
+
+                            if (itemDetails.length > 0) {
+                                // 소분류별로 메모를 정리
+                                itemDetails.forEach((detail, index) => {
+                                    if (detail.note && detail.note.trim() && detail.note !== '비고') {
+                                        if (memoText) memoText += '\n\n';
+                                        if (detail.subitem && detail.subitem.trim()) {
+                                            memoText += `◼ ${detail.subitem}\n`;
+                                        }
+                                        memoText += detail.note;
+                                    }
+                                });
+
+                                console.log('📝 조합된 메모:', memoText);
+                            }
+                        } else {
+                            console.log('⚠️ detailData가 없습니다');
+                        }
+                    }
+                }
+            }
+
+            document.getElementById('item-analysis-memo').value = memoText;
+            console.log('✅ 최종 메모 로드:', memoText ? `${memoText.length}자` : '메모 없음');
+
+            // 메모를 파싱해서 테이블로 표시
+            renderItemAnalysisTable();
+
+            // 모달 열기
+            document.getElementById('item-analysis-modal').classList.add('active');
+        }
+
+        // 항목 분석 메모를 파싱해서 테이블로 렌더링
+        function renderItemAnalysisTable() {
+            const textarea = document.getElementById('item-analysis-memo');
+            const preview = document.getElementById('item-analysis-table-preview');
+
+            if (!textarea || !preview) {
+                return;
+            }
+
+            const memoText = textarea.value.trim();
+
+            // 메모가 비어있으면 테이블 숨김
+            if (!memoText) {
+                preview.innerHTML = '';
+                return;
+            }
+
+            // 각 줄을 파싱
+            const lines = memoText.split('\n').filter(line => line.trim());
+            const items = [];
+            let total = 0;
+
+            lines.forEach(line => {
+                const trimmed = line.trim();
+                // "항목명, 금액" 형식 파싱
+                const match = trimmed.match(/^(.+?),\s*(\d+)$/);
+                if (match) {
+                    const itemName = match[1].trim();
+                    const amount = parseInt(match[2]);
+                    items.push({ name: itemName, amount: amount });
+                    total += amount;
+                }
+            });
+
+            // 파싱된 항목이 없으면 테이블 숨김
+            if (items.length === 0) {
+                preview.innerHTML = '';
+                return;
+            }
+
+            // 테이블 HTML 생성
+            let tableHTML = `
+                <div style="border: 1px solid rgba(139, 92, 246, 0.3); border-radius: 8px; overflow: hidden; background: white; margin-top: 15px;">
+                    <div style="background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(236, 72, 153, 0.1)); padding: 12px; border-bottom: 1px solid rgba(139, 92, 246, 0.2);">
+                        <h4 style="margin: 0; font-size: 0.95rem; color: #8B5CF6; font-weight: 600;">
+                            <i class="fas fa-table"></i> 항목 상세
+                        </h4>
+                    </div>
+                    <table style="width: 100%; border-collapse: collapse;">
+                        <thead>
+                            <tr style="background: rgba(139, 92, 246, 0.05);">
+                                <th style="padding: 10px; text-align: left; font-weight: 600; color: #1e293b; border-bottom: 1px solid rgba(148, 163, 184, 0.2);">항목</th>
+                                <th style="padding: 10px; text-align: right; font-weight: 600; color: #1e293b; border-bottom: 1px solid rgba(148, 163, 184, 0.2);">금액</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+            `;
+
+            items.forEach((item, index) => {
+                const bgColor = index % 2 === 0 ? 'white' : 'rgba(248, 250, 252, 0.5)';
+                tableHTML += `
+                    <tr style="background: ${bgColor};">
+                        <td style="padding: 10px; color: #475569; border-bottom: 1px solid rgba(148, 163, 184, 0.1);">${item.name}</td>
+                        <td style="padding: 10px; text-align: right; color: #1e293b; font-weight: 500; font-variant-numeric: tabular-nums; border-bottom: 1px solid rgba(148, 163, 184, 0.1);">${formatNumber(item.amount)}원</td>
+                    </tr>
+                `;
+            });
+
+            // 합계 행 추가
+            tableHTML += `
+                        </tbody>
+                        <tfoot>
+                            <tr style="background: linear-gradient(135deg, rgba(139, 92, 246, 0.15), rgba(236, 72, 153, 0.15));">
+                                <td style="padding: 12px; font-weight: 700; color: #1e293b; border-top: 2px solid rgba(139, 92, 246, 0.3);">합계</td>
+                                <td style="padding: 12px; text-align: right; font-weight: 700; color: #8B5CF6; font-size: 1.05rem; font-variant-numeric: tabular-nums; border-top: 2px solid rgba(139, 92, 246, 0.3);">${formatNumber(total)}원</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            `;
+
+            preview.innerHTML = tableHTML;
+        }
+
+        // 항목 분석 메모 저장
+        function saveItemAnalysisMemo() {
+            const { category, item, clickedYear } = currentItemAnalysis;
+            const memo = document.getElementById('item-analysis-memo').value;
+            const memoKey = `expenseItemAnalysisMemo_${category}_${item}_${clickedYear}`;
+
+            localStorage.setItem(memoKey, memo);
+
+            console.log('✅ 메모 저장됨:', memoKey, `(${memo.length}자)`);
+
+            // 테이블 업데이트
+            renderItemAnalysisTable();
+
+            // 저장 완료 피드백
+            const btn = event.target.closest('button');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-check"></i> 저장완료';
+            btn.style.background = 'linear-gradient(135deg, #10B981, #059669)';
+
+            setTimeout(() => {
+                btn.innerHTML = originalText;
+                btn.style.background = '';
+            }, 1500);
         }
 
         // 테이블 헤더를 기본 상태로 복원
