@@ -4497,8 +4497,8 @@
             // 테이블 헤더를 연도별로 변경 (2025부터 역순)
             const header = document.getElementById('expense-table-header');
             header.innerHTML = `
-                <th style="min-width: 120px; width: 120px; max-width: 120px; padding: 8px 12px; box-sizing: border-box; text-align: center;">분류</th>
-                <th style="min-width: 180px; width: 180px; max-width: 180px; padding: 8px 12px; box-sizing: border-box; text-align: center;">상세분류</th>
+                <th style="min-width: 120px; width: 120px; max-width: 120px; padding: 8px 12px; box-sizing: border-box; text-align: center !important;">분류</th>
+                <th style="min-width: 180px; width: 180px; max-width: 180px; padding: 8px 12px; box-sizing: border-box; text-align: center !important;">상세분류</th>
             `;
 
             // 연도 헤더 동적으로 생성 (편집 가능하게)
@@ -4557,29 +4557,33 @@
                         if (index === 0) {
                             const categoryCell = tr.insertCell();
                             categoryCell.textContent = category;
-                            categoryCell.style.background = `${categoryColor}15`;
-                            categoryCell.style.color = categoryColor;
-                            categoryCell.style.fontWeight = '700';
-                            categoryCell.style.textAlign = 'center';
-                            categoryCell.style.verticalAlign = 'middle';
-                            categoryCell.style.minWidth = '120px';
-                            categoryCell.style.width = '120px';
-                            categoryCell.style.maxWidth = '120px';
-                            categoryCell.style.padding = '8px 12px';
-                            categoryCell.style.boxSizing = 'border-box';
+                            categoryCell.style.cssText = `
+                                background: ${categoryColor}15;
+                                color: ${categoryColor};
+                                font-weight: 700;
+                                text-align: center !important;
+                                vertical-align: middle;
+                                min-width: 120px;
+                                width: 120px;
+                                max-width: 120px;
+                                padding: 8px 12px;
+                                box-sizing: border-box;
+                            `;
                             categoryCell.rowSpan = categoryItems.length;
                         }
 
                         // 상세분류
                         const itemCell = tr.insertCell();
                         itemCell.textContent = data.item;
-                        itemCell.style.fontWeight = '500';
-                        itemCell.style.textAlign = 'center';
-                        itemCell.style.minWidth = '180px';
-                        itemCell.style.width = '180px';
-                        itemCell.style.maxWidth = '180px';
-                        itemCell.style.padding = '8px 12px';
-                        itemCell.style.boxSizing = 'border-box';
+                        itemCell.style.cssText = `
+                            font-weight: 500;
+                            text-align: center !important;
+                            min-width: 180px;
+                            width: 180px;
+                            max-width: 180px;
+                            padding: 8px 12px;
+                            box-sizing: border-box;
+                        `;
 
                         // 각 연도별 금액
                         years.forEach(yearObj => {
