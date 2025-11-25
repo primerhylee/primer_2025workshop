@@ -4994,8 +4994,9 @@
 
                 // 전년 대비 증감률
                 const changeCell = tr.insertCell();
-                if (index > 0 && yearData[index - 1].amount > 0 && data.amount > 0) {
-                    const prevAmount = yearData[index - 1].amount;
+                // yearData는 최신년도부터 오래된 순서이므로 다음 인덱스가 전년도
+                if (index < yearData.length - 1 && yearData[index + 1].amount > 0 && data.amount > 0) {
+                    const prevAmount = yearData[index + 1].amount;
                     const changePercent = ((data.amount - prevAmount) / prevAmount * 100);
                     const changeIcon = changePercent > 0 ? '↑' : changePercent < 0 ? '↓' : '→';
                     const changeColor = changePercent > 0 ? '#EF4444' : changePercent < 0 ? '#10B981' : '#94a3b8';
