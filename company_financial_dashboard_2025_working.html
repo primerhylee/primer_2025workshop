@@ -7030,9 +7030,29 @@
                 console.error('Year label not found');
             }
 
-            // 해당 년도 메모 로드 (모달 내부에서만 검색)
-            const memoKey = `memo_expense_${newYear}_${itemName}`;
-            const savedMemo = localStorage.getItem(memoKey) || '';
+            // 해당 년도 메모 로드 (우선순위 적용)
+            const category = modalContent.dataset.category;
+            let savedMemo = '';
+
+            // 1순위: 새로운 통일된 키
+            const newMemoKey = `memo_expense_${newYear}_${category}_${itemName}`;
+            savedMemo = localStorage.getItem(newMemoKey);
+
+            if (!savedMemo) {
+                // 2순위: 기존 expenseItemAnalysisMemo 키
+                const oldKey1 = `expenseItemAnalysisMemo_${category}_${itemName}_${newYear}`;
+                savedMemo = localStorage.getItem(oldKey1);
+
+                if (!savedMemo) {
+                    // 3순위: 기존 memo_expense 키 (category 없음)
+                    const oldKey2 = `memo_expense_${newYear}_${itemName}`;
+                    savedMemo = localStorage.getItem(oldKey2);
+                }
+            }
+
+            savedMemo = savedMemo || '';
+            console.log('✅ 메모 로드:', newYear, savedMemo ? `${savedMemo.length}자` : '메모 없음');
+
             const memoTextarea = modalContent.querySelector('#detail-memo-textarea');
             if (memoTextarea) {
                 memoTextarea.value = savedMemo;
@@ -7043,7 +7063,6 @@
                 if (toggleBtn) toggleBtn.textContent = '메모 편집';
                 if (btnIcon) btnIcon.className = 'fas fa-edit';
 
-                console.log('Memo loaded for:', memoKey, 'Length:', savedMemo.length);
                 // 메모 미리보기 업데이트
                 renderMemoPreview();
             } else {
