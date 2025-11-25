@@ -6760,7 +6760,7 @@
                                     <span id="toggle-memo-text">메모 편집</span>
                                 </button>
                             </div>
-                            <textarea id="detail-memo-textarea" style="display: none; width: 100%; min-height: 100px; padding: 12px; border: 1px solid rgba(148, 163, 184, 0.3); border-radius: 8px; font-family: 'Inter', sans-serif; font-size: 0.9rem; line-height: 1.5; resize: vertical; margin-bottom: 10px;" placeholder="항목명, 금액 형식으로 입력하세요&#10;예) 슈퍼이스 대관비, 4504200&#10;행사 물품 대여, 775500">${savedMemo}</textarea>
+                            <textarea id="detail-memo-textarea" style="display: none; width: 100%; min-height: 100px; padding: 12px; border: 1px solid rgba(148, 163, 184, 0.3); border-radius: 8px; font-family: 'Inter', sans-serif; font-size: 0.9rem; line-height: 1.5; resize: vertical; margin-bottom: 10px;" placeholder="항목명, 금액 형식으로 입력하세요&#10;예) 슈퍼이스 대관비, 4504200&#10;행사 물품 대여, 775500" oninput="renderMemoPreview()">${savedMemo}</textarea>
 
                             <!-- 메모 미리보기 테이블 -->
                             <div id="memo-preview"></div>
