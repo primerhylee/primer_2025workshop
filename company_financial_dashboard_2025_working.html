@@ -4497,8 +4497,8 @@
             // 테이블 헤더를 연도별로 변경 (2025부터 역순)
             const header = document.getElementById('expense-table-header');
             header.innerHTML = `
-                <th style="min-width: 120px; width: 120px; max-width: 120px; padding: 8px 12px; box-sizing: border-box;">분류</th>
-                <th style="min-width: 180px; width: 180px; max-width: 180px; padding: 8px 12px; box-sizing: border-box;">상세분류</th>
+                <th style="min-width: 120px; width: 120px; max-width: 120px; padding: 8px 12px; box-sizing: border-box; text-align: center;">분류</th>
+                <th style="min-width: 180px; width: 180px; max-width: 180px; padding: 8px 12px; box-sizing: border-box; text-align: center;">상세분류</th>
             `;
 
             // 연도 헤더 동적으로 생성 (편집 가능하게)
@@ -4574,6 +4574,7 @@
                         const itemCell = tr.insertCell();
                         itemCell.textContent = data.item;
                         itemCell.style.fontWeight = '500';
+                        itemCell.style.textAlign = 'center';
                         itemCell.style.minWidth = '180px';
                         itemCell.style.width = '180px';
                         itemCell.style.maxWidth = '180px';
