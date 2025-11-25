@@ -1033,10 +1033,18 @@
             text-align: right !important;
         }
 
-        /* 금액 컬럼 오른쪽 정렬 */
-        .modal-table td:nth-child(2),
-        .modal-table th:nth-child(2) {
+        /* 금액 컬럼 오른쪽 정렬 (전체 탭 제외) */
+        #expense-table:not(.all-years-view) td:nth-child(2),
+        #expense-table:not(.all-years-view) th:nth-child(2) {
             text-align: right !important;
+        }
+
+        /* 전체 탭의 분류와 상세분류는 가운데 정렬 */
+        #expense-table.all-years-view th:nth-child(1),
+        #expense-table.all-years-view td:nth-child(1),
+        #expense-table.all-years-view th:nth-child(2),
+        #expense-table.all-years-view td:nth-child(2) {
+            text-align: center !important;
         }
     </style>
 </head>
