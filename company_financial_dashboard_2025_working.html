@@ -4993,74 +4993,61 @@
                 changeCell.style.cssText += 'text-align: center; padding: 12px;';
             });
 
-            // 메모 불러오기
+            // 메모 불러오기 (우선순위 적용)
             let memoText = '';
 
-            // 1순위: 사용자가 수정해서 저장한 메모 확인
-            const customMemoKey = `expenseItemAnalysisMemo_${category}_${itemName}_${clickedYear}`;
-            const customMemo = localStorage.getItem(customMemoKey);
+            // 1순위: 새로운 통일된 키
+            const newMemoKey = `memo_expense_${clickedYear}_${category}_${itemName}`;
+            memoText = localStorage.getItem(newMemoKey);
 
-            if (customMemo) {
-                // 사용자가 수정한 메모가 있으면 그걸 사용
-                memoText = customMemo;
-                console.log('✏️ 사용자 수정 메모 로드:', customMemoKey);
-            } else {
-                // 2순위: memo_expense_YYYY_항목명 형식의 메모 확인 (분석 모달에서 저장한 메모)
-                const memoExpenseKey = `memo_expense_${clickedYear}_${itemName}`;
-                const memoExpense = localStorage.getItem(memoExpenseKey);
+            if (!memoText) {
+                // 2순위: 기존 expenseItemAnalysisMemo 키
+                const oldKey1 = `expenseItemAnalysisMemo_${category}_${itemName}_${clickedYear}`;
+                memoText = localStorage.getItem(oldKey1);
 
-                if (memoExpense && memoExpense.trim()) {
-                    memoText = memoExpense;
-                    console.log('📝 memo_expense에서 메모 로드:', memoExpenseKey);
-                } else {
-                    // 3순위: detailMemo에서 확인 (detail-modal에서 저장한 메모)
-                    const detailMemoKey = `detailMemo_${category}_${itemName}_${clickedYear}`;
-                    const detailMemo = localStorage.getItem(detailMemoKey);
+                if (!memoText) {
+                    // 3순위: 기존 memo_expense 키 (category 없음)
+                    const oldKey2 = `memo_expense_${clickedYear}_${itemName}`;
+                    memoText = localStorage.getItem(oldKey2);
 
-                    if (detailMemo && detailMemo.trim()) {
-                        memoText = detailMemo;
-                        console.log('📝 detailMemo에서 메모 로드:', detailMemoKey);
-                    } else {
-                        // 4순위: detailData에서 해당 항목의 소분류별 메모 가져오기
-                        const detailKey = `detailData_${clickedYear}`;
-                        const detailData = localStorage.getItem(detailKey);
+                    if (!memoText) {
+                        // 4순위: detailMemo 키
+                        const detailMemoKey = `detailMemo_${category}_${itemName}_${clickedYear}`;
+                        memoText = localStorage.getItem(detailMemoKey);
 
-                        console.log('🔍 detailData 키 확인:', detailKey);
+                        if (!memoText) {
+                            // 5순위: detailData에서 해당 항목의 소분류별 메모 가져오기
+                            const detailKey = `detailData_${clickedYear}`;
+                            const detailData = localStorage.getItem(detailKey);
 
-                        if (detailData) {
-                            const allDetailData = JSON.parse(detailData);
-                            console.log('📦 전체 detailData:', allDetailData);
+                            if (detailData) {
+                                const allDetailData = JSON.parse(detailData);
+                                const itemDetails = allDetailData.filter(row =>
+                                    row.category === category && row.item === itemName
+                                );
 
-                            // 필터 조건 수정: note 필터 제거
-                            const itemDetails = allDetailData.filter(row =>
-                                row.category === category && row.item === itemName
-                            );
-
-                            console.log('🎯 필터된 항목:', itemDetails);
-
-                            if (itemDetails.length > 0) {
-                                // 소분류별로 메모를 정리
-                                itemDetails.forEach((detail, index) => {
-                                    if (detail.note && detail.note.trim() && detail.note !== '비고') {
-                                        if (memoText) memoText += '\n\n';
-                                        if (detail.subitem && detail.subitem.trim()) {
-                                            memoText += `◼ ${detail.subitem}\n`;
+                                if (itemDetails.length > 0) {
+                                    // 소분류별로 메모를 정리
+                                    itemDetails.forEach((detail, index) => {
+                                        if (detail.note && detail.note.trim() && detail.note !== '비고') {
+                                            if (memoText) memoText += '\n\n';
+                                            if (detail.subitem && detail.subitem.trim()) {
+                                                memoText += `◼ ${detail.subitem}\n`;
+                                            }
+                                            memoText += detail.note;
                                         }
-                                        memoText += detail.note;
-                                    }
-                                });
-
-                                console.log('📝 조합된 메모:', memoText);
+                                    });
+                                }
                             }
-                        } else {
-                            console.log('⚠️ detailData가 없습니다');
                         }
                     }
                 }
             }
 
+            memoText = memoText || '';
+            console.log('✅ 메모 로드 완료:', memoText ? `${memoText.length}자` : '메모 없음');
+
             document.getElementById('item-analysis-memo').value = memoText;
-            console.log('✅ 최종 메모 로드:', memoText ? `${memoText.length}자` : '메모 없음');
 
             // 메모를 파싱해서 테이블로 표시
             renderItemAnalysisTable();
@@ -5153,12 +5140,13 @@
             preview.innerHTML = tableHTML;
         }
 
-        // 항목 분석 메모 저장
+        // 항목 분석 메모 저장 (통일된 키 사용)
         function saveItemAnalysisMemo() {
             const { category, item, clickedYear } = currentItemAnalysis;
             const memo = document.getElementById('item-analysis-memo').value;
-            const memoKey = `expenseItemAnalysisMemo_${category}_${item}_${clickedYear}`;
 
+            // 새로운 통일된 키로 저장
+            const memoKey = `memo_expense_${clickedYear}_${category}_${item}`;
             localStorage.setItem(memoKey, memo);
 
             console.log('✅ 메모 저장됨:', memoKey, `(${memo.length}자)`);
@@ -6421,7 +6409,7 @@
 
                     // 클릭 이벤트: 상세 정보 모달 열기
                     td.onclick = function() {
-                        showExpenseAnalysisDetail(itemName, year, amount, changeRate);
+                        showExpenseAnalysisDetail(item.category, itemName, year, amount, changeRate);
                     };
 
                     tr.appendChild(td);
@@ -6506,7 +6494,7 @@
         }
 
         // 상세 정보 모달 열기
-        function showExpenseAnalysisDetail(itemName, year, amount, changeRate) {
+        function showExpenseAnalysisDetail(category, itemName, year, amount, changeRate) {
             // 전체 년도 데이터 수집
             const years = ['2020', '2021', '2022', '2023', '2024', '2025'];
             const yearlyData = [];
@@ -6515,7 +6503,7 @@
                 const savedData = localStorage.getItem(`expenseData_${y}`);
                 if (savedData) {
                     const data = JSON.parse(savedData);
-                    const item = data.find(row => row.item === itemName);
+                    const item = data.find(row => row.item === itemName && (row.category || '지원') === category);
                     yearlyData.push({
                         year: y,
                         amount: item ? item.amount : 0
@@ -6568,13 +6556,30 @@
                 `;
             });
 
-            // 메모 확인
-            const memoKey = `memo_expense_${year}_${itemName}`;
-            const savedMemo = localStorage.getItem(memoKey) || '';
+            // 메모 확인 (우선순위 적용)
+            let savedMemo = '';
+
+            // 1순위: 새로운 통일된 키
+            const newMemoKey = `memo_expense_${year}_${category}_${itemName}`;
+            savedMemo = localStorage.getItem(newMemoKey);
+
+            if (!savedMemo) {
+                // 2순위: 기존 expenseItemAnalysisMemo 키
+                const oldKey1 = `expenseItemAnalysisMemo_${category}_${itemName}_${year}`;
+                savedMemo = localStorage.getItem(oldKey1);
+
+                if (!savedMemo) {
+                    // 3순위: 기존 memo_expense 키 (category 없음)
+                    const oldKey2 = `memo_expense_${year}_${itemName}`;
+                    savedMemo = localStorage.getItem(oldKey2);
+                }
+            }
+
+            savedMemo = savedMemo || '';
 
             const modalContent = `
                 <div style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.7); display: flex; align-items: center; justify-content: center; z-index: 10000;" onclick="this.remove()">
-                    <div id="detail-modal-content" data-current-year="${year}" data-item-name="${itemName}" style="background: white; border-radius: 16px; padding: 30px; max-width: 800px; width: 90%; max-height: 85vh; overflow-y: auto;" onclick="event.stopPropagation()">
+                    <div id="detail-modal-content" data-current-year="${year}" data-category="${category}" data-item-name="${itemName}" style="background: white; border-radius: 16px; padding: 30px; max-width: 800px; width: 90%; max-height: 85vh; overflow-y: auto;" onclick="event.stopPropagation()">
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
                             <h2 style="margin: 0; color: #1e293b;">
                                 <i class="fas fa-chart-bar" style="color: #3B82F6; margin-right: 10px;"></i>
@@ -6709,7 +6714,7 @@
             alert('✅ 메모가 저장되었습니다!');
         }
 
-        // 상세 모달에서 메모 저장 (새 버전)
+        // 상세 모달에서 메모 저장 (새 버전 - 통일된 키 사용)
         function saveDetailMemoFromModal(itemName) {
             const modalContent = document.getElementById('detail-modal-content');
             if (!modalContent) {
@@ -6717,15 +6722,18 @@
                 return;
             }
             const currentYear = modalContent.dataset.currentYear;
+            const category = modalContent.dataset.category;
             const memoTextarea = modalContent.querySelector('#detail-memo-textarea');
             if (!memoTextarea) {
                 console.error('Memo textarea not found');
                 return;
             }
             const memoText = memoTextarea.value;
-            const memoKey = `memo_expense_${currentYear}_${itemName}`;
+
+            // 새로운 통일된 키로 저장
+            const memoKey = `memo_expense_${currentYear}_${category}_${itemName}`;
             localStorage.setItem(memoKey, memoText);
-            console.log('Memo saved for:', memoKey);
+            console.log('✅ 메모 저장됨:', memoKey, `(${memoText.length}자)`);
             alert('✅ 메모가 저장되었습니다!');
         }
 
