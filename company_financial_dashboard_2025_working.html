@@ -4952,6 +4952,25 @@
                     tr.style.borderLeft = '4px solid #3B82F6';
                 }
 
+                // 행 클릭 시 년도 전환
+                tr.style.cursor = 'pointer';
+                tr.style.transition = 'all 0.2s';
+                tr.setAttribute('data-year', data.year);
+                tr.onclick = function() {
+                    switchItemAnalysisYear(data.year, data.yearDisplay);
+                };
+
+                tr.onmouseenter = function() {
+                    if (data.year !== currentItemAnalysis.clickedYear) {
+                        this.style.background = 'rgba(148, 163, 184, 0.05)';
+                    }
+                };
+                tr.onmouseleave = function() {
+                    if (data.year !== currentItemAnalysis.clickedYear) {
+                        this.style.background = '';
+                    }
+                };
+
                 // 년도
                 const yearCell = tr.insertCell();
                 yearCell.textContent = data.yearDisplay;
@@ -5181,6 +5200,106 @@
                 icon.className = 'fas fa-chevron-down';
                 text.textContent = '메모 보기';
             }
+        }
+
+        // 항목 분석 모달에서 년도 전환
+        function switchItemAnalysisYear(newYear, newYearDisplay) {
+            const { category, item } = currentItemAnalysis;
+
+            // 현재 년도 업데이트
+            currentItemAnalysis.clickedYear = newYear;
+
+            // 메모 년도 라벨 업데이트
+            document.getElementById('item-analysis-memo-year-label').textContent = `메모 (${newYearDisplay}년 클릭됨)`;
+
+            // 테이블 행 하이라이트 업데이트
+            const tbody = document.getElementById('item-analysis-tbody');
+            const rows = tbody.querySelectorAll('tr');
+            rows.forEach(row => {
+                const rowYear = row.getAttribute('data-year');
+                if (rowYear === newYear) {
+                    row.style.background = 'rgba(59, 130, 246, 0.1)';
+                    row.style.borderLeft = '4px solid #3B82F6';
+
+                    // 년도와 금액 셀 폰트 굵게
+                    const cells = row.querySelectorAll('td');
+                    if (cells.length > 0) {
+                        cells[0].style.fontWeight = '700';
+                        cells[0].style.color = '#3B82F6';
+                        cells[1].style.fontWeight = '700';
+                    }
+                } else {
+                    row.style.background = '';
+                    row.style.borderLeft = '';
+
+                    // 년도와 금액 셀 폰트 원래대로
+                    const cells = row.querySelectorAll('td');
+                    if (cells.length > 0) {
+                        cells[0].style.fontWeight = '500';
+                        cells[0].style.color = '#1e293b';
+                        cells[1].style.fontWeight = '400';
+                    }
+                }
+            });
+
+            // 해당 년도의 메모 불러오기
+            let memoText = '';
+
+            // 1순위: 새로운 통일된 키
+            const newMemoKey = `memo_expense_${newYear}_${category}_${item}`;
+            memoText = localStorage.getItem(newMemoKey);
+
+            if (!memoText) {
+                // 2순위: 기존 expenseItemAnalysisMemo 키
+                const oldKey1 = `expenseItemAnalysisMemo_${category}_${item}_${newYear}`;
+                memoText = localStorage.getItem(oldKey1);
+
+                if (!memoText) {
+                    // 3순위: 기존 memo_expense 키 (category 없음)
+                    const oldKey2 = `memo_expense_${newYear}_${item}`;
+                    memoText = localStorage.getItem(oldKey2);
+
+                    if (!memoText) {
+                        // 4순위: detailMemo 키
+                        const detailMemoKey = `detailMemo_${category}_${item}_${newYear}`;
+                        memoText = localStorage.getItem(detailMemoKey);
+
+                        if (!memoText) {
+                            // 5순위: detailData에서 해당 항목의 소분류별 메모 가져오기
+                            const detailKey = `detailData_${newYear}`;
+                            const detailData = localStorage.getItem(detailKey);
+
+                            if (detailData) {
+                                const allDetailData = JSON.parse(detailData);
+                                const itemDetails = allDetailData.filter(row =>
+                                    row.category === category && row.item === item
+                                );
+
+                                if (itemDetails.length > 0) {
+                                    itemDetails.forEach((detail, index) => {
+                                        if (detail.note && detail.note.trim() && detail.note !== '비고') {
+                                            if (memoText) memoText += '\n\n';
+                                            if (detail.subitem && detail.subitem.trim()) {
+                                                memoText += `◼ ${detail.subitem}\n`;
+                                            }
+                                            memoText += detail.note;
+                                        }
+                                    });
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            memoText = memoText || '';
+            console.log('✅ 년도 전환:', newYear, '메모:', memoText ? `${memoText.length}자` : '메모 없음');
+
+            // 메모 텍스트 업데이트
+            document.getElementById('item-analysis-memo').value = memoText;
+
+            // 메모 테이블 재렌더링
+            renderItemAnalysisTable();
         }
 
         // 테이블 헤더를 기본 상태로 복원
