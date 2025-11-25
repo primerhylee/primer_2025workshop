@@ -6615,8 +6615,8 @@
 
         // 상세 정보 모달 열기
         function showExpenseAnalysisDetail(category, itemName, year, amount, changeRate) {
-            // 전체 년도 데이터 수집
-            const years = ['2020', '2021', '2022', '2023', '2024', '2025'];
+            // 전체 년도 데이터 수집 (최신 년도부터)
+            const years = ['2025', '2024', '2023', '2022', '2021', '2020'];
             const yearlyData = [];
 
             years.forEach(y => {
@@ -6646,8 +6646,10 @@
                 let changeRateText = '-';
                 let changeColor = '#64748b';
 
-                if (index > 0 && yearlyData[index - 1].amount > 0) {
-                    const rate = ((amt - yearlyData[index - 1].amount) / yearlyData[index - 1].amount) * 100;
+                // yearlyData는 최신년도부터이므로 다음 인덱스가 전년도
+                if (index < yearlyData.length - 1 && yearlyData[index + 1].amount > 0 && amt > 0) {
+                    const prevAmount = yearlyData[index + 1].amount;
+                    const rate = ((amt - prevAmount) / prevAmount) * 100;
                     if (rate >= 50) {
                         changeColor = '#DC2626';
                         changeRateText = `<i class="fas fa-arrow-up"></i> ${rate.toFixed(1)}%`;
