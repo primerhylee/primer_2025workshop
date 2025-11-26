@@ -629,10 +629,18 @@
         }
 
         /* 금액 입력 필드 스타일 */
-        .amount-input {
+        .amount-input,
+        .modal-table td.amount-input,
+        td.amount-input {
             text-align: right !important;
             font-family: inherit;
             font-weight: 600;
+            font-variant-numeric: tabular-nums;
+        }
+
+        /* 잔액 테이블 금액 컬럼 오른쪽 정렬 */
+        #balance-table td:nth-child(2) {
+            text-align: right !important;
         }
 
         /* 금액 컬럼 숫자 강조 */
@@ -1893,6 +1901,35 @@
                         <button onclick="insertBullet()" title="글머리 기호" style="padding: 5px 12px; background: white; border: 1px solid #ccc; border-radius: 4px; cursor: pointer;">
                             <i class="fas fa-list-ul"></i>
                         </button>
+                        <div style="width: 1px; height: 20px; background: #ccc;"></div>
+                        <!-- 템플릿 드롭다운 -->
+                        <div style="position: relative;">
+                            <button onclick="toggleTemplateDropdown()" title="템플릿 삽입" style="padding: 5px 12px; background: linear-gradient(135deg, #10b981, #059669); border: none; border-radius: 4px; cursor: pointer; color: white; display: flex; align-items: center; gap: 5px; font-weight: 500;">
+                                <i class="fas fa-file-alt"></i> 템플릿
+                                <i class="fas fa-chevron-down" style="font-size: 0.7rem;"></i>
+                            </button>
+                            <div id="template-dropdown" style="display: none; position: absolute; top: 38px; left: 0; background: white; border: 1px solid #ddd; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); z-index: 1000; min-width: 220px; overflow: hidden;">
+                                <div style="padding: 8px 12px; background: #f8f9fa; border-bottom: 1px solid #eee; font-size: 0.8rem; color: #666; font-weight: 600;">
+                                    <i class="fas fa-magic"></i> 템플릿 선택
+                                </div>
+                                <div onclick="insertTemplate('basic')" style="padding: 12px 15px; cursor: pointer; border-bottom: 1px solid #f0f0f0; transition: background 0.2s;" onmouseover="this.style.background='#f0fdf4'" onmouseout="this.style.background='white'">
+                                    <div style="font-weight: 600; color: #1e293b; margin-bottom: 3px;"><i class="fas fa-clipboard-list" style="color: #10b981; margin-right: 8px;"></i>기본 사업 정보</div>
+                                    <div style="font-size: 0.75rem; color: #64748b;">사업명, 기간, 금액, 담당자 등</div>
+                                </div>
+                                <div onclick="insertTemplate('progress')" style="padding: 12px 15px; cursor: pointer; border-bottom: 1px solid #f0f0f0; transition: background 0.2s;" onmouseover="this.style.background='#f0fdf4'" onmouseout="this.style.background='white'">
+                                    <div style="font-weight: 600; color: #1e293b; margin-bottom: 3px;"><i class="fas fa-tasks" style="color: #3b82f6; margin-right: 8px;"></i>진행 상황 체크리스트</div>
+                                    <div style="font-size: 0.75rem; color: #64748b;">단계별 진행률 및 할일 목록</div>
+                                </div>
+                                <div onclick="insertTemplate('budget')" style="padding: 12px 15px; cursor: pointer; border-bottom: 1px solid #f0f0f0; transition: background 0.2s;" onmouseover="this.style.background='#f0fdf4'" onmouseout="this.style.background='white'">
+                                    <div style="font-weight: 600; color: #1e293b; margin-bottom: 3px;"><i class="fas fa-won-sign" style="color: #f59e0b; margin-right: 8px;"></i>예산 집행 현황</div>
+                                    <div style="font-size: 0.75rem; color: #64748b;">예산 배정 및 집행 내역 정리</div>
+                                </div>
+                                <div onclick="insertTemplate('full')" style="padding: 12px 15px; cursor: pointer; transition: background 0.2s;" onmouseover="this.style.background='#f0fdf4'" onmouseout="this.style.background='white'">
+                                    <div style="font-weight: 600; color: #1e293b; margin-bottom: 3px;"><i class="fas fa-folder-open" style="color: #8b5cf6; margin-right: 8px;"></i>전체 템플릿</div>
+                                    <div style="font-size: 0.75rem; color: #64748b;">모든 항목을 포함한 상세 양식</div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     <!-- 텍스트 에디터 (contenteditable) -->
@@ -2713,7 +2750,7 @@
         function formatAmountInput(element) {
             const text = element.textContent.trim();
 
-            // 숫자만 있는지 확인 (쉼표 제외)
+            // 숫자와 쉼표만 있는지 확인
             const numbersOnly = text.replace(/,/g, '');
 
             // 숫자만 있으면 포맷팅, 아니면 그대로 유지 (텍스트 허용)
@@ -2738,22 +2775,48 @@
             });
 
             element.addEventListener('input', function() {
+                const text = this.textContent;
+
+                // 숫자와 쉼표만 있는지 확인
+                const cleanText = text.replace(/,/g, '');
+                if (!/^\d*$/.test(cleanText)) {
+                    // 숫자가 아닌 문자가 있으면 포맷팅하지 않음
+                    return;
+                }
+
                 const selection = window.getSelection();
                 const range = selection.rangeCount > 0 ? selection.getRangeAt(0) : null;
-                const offset = range ? range.startOffset : 0;
-                const oldLength = this.textContent.length;
-                
-                formatAmountInput(this);
-                
-                // 커서 위치 복원 (쉼표 추가로 인한 위치 조정)
+
+                // 현재 커서 위치 계산 (쉼표 제외한 숫자 기준)
+                let cursorPosition = 0;
                 if (range && this.firstChild) {
+                    const offset = range.startOffset;
+                    const textBeforeCursor = text.substring(0, offset);
+                    cursorPosition = textBeforeCursor.replace(/,/g, '').length;
+                }
+
+                const oldText = this.textContent;
+                formatAmountInput(this);
+                const newText = this.textContent;
+
+                // 커서 위치 복원 (숫자 기준 위치를 쉼표 포함 위치로 변환)
+                if (range && this.firstChild && newText.length > 0) {
                     try {
-                        const newLength = this.textContent.length;
-                        const lengthDiff = newLength - oldLength;
-                        const newOffset = Math.min(offset + lengthDiff, newLength);
-                        
+                        let newOffset = 0;
+                        let digitCount = 0;
+                        for (let i = 0; i < newText.length; i++) {
+                            if (digitCount >= cursorPosition) {
+                                newOffset = i;
+                                break;
+                            }
+                            if (newText[i] !== ',') {
+                                digitCount++;
+                            }
+                            newOffset = i + 1;
+                        }
+
                         const newRange = document.createRange();
-                        newRange.setStart(this.firstChild, Math.max(0, newOffset));
+                        newRange.setStart(this.firstChild, Math.min(newOffset, newText.length));
                         newRange.collapse(true);
                         selection.removeAllRanges();
                         selection.addRange(newRange);
@@ -2770,7 +2833,8 @@
             element.addEventListener('paste', function(e) {
                 e.preventDefault();
                 const paste = (e.clipboardData || window.clipboardData).getData('text');
-                const numbers = paste.replace(/[^\d]/g, '');
+                // 붙여넣기 시 쉼표도 허용 (숫자와 쉼표만 추출)
+                const numbers = paste.replace(/[^\d,]/g, '').replace(/,/g, '');
                 if (numbers) {
                     this.textContent = formatNumber(numbers);
                 }
@@ -5971,6 +6035,265 @@
             saveCurrentGovProject();
             alert(`${currentGovYear}년 정부지원사업 내용이 저장되었습니다.`);
             // 모달을 닫지 않고 그대로 유지
+        }
+
+        // 템플릿 드롭다운 토글
+        function toggleTemplateDropdown() {
+            const dropdown = document.getElementById('template-dropdown');
+            dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
+        }
+
+        // 외부 클릭 시 드롭다운 닫기
+        document.addEventListener('click', function(e) {
+            const dropdown = document.getElementById('template-dropdown');
+            const templateBtn = e.target.closest('[onclick*="toggleTemplateDropdown"]');
+            if (!templateBtn && dropdown && !dropdown.contains(e.target)) {
+                dropdown.style.display = 'none';
+            }
+        });
+
+        // 템플릿 삽입 함수
+        function insertTemplate(type) {
+            const editor = document.getElementById('gov-support-editor');
+            let templateHtml = '';
+
+            const templates = {
+                basic: `
+<div style="background: linear-gradient(135deg, #f0fdf4, #dcfce7); border: 2px solid #22c55e; border-radius: 12px; padding: 20px; margin-bottom: 15px;">
+    <h3 style="color: #166534; margin: 0 0 15px 0; font-size: 1.1rem; border-bottom: 2px solid #22c55e; padding-bottom: 8px;">
+        <span style="background: #22c55e; color: white; padding: 3px 8px; border-radius: 4px; margin-right: 8px;">INFO</span>
+        사업 기본 정보
+    </h3>
+    <table style="width: 100%; border-collapse: collapse; font-size: 0.95rem;">
+        <tr>
+            <td style="padding: 8px 12px; background: #dcfce7; font-weight: 600; width: 120px; border: 1px solid #bbf7d0;">사업명</td>
+            <td style="padding: 8px 12px; border: 1px solid #bbf7d0;">[사업명 입력]</td>
+            <td style="padding: 8px 12px; background: #dcfce7; font-weight: 600; width: 120px; border: 1px solid #bbf7d0;">주관기관</td>
+            <td style="padding: 8px 12px; border: 1px solid #bbf7d0;">[기관명]</td>
+        </tr>
+        <tr>
+            <td style="padding: 8px 12px; background: #dcfce7; font-weight: 600; border: 1px solid #bbf7d0;">사업기간</td>
+            <td style="padding: 8px 12px; border: 1px solid #bbf7d0;">2025.01 ~ 2025.12</td>
+            <td style="padding: 8px 12px; background: #dcfce7; font-weight: 600; border: 1px solid #bbf7d0;">담당자</td>
+            <td style="padding: 8px 12px; border: 1px solid #bbf7d0;">[담당자명]</td>
+        </tr>
+        <tr>
+            <td style="padding: 8px 12px; background: #dcfce7; font-weight: 600; border: 1px solid #bbf7d0;">총 사업비</td>
+            <td style="padding: 8px 12px; border: 1px solid #bbf7d0; font-weight: 600; color: #166534;">[금액] 원</td>
+            <td style="padding: 8px 12px; background: #dcfce7; font-weight: 600; border: 1px solid #bbf7d0;">진행상태</td>
+            <td style="padding: 8px 12px; border: 1px solid #bbf7d0;">
+                <span style="background: #fef3c7; color: #92400e; padding: 2px 8px; border-radius: 10px; font-size: 0.85rem;">진행중</span>
+            </td>
+        </tr>
+    </table>
+</div>
+`,
+                progress: `
+<div style="background: linear-gradient(135deg, #eff6ff, #dbeafe); border: 2px solid #3b82f6; border-radius: 12px; padding: 20px; margin-bottom: 15px;">
+    <h3 style="color: #1e40af; margin: 0 0 15px 0; font-size: 1.1rem; border-bottom: 2px solid #3b82f6; padding-bottom: 8px;">
+        <span style="background: #3b82f6; color: white; padding: 3px 8px; border-radius: 4px; margin-right: 8px;">PROGRESS</span>
+        진행 상황 체크리스트
+    </h3>
+    <div style="display: flex; align-items: center; margin-bottom: 15px;">
+        <div style="flex: 1; height: 12px; background: #e2e8f0; border-radius: 6px; overflow: hidden;">
+            <div style="width: 60%; height: 100%; background: linear-gradient(90deg, #3b82f6, #60a5fa); border-radius: 6px;"></div>
+        </div>
+        <span style="margin-left: 12px; font-weight: 700; color: #3b82f6;">60%</span>
+    </div>
+    <div style="font-size: 0.95rem;">
+        <div style="padding: 10px; background: white; border-radius: 6px; margin-bottom: 8px; display: flex; align-items: center;">
+            <span style="color: #22c55e; margin-right: 10px; font-size: 1.1rem;">✓</span>
+            <span style="text-decoration: line-through; color: #94a3b8;">1단계: 사업계획서 제출</span>
+            <span style="margin-left: auto; font-size: 0.8rem; color: #94a3b8;">완료</span>
+        </div>
+        <div style="padding: 10px; background: white; border-radius: 6px; margin-bottom: 8px; display: flex; align-items: center;">
+            <span style="color: #22c55e; margin-right: 10px; font-size: 1.1rem;">✓</span>
+            <span style="text-decoration: line-through; color: #94a3b8;">2단계: 협약 체결</span>
+            <span style="margin-left: auto; font-size: 0.8rem; color: #94a3b8;">완료</span>
+        </div>
+        <div style="padding: 10px; background: #fef3c7; border-radius: 6px; margin-bottom: 8px; display: flex; align-items: center; border-left: 4px solid #f59e0b;">
+            <span style="color: #f59e0b; margin-right: 10px; font-size: 1.1rem;">▶</span>
+            <span style="font-weight: 600;">3단계: 중간점검</span>
+            <span style="margin-left: auto; font-size: 0.8rem; background: #f59e0b; color: white; padding: 2px 8px; border-radius: 10px;">진행중</span>
+        </div>
+        <div style="padding: 10px; background: white; border-radius: 6px; margin-bottom: 8px; display: flex; align-items: center;">
+            <span style="color: #e2e8f0; margin-right: 10px; font-size: 1.1rem;">○</span>
+            <span style="color: #64748b;">4단계: 결과보고서 제출</span>
+            <span style="margin-left: auto; font-size: 0.8rem; color: #94a3b8;">예정</span>
+        </div>
+        <div style="padding: 10px; background: white; border-radius: 6px; display: flex; align-items: center;">
+            <span style="color: #e2e8f0; margin-right: 10px; font-size: 1.1rem;">○</span>
+            <span style="color: #64748b;">5단계: 정산 및 종료</span>
+            <span style="margin-left: auto; font-size: 0.8rem; color: #94a3b8;">예정</span>
+        </div>
+    </div>
+</div>
+`,
+                budget: `
+<div style="background: linear-gradient(135deg, #fffbeb, #fef3c7); border: 2px solid #f59e0b; border-radius: 12px; padding: 20px; margin-bottom: 15px;">
+    <h3 style="color: #92400e; margin: 0 0 15px 0; font-size: 1.1rem; border-bottom: 2px solid #f59e0b; padding-bottom: 8px;">
+        <span style="background: #f59e0b; color: white; padding: 3px 8px; border-radius: 4px; margin-right: 8px;">BUDGET</span>
+        예산 집행 현황
+    </h3>
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 15px;">
+        <div style="background: white; border-radius: 8px; padding: 15px; text-align: center; border: 1px solid #fde68a;">
+            <div style="font-size: 0.8rem; color: #92400e; margin-bottom: 5px;">총 예산</div>
+            <div style="font-size: 1.3rem; font-weight: 700; color: #1e293b;">[금액]</div>
+        </div>
+        <div style="background: white; border-radius: 8px; padding: 15px; text-align: center; border: 1px solid #fde68a;">
+            <div style="font-size: 0.8rem; color: #92400e; margin-bottom: 5px;">집행액</div>
+            <div style="font-size: 1.3rem; font-weight: 700; color: #f59e0b;">[금액]</div>
+        </div>
+        <div style="background: white; border-radius: 8px; padding: 15px; text-align: center; border: 1px solid #fde68a;">
+            <div style="font-size: 0.8rem; color: #92400e; margin-bottom: 5px;">잔액</div>
+            <div style="font-size: 1.3rem; font-weight: 700; color: #22c55e;">[금액]</div>
+        </div>
+    </div>
+    <table style="width: 100%; border-collapse: collapse; font-size: 0.9rem;">
+        <thead>
+            <tr style="background: #fef3c7;">
+                <th style="padding: 10px; border: 1px solid #fde68a; text-align: left;">항목</th>
+                <th style="padding: 10px; border: 1px solid #fde68a; text-align: right;">배정액</th>
+                <th style="padding: 10px; border: 1px solid #fde68a; text-align: right;">집행액</th>
+                <th style="padding: 10px; border: 1px solid #fde68a; text-align: center;">집행률</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td style="padding: 10px; border: 1px solid #fde68a;">인건비</td>
+                <td style="padding: 10px; border: 1px solid #fde68a; text-align: right;">[금액]</td>
+                <td style="padding: 10px; border: 1px solid #fde68a; text-align: right;">[금액]</td>
+                <td style="padding: 10px; border: 1px solid #fde68a; text-align: center;">70%</td>
+            </tr>
+            <tr>
+                <td style="padding: 10px; border: 1px solid #fde68a;">운영비</td>
+                <td style="padding: 10px; border: 1px solid #fde68a; text-align: right;">[금액]</td>
+                <td style="padding: 10px; border: 1px solid #fde68a; text-align: right;">[금액]</td>
+                <td style="padding: 10px; border: 1px solid #fde68a; text-align: center;">50%</td>
+            </tr>
+            <tr>
+                <td style="padding: 10px; border: 1px solid #fde68a;">사업비</td>
+                <td style="padding: 10px; border: 1px solid #fde68a; text-align: right;">[금액]</td>
+                <td style="padding: 10px; border: 1px solid #fde68a; text-align: right;">[금액]</td>
+                <td style="padding: 10px; border: 1px solid #fde68a; text-align: center;">40%</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+`,
+                full: `
+<div style="background: linear-gradient(135deg, #f0fdf4, #dcfce7); border: 2px solid #22c55e; border-radius: 12px; padding: 20px; margin-bottom: 15px;">
+    <h3 style="color: #166534; margin: 0 0 15px 0; font-size: 1.1rem; border-bottom: 2px solid #22c55e; padding-bottom: 8px;">
+        <span style="background: #22c55e; color: white; padding: 3px 8px; border-radius: 4px; margin-right: 8px;">INFO</span>
+        사업 기본 정보
+    </h3>
+    <table style="width: 100%; border-collapse: collapse; font-size: 0.95rem;">
+        <tr>
+            <td style="padding: 8px 12px; background: #dcfce7; font-weight: 600; width: 120px; border: 1px solid #bbf7d0;">사업명</td>
+            <td style="padding: 8px 12px; border: 1px solid #bbf7d0;">[사업명 입력]</td>
+            <td style="padding: 8px 12px; background: #dcfce7; font-weight: 600; width: 120px; border: 1px solid #bbf7d0;">주관기관</td>
+            <td style="padding: 8px 12px; border: 1px solid #bbf7d0;">[기관명]</td>
+        </tr>
+        <tr>
+            <td style="padding: 8px 12px; background: #dcfce7; font-weight: 600; border: 1px solid #bbf7d0;">사업기간</td>
+            <td style="padding: 8px 12px; border: 1px solid #bbf7d0;">2025.01 ~ 2025.12</td>
+            <td style="padding: 8px 12px; background: #dcfce7; font-weight: 600; border: 1px solid #bbf7d0;">담당자</td>
+            <td style="padding: 8px 12px; border: 1px solid #bbf7d0;">[담당자명]</td>
+        </tr>
+        <tr>
+            <td style="padding: 8px 12px; background: #dcfce7; font-weight: 600; border: 1px solid #bbf7d0;">총 사업비</td>
+            <td style="padding: 8px 12px; border: 1px solid #bbf7d0; font-weight: 600; color: #166534;">[금액] 원</td>
+            <td style="padding: 8px 12px; background: #dcfce7; font-weight: 600; border: 1px solid #bbf7d0;">진행상태</td>
+            <td style="padding: 8px 12px; border: 1px solid #bbf7d0;">
+                <span style="background: #fef3c7; color: #92400e; padding: 2px 8px; border-radius: 10px; font-size: 0.85rem;">진행중</span>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<div style="background: linear-gradient(135deg, #eff6ff, #dbeafe); border: 2px solid #3b82f6; border-radius: 12px; padding: 20px; margin-bottom: 15px;">
+    <h3 style="color: #1e40af; margin: 0 0 15px 0; font-size: 1.1rem; border-bottom: 2px solid #3b82f6; padding-bottom: 8px;">
+        <span style="background: #3b82f6; color: white; padding: 3px 8px; border-radius: 4px; margin-right: 8px;">PROGRESS</span>
+        진행 상황
+    </h3>
+    <div style="display: flex; align-items: center; margin-bottom: 15px;">
+        <div style="flex: 1; height: 12px; background: #e2e8f0; border-radius: 6px; overflow: hidden;">
+            <div style="width: 60%; height: 100%; background: linear-gradient(90deg, #3b82f6, #60a5fa); border-radius: 6px;"></div>
+        </div>
+        <span style="margin-left: 12px; font-weight: 700; color: #3b82f6;">60%</span>
+    </div>
+    <div style="font-size: 0.95rem;">
+        <div style="padding: 10px; background: white; border-radius: 6px; margin-bottom: 8px; display: flex; align-items: center;">
+            <span style="color: #22c55e; margin-right: 10px;">✓</span>
+            <span style="text-decoration: line-through; color: #94a3b8;">1단계: [완료 항목]</span>
+        </div>
+        <div style="padding: 10px; background: #fef3c7; border-radius: 6px; margin-bottom: 8px; display: flex; align-items: center; border-left: 4px solid #f59e0b;">
+            <span style="color: #f59e0b; margin-right: 10px;">▶</span>
+            <span style="font-weight: 600;">2단계: [진행중 항목]</span>
+        </div>
+        <div style="padding: 10px; background: white; border-radius: 6px; display: flex; align-items: center;">
+            <span style="color: #e2e8f0; margin-right: 10px;">○</span>
+            <span style="color: #64748b;">3단계: [예정 항목]</span>
+        </div>
+    </div>
+</div>
+
+<div style="background: linear-gradient(135deg, #fffbeb, #fef3c7); border: 2px solid #f59e0b; border-radius: 12px; padding: 20px; margin-bottom: 15px;">
+    <h3 style="color: #92400e; margin: 0 0 15px 0; font-size: 1.1rem; border-bottom: 2px solid #f59e0b; padding-bottom: 8px;">
+        <span style="background: #f59e0b; color: white; padding: 3px 8px; border-radius: 4px; margin-right: 8px;">BUDGET</span>
+        예산 집행 현황
+    </h3>
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 15px;">
+        <div style="background: white; border-radius: 8px; padding: 15px; text-align: center; border: 1px solid #fde68a;">
+            <div style="font-size: 0.8rem; color: #92400e; margin-bottom: 5px;">총 예산</div>
+            <div style="font-size: 1.3rem; font-weight: 700; color: #1e293b;">[금액]</div>
+        </div>
+        <div style="background: white; border-radius: 8px; padding: 15px; text-align: center; border: 1px solid #fde68a;">
+            <div style="font-size: 0.8rem; color: #92400e; margin-bottom: 5px;">집행액</div>
+            <div style="font-size: 1.3rem; font-weight: 700; color: #f59e0b;">[금액]</div>
+        </div>
+        <div style="background: white; border-radius: 8px; padding: 15px; text-align: center; border: 1px solid #fde68a;">
+            <div style="font-size: 0.8rem; color: #92400e; margin-bottom: 5px;">잔액</div>
+            <div style="font-size: 1.3rem; font-weight: 700; color: #22c55e;">[금액]</div>
+        </div>
+    </div>
+</div>
+
+<div style="background: linear-gradient(135deg, #faf5ff, #f3e8ff); border: 2px solid #a855f7; border-radius: 12px; padding: 20px;">
+    <h3 style="color: #7e22ce; margin: 0 0 15px 0; font-size: 1.1rem; border-bottom: 2px solid #a855f7; padding-bottom: 8px;">
+        <span style="background: #a855f7; color: white; padding: 3px 8px; border-radius: 4px; margin-right: 8px;">MEMO</span>
+        비고 / 특이사항
+    </h3>
+    <div style="background: white; border-radius: 8px; padding: 15px; min-height: 80px; border: 1px dashed #d8b4fe;">
+        [메모 내용을 입력하세요]
+    </div>
+</div>
+`
+            };
+
+            templateHtml = templates[type] || '';
+
+            // 현재 커서 위치에 삽입 또는 에디터 맨 뒤에 추가
+            const selection = window.getSelection();
+            if (selection.rangeCount > 0 && editor.contains(selection.anchorNode)) {
+                const range = selection.getRangeAt(0);
+                range.deleteContents();
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = templateHtml;
+                const frag = document.createDocumentFragment();
+                while (tempDiv.firstChild) {
+                    frag.appendChild(tempDiv.firstChild);
+                }
+                range.insertNode(frag);
+            } else {
+                editor.innerHTML += templateHtml;
+            }
+
+            // 드롭다운 닫기
+            document.getElementById('template-dropdown').style.display = 'none';
+
+            // 자동 저장 트리거
+            autoSaveGovProject();
         }
 
         // 자동저장 타이머
