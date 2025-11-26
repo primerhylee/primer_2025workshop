@@ -1640,8 +1640,8 @@
                                 <span id="forecast-total-amount">0</span>원
                             </div>
                         </div>
-                        <div style="margin-top: 10px; font-size: 0.9rem; opacity: 0.9;">
-                            전년 대비: <span id="forecast-growth-rate">+0.0%</span>
+                        <div style="margin-top: 10px; font-size: 0.9rem; color: #fff;">
+                            전년 대비: <span id="forecast-growth-rate" style="font-weight: 600; color: #FFEB3B;">+0.0%</span>
                         </div>
                     </div>
                 </div>
@@ -5250,17 +5250,20 @@
 
             lines.forEach(line => {
                 const trimmed = line.trim();
-                // "항목명, 금액" 또는 "항목명 금액" 형식 파싱
-                let match = trimmed.match(/^(.+?),\s*(\d+)$/);
+                // "항목명, 금액" 또는 "항목명 금액" 형식 파싱 (금액에 쉼표 포함 허용)
+                let match = trimmed.match(/^(.+?),\s*([\d,]+)$/);
                 if (!match) {
-                    // 쉼표가 없으면 공백으로 구분 시도
-                    match = trimmed.match(/^(.+?)\s+(\d+)$/);
+                    // 쉼표가 없으면 공백으로 구분 시도 (금액에 쉼표 포함 허용)
+                    match = trimmed.match(/^(.+?)\s+([\d,]+)$/);
                 }
                 if (match) {
                     const itemName = match[1].trim();
-                    const amount = parseInt(match[2]);
-                    items.push({ name: itemName, amount: amount });
-                    total += amount;
+                    // 금액에서 쉼표 제거 후 숫자로 변환
+                    const amount = parseInt(match[2].replace(/,/g, ''));
+                    if (!isNaN(amount) && amount > 0) {
+                        items.push({ name: itemName, amount: amount });
+                        total += amount;
+                    }
                 }
             });
 
@@ -7303,17 +7306,20 @@
 
             lines.forEach(line => {
                 const trimmed = line.trim();
-                // "항목명, 금액" 또는 "항목명 금액" 형식 파싱
-                let match = trimmed.match(/^(.+?),\s*(\d+)$/);
+                // "항목명, 금액" 또는 "항목명 금액" 형식 파싱 (금액에 쉼표 포함 허용)
+                let match = trimmed.match(/^(.+?),\s*([\d,]+)$/);
                 if (!match) {
-                    // 쉼표가 없으면 공백으로 구분 시도
-                    match = trimmed.match(/^(.+?)\s+(\d+)$/);
+                    // 쉼표가 없으면 공백으로 구분 시도 (금액에 쉼표 포함 허용)
+                    match = trimmed.match(/^(.+?)\s+([\d,]+)$/);
                 }
                 if (match) {
                     const itemName = match[1].trim();
-                    const amount = parseInt(match[2]);
-                    items.push({ name: itemName, amount: amount });
-                    total += amount;
+                    // 금액에서 쉼표 제거 후 숫자로 변환
+                    const amount = parseInt(match[2].replace(/,/g, ''));
+                    if (!isNaN(amount) && amount > 0) {
+                        items.push({ name: itemName, amount: amount });
+                        total += amount;
+                    }
                 }
             });
 
