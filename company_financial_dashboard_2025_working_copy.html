@@ -4775,11 +4775,18 @@
                 totalLabelCell.style.padding = '8px 12px';
                 totalLabelCell.style.boxSizing = 'border-box';
 
+                // 연도별 합계 먼저 계산
+                const yearTotals = {};
                 years.forEach(yearObj => {
                     let yearTotal = 0;
                     itemMap.forEach((data) => {
                         yearTotal += data.years[yearObj.dataKey] || 0;
                     });
+                    yearTotals[yearObj.dataKey] = yearTotal;
+                });
+
+                years.forEach((yearObj, index) => {
+                    const yearTotal = yearTotals[yearObj.dataKey];
                     const totalCell = totalRow.insertCell();
                     totalCell.textContent = yearTotal > 0 ? formatNumber(yearTotal) : '-';
                     totalCell.style.cssText = `
@@ -4793,7 +4800,73 @@
                         padding: 8px 12px;
                         box-sizing: border-box;
                         white-space: nowrap;
+                        cursor: pointer;
+                        position: relative;
                     `;
+
+                    // 전년 대비 증감률 계산 (다음 인덱스가 전년도)
+                    const currentYear = yearObj.display;
+                    if (index < years.length - 1 && yearTotal > 0) {
+                        const prevYearObj = years[index + 1];
+                        const prevYear = prevYearObj.display;
+                        const prevTotal = yearTotals[prevYearObj.dataKey] || 0;
+
+                        if (prevTotal > 0) {
+                            const changeRate = ((yearTotal - prevTotal) / prevTotal * 100).toFixed(1);
+                            const isIncrease = changeRate > 0;
+                            const changeText = isIncrease ? `+${changeRate}%` : `${changeRate}%`;
+                            const changeColor = isIncrease ? '#ef4444' : '#22c55e';
+                            const arrow = isIncrease ? '▲' : '▼';
+
+                            totalCell.setAttribute('data-has-tooltip', 'true');
+                            totalCell.setAttribute('data-current-year', currentYear);
+                            totalCell.setAttribute('data-prev-year', prevYear);
+
+                            // 툴팁 스타일 추가
+                            totalCell.addEventListener('mouseenter', function(e) {
+                                // 기존 툴팁 제거
+                                document.querySelectorAll('.year-change-tooltip').forEach(t => t.remove());
+
+                                const tooltip = document.createElement('div');
+                                tooltip.className = 'year-change-tooltip';
+                                tooltip.innerHTML = `
+                                    <div style="font-size: 0.85rem; font-weight: 600; color: #1e293b; margin-bottom: 6px; border-bottom: 1px solid #e2e8f0; padding-bottom: 6px;">
+                                        ${currentYear}년 vs ${prevYear}년
+                                    </div>
+                                    <div style="font-size: 1.1rem; font-weight: 700; color: ${changeColor}; margin-bottom: 6px;">
+                                        ${arrow} ${changeText}
+                                    </div>
+                                    <div style="font-size: 0.75rem; color: #64748b;">
+                                        <div>${prevYear}년: ${formatNumber(prevTotal)}원</div>
+                                        <div>${currentYear}년: ${formatNumber(yearTotal)}원</div>
+                                    </div>
+                                `;
+                                tooltip.style.cssText = `
+                                    position: fixed;
+                                    background: white;
+                                    border: 1px solid #e2e8f0;
+                                    border-radius: 8px;
+                                    padding: 12px 16px;
+                                    box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+                                    z-index: 10000;
+                                    white-space: nowrap;
+                                    text-align: center;
+                                    pointer-events: none;
+                                `;
+                                document.body.appendChild(tooltip);
+
+                                // 툴팁 위치 계산
+                                const rect = this.getBoundingClientRect();
+                                const tooltipRect = tooltip.getBoundingClientRect();
+                                tooltip.style.left = (rect.left + rect.width / 2 - tooltipRect.width / 2) + 'px';
+                                tooltip.style.top = (rect.top - tooltipRect.height - 10) + 'px';
+                            });
+
+                            totalCell.addEventListener('mouseleave', function() {
+                                document.querySelectorAll('.year-change-tooltip').forEach(t => t.remove());
+                            });
+                        }
+                    }
                 });
             }
 
